@@ -1,18 +1,18 @@
 import {Col, Row} from "react-bootstrap";
 import {useContext, useEffect} from "react";
 import {UserContext} from "../context/UserContextProvider";
-import {useHistory} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 const MainPage = () => {
-    const history = useHistory();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const {
         isLoggedIn,
     } = useContext(UserContext);
 
     useEffect(() => {
+        console.log("Main");
         if (isLoggedIn) {
-            history.push("/home-page-parent");
+            navigate("/home-page-parent");
         }
     },[]);
 

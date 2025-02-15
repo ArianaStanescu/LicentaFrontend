@@ -1,5 +1,4 @@
 import React, {createContext, useState} from "react";
-import {withRouter} from "react-router-dom";
 
 export const UserContext = createContext();
 
@@ -21,4 +20,4 @@ const UserContextProvider = ({children}) => {
     );
 };
 
-export default withRouter(UserContextProvider);
+export default UserContextProvider;
