@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import {Container} from "react-bootstrap";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import UserContextProvider from "./context/UserContextProvider";
+import MainRoutingPage from "./pages/MainRoutingPage";
+import {HomePageParent} from "./pages/HomePageParent";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <BrowserRouter>
+        <Switch>
+          <UserContextProvider>
+             <Route exact path="/" component={MainRoutingPage} />
+              <Route exact path="/home-page-parent" component={HomePageParent} />
+              {/*<Route exact path="/home-page-trainer" component={HomePage} />*/}
+          </UserContextProvider>
+        </Switch>
+      </BrowserRouter>
+    </Container>
   );
-}
+};
 
 export default App;
