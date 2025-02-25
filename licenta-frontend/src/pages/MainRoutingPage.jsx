@@ -2,6 +2,7 @@ import {Col, Row} from "react-bootstrap";
 import {useContext, useEffect} from "react";
 import {UserContext} from "../context/UserContextProvider";
 import { useNavigate} from "react-router-dom";
+import {Typography} from "@mui/material";
 
 const MainPage = () => {
     const navigate = useNavigate();
@@ -11,17 +12,14 @@ const MainPage = () => {
 
     useEffect(() => {
         console.log("Main");
-        if (isLoggedIn) {
-            navigate("/home-page-parent");
-        }
+        // if (isLoggedIn) {
+        //     navigate("/home-page-parent");
+        // }
+        navigate("/login");
     },[]);
 
     return (
-        <Row>
-            <Col md={2} style={{ paddingLeft: "0px", marginLeft: "0px" }}>
-                Main routing page
-            </Col>
-        </Row>
+        <Typography> Main routing page </Typography>
     );
 };
 

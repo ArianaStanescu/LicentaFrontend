@@ -22,6 +22,7 @@ export const RegisterPage = () => {
         password: "",
         phoneNumber: "",
         gender: "",
+        //TODO: birthDate: {}, si dupa nu mai e nevoie sa sterg field-uri de pe user
         birthDate: "",
         isTrainer: false,
     });

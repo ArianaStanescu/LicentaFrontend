@@ -13,7 +13,7 @@ export const removeUserEmail = () => {
     localStorage.removeItem(USER_EMAIL_KEY);
 }
 
-export const getUserId =  () => {
+export const getUserIdLocalStorage =  () => {
     const userData = localStorage.getItem(USER_DATA_KEY);
     if (userData === null) {
         return null;
@@ -21,7 +21,7 @@ export const getUserId =  () => {
     return JSON.parse(userData).id;
 }
 
-export const getUser = () => {
+export const getUserLocalStorage = () => {
     const localUser = localStorage.getItem(USER_DATA_KEY);
     if (localUser === null) {
         return null;
