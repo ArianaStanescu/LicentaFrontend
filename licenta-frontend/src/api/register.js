@@ -6,9 +6,6 @@ export const registerUser = async (user) => {
     const userRole = user.isTrainer ? "trainers" : "parents";
     const registerUrl = `${BASE_URL}/api/${userRole}/register`;
 
-    delete user.isTrainer;
-    console.log("user data in register ", user);
-
     try{
         const response = await instance.post(registerUrl, user);
 

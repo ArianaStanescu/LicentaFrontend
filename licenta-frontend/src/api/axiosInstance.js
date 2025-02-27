@@ -2,6 +2,7 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import {refreshToken} from '../services/keycloak';
 
+export const BASE_URL = 'http://localhost:8080';
 
 export const instance = axios.create({
     baseURL: 'http://localhost:8080',

@@ -22,12 +22,12 @@ export const RegisterPage = () => {
         password: "",
         phoneNumber: "",
         gender: "",
-        //TODO: birthDate: {}, si dupa nu mai e nevoie sa sterg field-uri de pe user
         birthDate: "",
         isTrainer: false,
     });
 
     const [errors, setErrors] = useState({});
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -76,32 +76,23 @@ export const RegisterPage = () => {
             ],
         }
 
-        console.log("User data: ", userData);
         try {
             const registerResponse = await register(userData, formData.isTrainer);
             const allUserData = {...formData};
             allUserData.gender = allUserData.gender.toUpperCase();
-            console.log("All user data: ", allUserData);
-            delete allUserData.password;
-            if(!allUserData.isTrainer) {
-                delete allUserData.birthDate;
-            }
-
-            console.log("All user data after deleting  ", allUserData);
 
             if (registerResponse?.success && registerResponse?.keycloakUserId) {
                 const backendRegisterResponse = await registerUser(allUserData);
                 if(backendRegisterResponse?.success) {
-                    console.log("Registration successful in postgres db!");
                     setOpenSnackbar(true);
 
                     setTimeout(() => {
                         navigate("/login");
-                    }, 4000);
+                    }, 2000);
                 }
             }
         } catch (error) {
-            console.error("Registration error: ", error);
+            setErrorMessage("Verifică dacă ai cont valid.");
         }
 
     }
@@ -111,12 +102,13 @@ export const RegisterPage = () => {
         <Container maxWidth="sm">
             <Box sx={{mt: 5, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white"}}>
                 <Typography variant="h4" align="center" gutterBottom>
-                    Register
+                    Creare cont
                 </Typography>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
                 <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
-                        label="First Name"
+                        label="Prenume"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleChange}
@@ -126,7 +118,7 @@ export const RegisterPage = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Last Name"
+                        label="Nume"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
@@ -147,7 +139,7 @@ export const RegisterPage = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Password"
+                        label="Parolă"
                         name="password"
                         type="password"
                         value={formData.password}
@@ -158,7 +150,7 @@ export const RegisterPage = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Phone Number"
+                        label="Număr de telefon"
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleChange}
@@ -169,7 +161,7 @@ export const RegisterPage = () => {
                     <TextField
                         fullWidth
                         select
-                        label="Gender"
+                        label="Gen"
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
@@ -177,8 +169,8 @@ export const RegisterPage = () => {
                         helperText={errors.gender}
                         margin="normal"
                     >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
+                        <MenuItem value="Male">Masculin</MenuItem>
+                        <MenuItem value="Female">Feminin</MenuItem>
                     </TextField>
                     <FormControlLabel
                         control={
@@ -188,12 +180,12 @@ export const RegisterPage = () => {
                                 onChange={handleChange}
                             />
                         }
-                        label="Are you a Trainer?"
+                        label="Sunteți tutore?"
                     />
                     {formData.isTrainer && (
                         <TextField
                             fullWidth
-                            label="Birth Date"
+                            label="Data nașterii"
                             name="birthDate"
                             type="date"
                             value={formData.birthDate}
@@ -211,14 +203,13 @@ export const RegisterPage = () => {
                         color="primary"
                         sx={{mt: 2}}
                     >
-                        Register
+                        Creare cont
                     </Button>
                 </form>
             </Box>
-            {/* 🔹 Snackbar pentru mesajul de succes */}
             <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
                 <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: "100%" }}>
-                    User registered successfully!
+                    Utilizator creat cu succes!
                 </Alert>
             </Snackbar>
         </Container>

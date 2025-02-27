@@ -6,19 +6,21 @@ import {
     Typography,
     Box,
     Paper,
-    Alert,
+    Alert, FormControlLabel, Checkbox
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {authenticate} from "../services/keycloak";
-import { getUserIdLocalStorage} from "../helpers/localStorageHelper";
+import {getUserIdLocalStorage} from "../helpers/localStorageHelper";
 import {AuthContext} from "../context/AuthContextProvider";
+import {findByEmail} from "../api/findByEmail";
 
 export const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [isTrainer, setIsTrainer] = useState(false);
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const {login} = useContext(AuthContext);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -31,21 +33,25 @@ export const LoginPage = () => {
         const data = await authenticate(email, password);
 
         if (data?.error_description) {
-            console.log("Error ", data.error_description);
-        }
-        else {
-            const userId = getUserIdLocalStorage();
-            console.log("User id", userId);
-            await login(data);
+            setError("Email sau parolă incorectă!");
+        } else {
+            let userId = getUserIdLocalStorage();
+
+            if (userId == null) {
+                userId = await findByEmail(email, isTrainer);
+            }
+            login(data);
             if (userId != null) {
-                // ????
-                //await updateToken();
-                navigate("/home-page-parent");
+                if (isTrainer) {
+                    navigate("/home-page-trainer");
+                } else {
+                    navigate("/home-page-parent");
+                }
             } else {
-                console.log("User id is null");
+                setError("Verifică dacă ai cont valid.");
             }
         }
-        alert("Login reușit! 🎉");
+
     };
 
     return (
@@ -67,7 +73,7 @@ export const LoginPage = () => {
 
                 {error && <Alert severity="error">{error}</Alert>}
 
-                <form onSubmit={handleLogin} style={{ width: "100%", marginTop: 16 }}>
+                <form onSubmit={handleLogin} style={{width: "100%", marginTop: 16}}>
                     <TextField
                         label="Email"
                         type="email"
@@ -88,13 +94,18 @@ export const LoginPage = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                    <FormControlLabel
+                        control={<Checkbox checked={isTrainer} onChange={(e) => setIsTrainer(e.target.checked)}/>}
+                        label="Sunt trainer"
+                    />
+
+                    <Button type="submit" variant="contained" color="primary" fullWidth sx={{mt: 2}}>
                         Login
                     </Button>
                 </form>
 
-                <Typography variant="body2" sx={{ mt: 2 }}>
-                    Nu ai cont? <a href="#">Înregistrează-te</a>
+                <Typography variant="body2" sx={{mt: 2}}>
+                    Nu ai cont? <a href="http://localhost:3000/register">Înregistrează-te</a>
                 </Typography>
             </Box>
         </Container>
