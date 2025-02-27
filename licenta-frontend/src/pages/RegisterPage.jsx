@@ -8,7 +8,7 @@ import {
     Checkbox,
     FormControlLabel,
     MenuItem,
-    Alert, Snackbar
+    Alert, Snackbar, Grid, Grid2
 } from "@mui/material";
 import {register} from "../services/keycloak.js";
 import {registerUser} from "../api/register";
@@ -83,7 +83,7 @@ export const RegisterPage = () => {
 
             if (registerResponse?.success && registerResponse?.keycloakUserId) {
                 const backendRegisterResponse = await registerUser(allUserData);
-                if(backendRegisterResponse?.success) {
+                if (backendRegisterResponse?.success) {
                     setOpenSnackbar(true);
 
                     setTimeout(() => {
@@ -97,122 +97,145 @@ export const RegisterPage = () => {
 
     }
 
-
     return (
-        <Container maxWidth="sm">
-            <Box sx={{mt: 5, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white"}}>
-                <Typography variant="h4" align="center" gutterBottom>
-                    Creare cont
-                </Typography>
-                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-                <form onSubmit={handleSubmit}>
-                    <TextField
-                        fullWidth
-                        label="Prenume"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        error={!!errors.firstName}
-                        helperText={errors.firstName}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Nume"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        error={!!errors.lastName}
-                        helperText={errors.lastName}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        error={!!errors.email}
-                        helperText={errors.email}
-                        margin="normal"
-                        type="email"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Parolă"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        error={!!errors.password}
-                        helperText={errors.password}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Număr de telefon"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleChange}
-                        error={!!errors.phoneNumber}
-                        helperText={errors.phoneNumber}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        select
-                        label="Gen"
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        error={!!errors.gender}
-                        helperText={errors.gender}
-                        margin="normal"
-                    >
-                        <MenuItem value="Male">Masculin</MenuItem>
-                        <MenuItem value="Female">Feminin</MenuItem>
-                    </TextField>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                name="isTrainer"
-                                checked={formData.isTrainer}
-                                onChange={handleChange}
-                            />
-                        }
-                        label="Sunteți tutore?"
-                    />
-                    {formData.isTrainer && (
+        <Container maxWidth="xl">
+            <Box sx={{display: "flex", alignItems: "stretch", height: "100%", flexDirection: {xs: "column", md: "row"}}}>
+                <Box
+                    component="img"
+                    src={`${process.env.PUBLIC_URL}/register.png`}
+                    alt="Ilustrare înregistrare"
+                    sx={{
+                        width: "50%",
+                        height: "auto",
+                        boxShadow: 3,
+                        display: { xs: "none", md: "block" },
+                        borderRadius: "16px 0 0 16px",
+                    }}
+                />
+                <Box sx={{
+                    p: 3,
+                    boxShadow: 3,
+                    bgcolor: "white",
+                    width: { xs: "100%", md: "50%" },
+                    borderRadius: "0px 16px 16px 0px",
+                    minHeight: "100vh",
+
+                }}>
+                    <Typography variant="h4" align="center" gutterBottom>
+                        Creare cont
+                    </Typography>
+                    {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                    <form onSubmit={handleSubmit}>
                         <TextField
                             fullWidth
-                            label="Data nașterii"
-                            name="birthDate"
-                            type="date"
-                            value={formData.birthDate}
+                            label="Prenume"
+                            name="firstName"
+                            value={formData.firstName}
                             onChange={handleChange}
-                            error={!!errors.birthDate}
-                            helperText={errors.birthDate}
+                            error={!!errors.firstName}
+                            helperText={errors.firstName}
                             margin="normal"
-                            InputLabelProps={{shrink: true}}
                         />
-                    )}
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{mt: 2}}
-                    >
-                        Creare cont
-                    </Button>
-                </form>
+                        <TextField
+                            fullWidth
+                            label="Nume"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            error={!!errors.lastName}
+                            helperText={errors.lastName}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            error={!!errors.email}
+                            helperText={errors.email}
+                            margin="normal"
+                            type="email"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Parolă"
+                            name="password"
+                            type="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!errors.password}
+                            helperText={errors.password}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Număr de telefon"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            error={!!errors.phoneNumber}
+                            helperText={errors.phoneNumber}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            select
+                            label="Gen"
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            error={!!errors.gender}
+                            helperText={errors.gender}
+                            margin="normal"
+                        >
+                            <MenuItem value="Male">Masculin</MenuItem>
+                            <MenuItem value="Female">Feminin</MenuItem>
+                        </TextField>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="isTrainer"
+                                    checked={formData.isTrainer}
+                                    onChange={handleChange}
+                                />
+                            }
+                            label="Sunteți tutore?"
+                        />
+                        {formData.isTrainer && (
+                            <TextField
+                                fullWidth
+                                label="Data nașterii"
+                                name="birthDate"
+                                type="date"
+                                value={formData.birthDate}
+                                onChange={handleChange}
+                                error={!!errors.birthDate}
+                                helperText={errors.birthDate}
+                                margin="normal"
+                                InputLabelProps={{shrink: true}}
+                            />
+                        )}
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            sx={{mt: 2}}
+                        >
+                            Creare cont
+                        </Button>
+                    </form>
+                </Box>
             </Box>
-            <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
-                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: "100%" }}>
+            <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)}
+                      anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
+                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{width: "100%"}}>
                     Utilizator creat cu succes!
                 </Alert>
             </Snackbar>
         </Container>
     );
+
 };
 
