@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {
     Container,
     TextField,
@@ -10,8 +10,7 @@ import {
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {authenticate} from "../services/keycloak";
-import {getUserIdLocalStorage} from "../helpers/localStorageHelper";
-import {AuthContext} from "../context/AuthContextProvider";
+import {setParentId, setTrainerId} from "../helpers/localStorageHelper";
 import {findByEmail} from "../api/findByEmail";
 
 export const LoginPage = () => {
@@ -20,7 +19,6 @@ export const LoginPage = () => {
     const [error, setError] = useState("");
     const [isTrainer, setIsTrainer] = useState(false);
     const navigate = useNavigate();
-    const {login} = useContext(AuthContext);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -35,21 +33,19 @@ export const LoginPage = () => {
         if (data?.error_description) {
             setError("Email sau parolă incorectă!");
         } else {
-            let userId = getUserIdLocalStorage();
-
-            if (userId == null) {
-                userId = await findByEmail(email, isTrainer);
+            const parentOrTrainerId = await findByEmail(email, isTrainer);
+            if (parentOrTrainerId === null) {
+                setError("Email sau parolă incorectă!");
+                return;
             }
-            login(data);
-            if (userId != null) {
-                if (isTrainer) {
-                    navigate("/home-page-trainer");
-                } else {
-                    navigate("/home-page-parent");
-                }
+            if (isTrainer) {
+                setTrainerId(parentOrTrainerId);
+                navigate("/home-page-trainer");
             } else {
-                setError("Verifică dacă ai cont valid.");
+                setParentId(parentOrTrainerId);
+                navigate("/home-page-parent");
             }
+
         }
 
     };

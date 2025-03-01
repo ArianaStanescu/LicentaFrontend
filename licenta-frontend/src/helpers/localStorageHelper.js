@@ -1,40 +1,28 @@
-export const USER_DATA_KEY = 'userData';
-export const USER_EMAIL_KEY = 'userEmail';
+export const TRAINER_ID = 'trainerId';
+export const PARENT_ID = 'parentId';
 
-export const getUserEmail = () => {
-    return localStorage.getItem(USER_EMAIL_KEY);
+export const getTrainerId = () => {
+    return localStorage.getItem(TRAINER_ID);
 }
 
-export const setUserEmail = (email) => {
-    localStorage.setItem(USER_EMAIL_KEY, email);
+export const setTrainerId = (id) => {
+    localStorage.setItem(TRAINER_ID, id);
 }
 
-export const removeUserEmail = () => {
-    localStorage.removeItem(USER_EMAIL_KEY);
+export const clearTrainerId = () => {
+    localStorage.removeItem(TRAINER_ID);
 }
 
-export const getUserIdLocalStorage =  () => {
-    const userData = localStorage.getItem(USER_DATA_KEY);
-    if (userData === null) {
-        return null;
-    }
-    return JSON.parse(userData).id;
+export const getParentId = () => {
+    return localStorage.getItem(PARENT_ID);
 }
 
-export const getUserLocalStorage = () => {
-    const localUser = localStorage.getItem(USER_DATA_KEY);
-    if (localUser === null) {
-        return null;
-    }
-    return JSON.parse(localUser);
+export const setParentId = (id) => {
+    localStorage.setItem(PARENT_ID, id);
 }
 
-export const setUser = (userData) => {
-    localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
-}
-
-export const removeUser = () => {
-    localStorage.removeItem(USER_DATA_KEY);
+export const clearParentId = () => {
+    localStorage.removeItem(PARENT_ID);
 }
 
 export const setAccessToken = (accessToken) => {
@@ -53,7 +41,7 @@ export const getStoredRefreshToken = () => {
     return localStorage.getItem('refreshToken');
 }
 
-export const storeRefreshToken = (token) => {
+export const setRefreshToken = (token) => {
     localStorage.setItem('refreshToken', token);
 }
 
@@ -62,6 +50,12 @@ export const clearRefreshToken = () => {
 }
 
 export const clearStoredTokens = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    clearAccessToken();
+    clearRefreshToken();
 };
+
+export const clearTokensAndUsers = () => {
+    clearStoredTokens();
+    clearTrainerId();
+    clearParentId();
+}
