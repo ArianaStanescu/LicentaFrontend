@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {authenticate} from "../services/keycloak";
-import {setParentId, setTrainerId} from "../helpers/localStorageHelper";
+import {clearTokensAndUsers, setParentId, setTrainerId} from "../helpers/localStorageHelper";
 import {findByEmail} from "../api/findByEmail";
 
 export const LoginPage = () => {
@@ -33,17 +33,22 @@ export const LoginPage = () => {
         if (data?.error_description) {
             setError("Email sau parolă incorectă!");
         } else {
-            const parentOrTrainerId = await findByEmail(email, isTrainer);
-            if (parentOrTrainerId === null) {
-                setError("Email sau parolă incorectă!");
-                return;
-            }
-            if (isTrainer) {
-                setTrainerId(parentOrTrainerId);
-                navigate("/home-page-trainer");
-            } else {
-                setParentId(parentOrTrainerId);
-                navigate("/home-page-parent");
+            try {
+                const parentOrTrainerId = await findByEmail(email, isTrainer);
+                if (parentOrTrainerId === null) {
+                    setError("Email sau parolă incorectă!");
+                    clearTokensAndUsers();
+                    return;
+                }
+                if (isTrainer) {
+                    setTrainerId(parentOrTrainerId);
+                    navigate("/home-page-trainer");
+                } else {
+                    setParentId(parentOrTrainerId);
+                    navigate("/home-page-parent");
+                }
+            }catch(e) {
+                setError(e);
             }
 
         }
