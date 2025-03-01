@@ -50,7 +50,7 @@ export const clearAccessToken = () => {
 }
 
 export const getStoredRefreshToken = () => {
-    localStorage.getItem('refreshToken');
+    return localStorage.getItem('refreshToken');
 }
 
 export const storeRefreshToken = (token) => {
