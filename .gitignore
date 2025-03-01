@@ -1,0 +1,26 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+licenta-frontend/node_modules
+licenta-frontend/.pnp
+licenta-frontend/.pnp.js
+
+# testing
+licenta-frontend/coverage
+
+# production
+licenta-frontend/build
+
+# misc
+licenta-frontend/.DS_Store
+licenta-frontend/.env.local
+licenta-frontend/.env.development.local
+licenta-frontend/.env.test.local
+licenta-frontend/.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+#Webstorm
+.idea
