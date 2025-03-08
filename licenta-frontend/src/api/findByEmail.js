@@ -1,6 +1,5 @@
 import {BASE_URL, instance} from "./axiosInstance";
 
-
 export const findByEmail = async (email, isTrainer) => {
     const userRole = isTrainer ? "trainers" : "parents";
     const registerUrl = `${BASE_URL}/api/${userRole}/email/${email}`;
