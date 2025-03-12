@@ -1,54 +1,82 @@
-import {createContext, useContext, useEffect, useState} from "react";
-import {USER_DATA_KEY} from "../helpers/localStorageHelper";
-import {UserContext} from "./UserContextProvider";
+import {createContext} from "react";
+import {
+    clearTokensAndUsers,
+    getAccessToken,
+    getParentId,
+    getStoredRefreshToken,
+    getTrainerId
+} from "../helpers/localStorageHelper";
+import {jwtDecode} from "jwt-decode";
+import {refreshToken as refreshTokenFunction} from "../services/keycloak";
 
 export const AuthContext = createContext();
 
-export const AuthContextProvider  = ({children}) => {
-    const [user, setUser] = useState();
-    const {initUser, isTrainer} = useContext(UserContext);
+export const AuthContextProvider = ({children}) => {
+    const isLoggedIn = async () => {
+        if (await getValidAccessToken() && (getParentId() || getTrainerId())) {
+            return true;
+        }
+        return false;
+    }
 
-    useEffect(() => {
-        getUser();
-    }, []);
+    const isTrainer = () => {
+        return getTrainerId() !== null;
+    }
 
-    const getUser = () => {
-        try {
-            const userData = localStorage.getItem(USER_DATA_KEY);
+    const isParent = () => {
+        return getParentId() !== null;
+    }
 
-            if (userData) {
-                setUser(JSON.parse(userData));
+    const isRefreshTokenValid = () => {
+        const refreshToken = getStoredRefreshToken();
+        const accessToken = getAccessToken();
+
+        if (!refreshToken || !accessToken) {
+            return false;
+        }
+        const currentTime = Math.floor(Date.now() / 1000);
+        const refreshTokenExpiryDate = jwtDecode(refreshToken).exp;
+        return !(refreshTokenExpiryDate < currentTime);
+    }
+
+    const getValidAccessToken = async () => {
+        let accessToken = getAccessToken();
+        let refreshToken = getStoredRefreshToken();
+        if (accessToken && refreshToken) {
+            const currentTime = Math.floor(Date.now() / 1000);
+            const tokenExpiry = jwtDecode(accessToken).exp;
+
+            //if expired
+            if (tokenExpiry < currentTime) {
+                const refreshTokenExpiryDate = jwtDecode(refreshToken).exp;
+                if (refreshTokenExpiryDate < currentTime) {
+                    return null;
+                }
+                try {
+                    await refreshTokenFunction();
+                } catch (e) {
+                    return null;
+                }
+                return getAccessToken();
             }
-        } catch (error) {
-            console.log("Error getting user data from local storage: ", error);
+            return accessToken;
         }
-    };
-
-    const login = (userData) => {
-        try {
-            setUser(userData);
-            initUser();
-        } catch (error) {
-            console.log("Error setting user data in local storage: ", error);
-        }
-    };
+        return null;
+    }
 
     const logout = () => {
-        try {
-            setUser(null);
-            localStorage.removeItem(USER_DATA_KEY);
-        } catch (error) {
-            console.log("Error removing user data from local storage: ", error);
-        }
+        clearTokensAndUsers();
     };
 
     return (
         <AuthContext.Provider
             value={{
-                user,
-                login,
                 logout,
                 isTrainer,
+                isParent,
+                getValidAccessToken,
+                isRefreshTokenValid,
+                isLoggedIn,
             }}
         >
             {children}

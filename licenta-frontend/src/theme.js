@@ -43,6 +43,14 @@ const theme = createTheme({
                         backgroundColor: "#33cc33",
                     },
                 },
+                text: {
+                    backgroundColor: "transparent",
+                    color: "#5cd65c",
+                    "&:hover": {
+                        backgroundColor: "transparent",
+                        color: "#33cc33"
+                    }
+                }
             },
         },
         MuiTextField: {

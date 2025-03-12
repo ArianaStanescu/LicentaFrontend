@@ -1,6 +1,6 @@
 import {jwtDecode} from "jwt-decode";
 
-import {getStoredRefreshToken, storeToken, storeRefreshToken, setAccessToken} from "../helpers/localStorageHelper";
+import {getStoredRefreshToken, storeToken, setRefreshToken, setAccessToken} from "../helpers/localStorageHelper";
 
 export const KEYCLOAK_URL = 'http://localhost:8082/';
 export const KEYCLOAK_REALM = 'LicentaRealm';
@@ -45,9 +45,9 @@ export const refreshToken = async () => {
         throw new Error(data.error_description);
     }
 
-    await setAccessToken(data.access_token);
+    setAccessToken(data.access_token);
     if (data.refresh_token) {
-        await storeRefreshToken(data.refresh_token);
+        setRefreshToken(data.refresh_token);
     }
 
     return data.access_token;
@@ -70,7 +70,7 @@ export const authenticate = async (username, password, isAdmin = false) => {
         if (data.access_token) {
             await setAccessToken(data.access_token);
             if (data.refresh_token) {
-                await storeRefreshToken(data.refresh_token);
+                await setRefreshToken(data.refresh_token);
             }
 
             // This logic is specific to non-admin users, and follows the storage of tokens.
@@ -80,16 +80,10 @@ export const authenticate = async (username, password, isAdmin = false) => {
                 const lastName = decodedAccessToken.family_name;
                 const firstName = decodedAccessToken.given_name;
 
-                console.log("email:", email);
-                console.log("lastName:", lastName);
-                console.log("firstName:", firstName);
+                // console.log("email:", email);
+                // console.log("lastName:", lastName);
+                // console.log("firstName:", firstName);
 
-                // const playerIdFromApi = await fetchPlayerId(email, data.access_token);
-                // const foundedPlayer = await checkPlayerDetails(playerIdFromApi);
-                // await setPlayer(foundedPlayer);
-                // await setUserEmail(email);
-                // const singleTeamId = await fetchSingleTeamId(playerIdFromApi);
-                // await setSingleTeamId(singleTeamId.toString());
             }
         }
 

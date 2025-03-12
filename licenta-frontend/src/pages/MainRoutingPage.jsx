@@ -1,26 +1,27 @@
-import {Col, Row} from "react-bootstrap";
 import {useContext, useEffect} from "react";
-import {UserContext} from "../context/UserContextProvider";
-import { useNavigate} from "react-router-dom";
-import {Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {getParentId, getTrainerId} from "../helpers/localStorageHelper";
+import {AuthContext} from "../context/AuthContextProvider";
 
 const MainPage = () => {
     const navigate = useNavigate();
-    const {
-        isLoggedIn,
-    } = useContext(UserContext);
+    const {getValidAccessToken} = useContext(AuthContext);
+
+    const reroute = async () => {
+        if ((getTrainerId() || getParentId()) && await getValidAccessToken()) {
+            if (getTrainerId()) {
+                navigate("/home-page-trainer");
+            } else {
+                navigate("/home-page-parent");
+            }
+        } else {
+            navigate("/login");
+        }
+    }
 
     useEffect(() => {
-        console.log("Main");
-        // if (isLoggedIn) {
-        //     navigate("/home-page-parent");
-        // }
-        navigate("/login");
-    },[]);
-
-    return (
-        <Typography> Main routing page </Typography>
-    );
+        reroute();
+    }, []);
 };
 
 export default MainPage;
