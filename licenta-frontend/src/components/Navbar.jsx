@@ -1,37 +1,57 @@
 import React, {useState} from "react";
-import {AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Button, useMediaQuery} from "@mui/material";
+import {AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Button, useMediaQuery, Box} from "@mui/material";
 import {Menu as MenuIcon, Logout} from "@mui/icons-material";
+import {useNavigate} from "react-router-dom";
 
 export const Navbar = ({onLogout}) => {
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
+    const [desktopAnchorEl, setDesktopAnchorEl] = useState(null);
     const isMobile = useMediaQuery("(max-width:600px)");
+    const navigate = useNavigate();
 
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleMobileMenuOpen = (event) => {
+        setMobileAnchorEl(event.currentTarget);
     };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const handleMobileMenuClose = () => {
+        setMobileAnchorEl(null);
     };
+
+    const handleDesktopMenuOpen = (event) => {
+        setDesktopAnchorEl(event.currentTarget);
+    };
+
+    const handleDesktopMenuClose = () => {
+        setDesktopAnchorEl(null);
+    };
+
 
     return (
         <AppBar position="static">
             <Toolbar>
                 {isMobile ? (
                     <>
-                        <IconButton edge="start" color="inherit" onClick={handleMenuOpen}>
+                        <IconButton edge="start" color="inherit" onClick={handleMobileMenuOpen}>
                             <MenuIcon/>
                         </IconButton>
-                        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                        <Menu anchorEl={mobileAnchorEl} open={Boolean(mobileAnchorEl)} onClose={handleMobileMenuClose}>
+                            <MenuItem onClick= {() => { handleDesktopMenuClose(); navigate('/my-children'); }}>Vizualizare copii</MenuItem>
                             <MenuItem onClick={onLogout}><Logout/> Logout</MenuItem>
                         </Menu>
                     </>
                 ) : (
                     <>
-                        <Typography variant="h6" sx={{flexGrow: 1}}>
+                        <Box>
+                            <Button variant={'navigation-bar'} onClick={handleDesktopMenuOpen}>Meniu</Button>
+                            <Menu anchorEl={desktopAnchorEl} open={Boolean(desktopAnchorEl)} onClose={handleDesktopMenuClose}>
+                                <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/home-page-parent'); }}>Acasă</MenuItem>
+                                <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/my-children'); }}>Vizualizare copii</MenuItem>
+                            </Menu>
+                        </Box>
+                        <Typography variant="h6" sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
                             My App
                         </Typography>
-                        <Button color="inherit" startIcon={<Logout/>} onClick={onLogout}>
+                        <Button variant={'navigation-bar'} startIcon={<Logout/>} onClick={onLogout}>
                             Logout
                         </Button>
                     </>

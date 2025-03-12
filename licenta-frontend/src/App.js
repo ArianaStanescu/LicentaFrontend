@@ -9,11 +9,12 @@ import {HomePageTrainer} from "./pages/HomePageTrainer";
 import theme from "./theme";
 import {useContext} from "react";
 import {Navbar} from "./components/Navbar";
+import {MyChildren} from "./pages/MyChildren";
 
-const PrivateRoute = ({ customProps }) => {
-    const { isRefreshTokenValid, logout } = useContext(AuthContext);
+const PrivateRoute = ({customProps}) => {
+    const {isRefreshTokenValid, logout} = useContext(AuthContext);
 
-    return isRefreshTokenValid() ? <Outlet context={customProps} /> : <Navigate to="/" replace />;
+    return isRefreshTokenValid() ? <Outlet context={customProps}/> : <Navigate to="/" replace/>;
 };
 
 const App = () => {
@@ -49,8 +50,9 @@ const AuthWrapper = () => {
                 <Route exact path="/login" element={<LoginPage/>}/>
                 <Route exact path="/register" element={<RegisterPage/>}/>
                 <Route element={<PrivateRoute/>}>
-                <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
-                <Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>
+                    <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
+                    <Route exact path='/my-children' element={<MyChildren/>}/>
+                    <Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>
                 </Route>
             </Routes>
         </>

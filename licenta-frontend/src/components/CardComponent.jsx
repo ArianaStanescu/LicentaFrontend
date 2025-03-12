@@ -1,7 +1,10 @@
-import {Box, Card, CardContent, CardMedia, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardMedia, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 
-export const CardComponent = ({ title, description, category, price, minAge, maxAge, gender ,imageUrl }) => {
+export const CardComponent = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
+    const navigate = useNavigate();
+
     return (
         <Card
             sx={{
@@ -10,7 +13,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                 flexDirection: "row",
                 width: {xs: 300, sm: 600, md: 800},
                 maxWidth: {xs: "100%", sm: 600, md: 1000},
-                height: 170,
+                height: 200,
                 alignItems: "center",
             }}
         >
@@ -21,7 +24,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                     alt={title}
                     sx={{
                         height: "100%",
-                        width: 150,
+                        width: "25%",
                         objectFit: "cover",
                         backgroundColor: "black"
                     }}
@@ -30,7 +33,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                 <Box
                     sx={{
                         height: "100%",
-                        width: 150,
+                        width: "25%",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -39,7 +42,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                         fontSize: "14px",
                         fontWeight: "bold",
                         textAlign: "center",
-                        padding: "8px"
+                        padding: "8px",
                     }}
                 >
                     Imagine indisponibilă
@@ -61,7 +64,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                         variant="h6"
                         component="div"
                         sx={{
-                            fontSize: { xs: "1rem", md: "1.25rem" },
+                            fontSize: {xs: "1rem", md: "1.25rem"},
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis"
@@ -74,7 +77,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                         variant="body2"
                         component="div"
                         sx={{
-                            fontSize: { xs: "1rem", md: "1rem" },
+                            fontSize: {xs: "1rem", md: "1rem"},
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis"
@@ -87,7 +90,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                         variant="body2"
                         color="text.secondary"
                         sx={{
-                            fontSize: { xs: "0.85rem", md: "1rem" },
+                            fontSize: {xs: "0.85rem", md: "1rem"},
                             overflow: "hidden",
                             textOverflow: "ellipsis"
                         }}
@@ -98,7 +101,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                         variant="body2"
                         color="text.secondary"
                         sx={{
-                            fontSize: { xs: "0.85rem", md: "1rem" },
+                            fontSize: {xs: "0.85rem", md: "1rem"},
                             overflow: "hidden",
                             textOverflow: "ellipsis"
                         }}
@@ -110,7 +113,7 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                         variant="body2"
                         color="text.secondary"
                         sx={{
-                            fontSize: { xs: "0.85rem", md: "1rem" },
+                            fontSize: {xs: "0.85rem", md: "1rem"},
                             overflow: "hidden",
                             textOverflow: "ellipsis"
                         }}
@@ -119,17 +122,24 @@ export const CardComponent = ({ title, description, category, price, minAge, max
                     </Typography>
                 </Box>
 
-                <Box sx={{ alignSelf: "flex-end" }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 1 }}>
                     <Typography
                         variant="h6"
                         color="primary"
                         sx={{
-                            fontSize: { xs: "1rem", md: "1.25rem" },
+                            fontSize: {xs: "1rem", md: "1.25rem"},
                             fontWeight: "bold"
                         }}
                     >
                         {price} RON
                     </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate(`/view-ad/${id}`)}
+                    >
+                        Vizualizează
+                    </Button>
                 </Box>
             </CardContent>
         </Card>
