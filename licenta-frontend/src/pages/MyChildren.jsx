@@ -74,14 +74,14 @@ export const MyChildren = () => {
             <Typography variant="h4" gutterBottom>
                 Copiii mei
             </Typography>
-            <Grid2 container spacing={3}>
+            <Grid2 container spacing={3} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 {loading ? (
                     <CircularProgress />
                 ) : error ? (
                     <Alert severity="error">{error}</Alert>
                 ) : children.length > 0 ? (
                     children.map((child) => (
-                        <Grid2 item xs={12} sm={6} md={4} key={child.id}>
+                        <Grid2 item xs={12} sm={6} md={4} key={child.id} sx={{width: '100%'}}>
                             <Card>
                                 <CardContent>
                                     <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>

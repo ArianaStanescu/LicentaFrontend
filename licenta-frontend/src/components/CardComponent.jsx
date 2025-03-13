@@ -1,5 +1,6 @@
 import {Box, Button, Card, CardContent, CardMedia, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {ActivityCategory, Gender} from "../Enum";
 
 
 export const CardComponent = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
@@ -25,8 +26,9 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                     sx={{
                         height: "100%",
                         width: "25%",
-                        objectFit: "cover",
-                        backgroundColor: "black"
+                        // objectFit: "cover",
+                        // backgroundColor: "black",
+                        objectFit: "contain",
                     }}
                 />
             ) : (
@@ -43,6 +45,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                         fontWeight: "bold",
                         textAlign: "center",
                         padding: "8px",
+                        wordBreak: 'break-word',
                     }}
                 >
                     Imagine indisponibilă
@@ -83,7 +86,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                             textOverflow: "ellipsis"
                         }}
                     >
-                        {category.toLowerCase()}
+                        Categorie: {ActivityCategory[category]}
                     </Typography>
 
                     <Typography
@@ -106,7 +109,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                             textOverflow: "ellipsis"
                         }}
                     >
-                        {minAge} - {maxAge} years
+                        Interval de vârstă: {minAge} - {maxAge} ani
                     </Typography>
 
                     <Typography
@@ -118,7 +121,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                             textOverflow: "ellipsis"
                         }}
                     >
-                        {gender.toLowerCase()}
+                        Gen: {Gender[gender]}
                     </Typography>
                 </Box>
 

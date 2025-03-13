@@ -104,11 +104,14 @@ export const HomePageParent = () => {
                         flexWrap: "wrap",
                         flexDirection: "column",
                         alignItems: "center",
-                        justifyContent: "center"
+                        justifyContent: "center",
+                        flex: "auto",
                     }}
                 >
                     {loading ? (
-                        <CircularProgress/>
+                        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", left: 120, transform: "translateX(-50%)" }}>
+                            <CircularProgress />
+                        </Box>
                     ) : error ? (
                         <Alert severity="error">{error}</Alert>
                     ) : (
