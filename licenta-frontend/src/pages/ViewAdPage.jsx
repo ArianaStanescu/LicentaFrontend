@@ -1,37 +1,19 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Card, CardContent, Typography, CircularProgress, Box, Button} from "@mui/material";
+import {Typography, CircularProgress, Box, Button} from "@mui/material";
 import {getAd} from "../api/ads/getAd";
-import {CardComponent} from "../components/CardComponent";
 import {getAdImage} from "../api/ads/getAdImage";
 import {ActivityCategory, Gender} from "../Enum";
-
-export const calculateAge = (birthDate) => {
-    if (!birthDate) return "";
-
-    const birth = new Date(birthDate);
-    const today = new Date();
-
-    let age = today.getFullYear() - birth.getFullYear();
-
-    const monthDiff = today.getMonth() - birth.getMonth();
-    const dayDiff = today.getDate() - birth.getDate();
-
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        age--;
-    }
-
-    if (age < 0) return "Dată invalidă";
-
-    return age;
-};
+import {ChildrenPopup} from "../components/ChildrenPopup";
+import {calculateAge} from "../helpers/calculateAge";
 
 export const ViewAdPage = () => {
-    const {id} = useParams(); // Obține ID-ul din URL
+    const {id} = useParams();
     const [ad, setAd] = useState(null);
     const [trainer, setTrainer] = useState(null);
     const [adImage, setAdImage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [popupOpen, setPopupOpen] = useState(false);
 
     useEffect(() => {
         const fetchAd = async () => {
@@ -213,7 +195,7 @@ export const ViewAdPage = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        // onClick={}
+                        onClick={() => setPopupOpen(true)}
                     >
                         Înscriere
                     </Button>
@@ -280,6 +262,7 @@ export const ViewAdPage = () => {
                         Telefon: {trainer ? trainer.phoneNumber : ''}
                     </Typography>
                 </Box>
+                <ChildrenPopup open={popupOpen} onClose={() => setPopupOpen(false)} />
             </Box>
         </Box>
     );

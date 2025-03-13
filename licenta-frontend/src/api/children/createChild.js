@@ -11,7 +11,7 @@ export const createChild = async (parentId, childData) => {
             return { success: true};
         }
     } catch (error) {
-        console.error(`Error fetching children for parent with id ${parentId}:`, error);
+        console.error(`Error creating child for parent with id ${parentId}:`, error);
         return null;
     }
 };
