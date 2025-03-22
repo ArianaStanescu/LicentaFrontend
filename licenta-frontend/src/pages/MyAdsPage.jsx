@@ -109,16 +109,14 @@ export const MyAdsPage = () => {
     return (
         <Box sx={{padding: 2}}>
             <Grid2 container spacing={2}>
-                <Grid2 item xs={12} sm={4} md={3}>
+                <Grid2 xs={12} sm={4} md={3}>
                     <FilterMenu onFilterChange={handleFilterChange}/>
                 </Grid2>
 
                 <Grid2
-                    item
                     xs={12}
                     sm={8}
                     md={9}
-                    container
                     spacing={2}
                     sx={{
                         display: "flex",
@@ -189,12 +187,12 @@ export const MyAdsPage = () => {
                         ads.length > 0 ? (
                             <>
                                 {ads.map((ad, index) => (
-                                    <Grid2 item xs={12} sm={6} md={4} key={ad.id}>
+                                    <Grid2 xs={12} sm={6} md={4} key={ad.id}>
                                         <CardComponent {...ad} imageUrl={images[ad.id]}/>
                                     </Grid2>
                                 ))}
 
-                                <Grid2 item xs={12}
+                                <Grid2 xs={12}
                                        sx={{
                                            display: "flex",
                                            justifyContent: "space-between",
