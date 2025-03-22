@@ -1,10 +1,20 @@
-import React, {useEffect, useState} from "react";
-import {AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Button, useMediaQuery, Box} from "@mui/material";
-import {Menu as MenuIcon, Logout} from "@mui/icons-material";
-import {useNavigate} from "react-router-dom";
-import {isTrainer} from "../context/AuthContextProvider";
+import React, { useEffect, useState } from "react";
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Typography,
+    Menu,
+    MenuItem,
+    Button,
+    useMediaQuery,
+    Box
+} from "@mui/material";
+import { Menu as MenuIcon, Logout } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { isTrainer } from "../context/AuthContextProvider";
 
-export const Navbar = ({onLogout}) => {
+export const Navbar = ({ onLogout }) => {
     const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
     const [desktopAnchorEl, setDesktopAnchorEl] = useState(null);
     const [userRole, setUserRole] = useState(null);
@@ -12,30 +22,50 @@ export const Navbar = ({onLogout}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isTrainer()) {
-            setUserRole("trainer");
-        } else{
-            setUserRole("parent");
-        }
+        setUserRole(isTrainer() ? "trainer" : "parent");
     }, []);
 
+    const handleMobileMenuOpen = (event) => setMobileAnchorEl(event.currentTarget);
+    const handleMobileMenuClose = () => setMobileAnchorEl(null);
 
-    const handleMobileMenuOpen = (event) => {
-        setMobileAnchorEl(event.currentTarget);
+    const handleDesktopMenuOpen = (event) => setDesktopAnchorEl(event.currentTarget);
+    const handleDesktopMenuClose = () => setDesktopAnchorEl(null);
+
+    const handleNavigate = (path, closeFn) => {
+        closeFn();
+        navigate(path);
     };
 
-    const handleMobileMenuClose = () => {
-        setMobileAnchorEl(null);
-    };
+    const renderMenuItems = (closeFn, isMobileMenu) => {
+        const items = [];
 
-    const handleDesktopMenuOpen = (event) => {
-        setDesktopAnchorEl(event.currentTarget);
-    };
+        if (userRole === "parent") {
+            items.push(
+                <MenuItem key="home-parent" onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
+                <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare copii</MenuItem>,
+                <MenuItem key="parent-profile" onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul meu</MenuItem>
+            );
+        }
 
-    const handleDesktopMenuClose = () => {
-        setDesktopAnchorEl(null);
-    };
+        if (userRole === "trainer") {
+            items.push(
+                <MenuItem key="trainer-courses" onClick={() => handleNavigate('/trainer-courses', closeFn)}>Activitățile mele</MenuItem>,
+                <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile mele</MenuItem>,
+                <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele mele</MenuItem>,
+                <MenuItem key="trainer-profile" onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul meu</MenuItem>
+            );
+        }
 
+        if (isMobileMenu) {
+            items.push(
+                <MenuItem key="logout" onClick={onLogout}>
+                    <Logout /> Logout
+                </MenuItem>
+            );
+        }
+
+        return items;
+    };
 
     return (
         <AppBar position="static">
@@ -43,45 +73,26 @@ export const Navbar = ({onLogout}) => {
                 {isMobile ? (
                     <>
                         <IconButton edge="start" color="inherit" onClick={handleMobileMenuOpen}>
-                            <MenuIcon/>
+                            <MenuIcon />
                         </IconButton>
-                        <Menu anchorEl={mobileAnchorEl} open={Boolean(mobileAnchorEl)} onClose={handleMobileMenuClose}>
-                            {userRole === "parent" ? (
-                                <>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/home-page-parent'); }}>Acasă</MenuItem>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/my-children'); }}>Vizualizare copii</MenuItem>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/parent-profile'); }}>Profilul meu</MenuItem>
-                                </>
-                            ) : (
-                                <>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/trainer-courses'); }}>Activitățile mele</MenuItem>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/trainer-courses'); }}>Anunțurile mele</MenuItem>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/trainer-courses'); }}>Grupelee mele</MenuItem>
-                                    <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/trainer-profile'); }}>Profilul meu</MenuItem>
-                                </>
-                            )}
-                            <MenuItem onClick={onLogout}><Logout/> Logout</MenuItem>
+                        <Menu
+                            anchorEl={mobileAnchorEl}
+                            open={Boolean(mobileAnchorEl)}
+                            onClose={handleMobileMenuClose}
+                        >
+                            {renderMenuItems(handleMobileMenuClose, true)}
                         </Menu>
                     </>
                 ) : (
                     <>
                         <Box>
-                            <Button variant={'navigation-bar'} onClick={handleDesktopMenuOpen}>Meniu</Button>
-                            <Menu anchorEl={desktopAnchorEl} open={Boolean(desktopAnchorEl)} onClose={handleDesktopMenuClose}>
-                                {userRole === "parent" ? (
-                                    <>
-                                        <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/home-page-parent'); }}>Acasă</MenuItem>
-                                        <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/my-children'); }}>Vizualizare copii</MenuItem>
-                                        <MenuItem onClick={() => { handleMobileMenuClose(); navigate('/parent-profile'); }}>Profilul meu</MenuItem>
-                                    </>
-                                ) : (
-                                    <>
-                                        <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/my-groups'); }}>Grupele mele</MenuItem>
-                                        <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/my-ads'); }}>Anunțurile mele</MenuItem>
-                                        <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/trainer-courses'); }}>Activitățile mele</MenuItem>
-                                        <MenuItem onClick={() => { handleDesktopMenuClose(); navigate('/trainer-profile'); }}>Profilul meu</MenuItem>
-                                    </>
-                                )}
+                            <Button variant="navigation-bar" onClick={handleDesktopMenuOpen}>Meniu</Button>
+                            <Menu
+                                anchorEl={desktopAnchorEl}
+                                open={Boolean(desktopAnchorEl)}
+                                onClose={handleDesktopMenuClose}
+                            >
+                                {renderMenuItems(handleDesktopMenuClose)}
                             </Menu>
                         </Box>
                         <Typography variant="h6" sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>

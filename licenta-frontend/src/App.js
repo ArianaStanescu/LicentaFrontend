@@ -56,7 +56,7 @@ const AuthWrapper = () => {
                     <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
                     <Route exact path="/view-ad/:id" element={<ViewAdPage/>} />
                     <Route exact path='/my-children' element={<MyChildren/>}/>
-                    {/*trainer router*/}
+                    {/*trainer routes*/}
                     <Route exact path="/my-groups" element={<MyGroupsPage/>}/>
                     <Route exact path="/my-ads" element={<MyAdsPage/>}/>
                     {/*<Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>*/}
