@@ -4,12 +4,15 @@ import {ActivityCategory, Gender} from "../Enum";
 
 export const FilterMenu = ({onFilterChange}) => {
     const initialFilters = {
+        title: "",
         category: "",
         minAge: "",
         maxAge: "",
         gender: "",
         minPrice: "",
-        maxPrice: ""
+        maxPrice: "",
+        sortBy: "id",
+        sortDirection: "desc",
     };
 
     const [filters, setFilters] = useState(initialFilters);

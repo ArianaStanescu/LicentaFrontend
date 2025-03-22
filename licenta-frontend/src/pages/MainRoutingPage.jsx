@@ -10,7 +10,8 @@ const MainPage = () => {
     const reroute = async () => {
         if ((getTrainerId() || getParentId()) && await getValidAccessToken()) {
             if (getTrainerId()) {
-                navigate("/home-page-trainer");
+                // navigate("/home-page-trainer");
+                navigate("/my-groups");
             } else {
                 navigate("/home-page-parent");
             }

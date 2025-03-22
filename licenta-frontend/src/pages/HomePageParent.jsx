@@ -2,9 +2,20 @@ import {useEffect, useState} from "react";
 import Grid2 from "@mui/material/Grid2";
 import {FilterMenu} from "../components/FilterMenu";
 import {CardComponent} from "../components/CardComponent";
-import {Alert, Box, CircularProgress, Button} from "@mui/material";
+import {
+    Alert,
+    Box,
+    CircularProgress,
+    Button,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    TextField
+} from "@mui/material";
 import {search} from "../api/ads/search";
 import {getAdImage} from "../api/ads/getAdImage";
+import {ArrowBack, ArrowForward} from "@mui/icons-material";
 
 export const HomePageParent = () => {
     const [ads, setAds] = useState([]);
@@ -14,7 +25,7 @@ export const HomePageParent = () => {
     const [hasNextPage, setHasNextPage] = useState(true);
 
     const [filters, setFilters] = useState({
-        // title: "",
+        title: "",
         category: "",
         minAge: "",
         maxAge: "",
@@ -23,7 +34,8 @@ export const HomePageParent = () => {
         maxPrice: "",
         pageNumber: 0,
         pageSize: 5,
-        // sortDirection: "desc"
+        sortBy: "id",
+        sortDirection: "desc"
     });
 
     const fetchAds = async () => {
@@ -52,7 +64,6 @@ export const HomePageParent = () => {
         }
     };
 
-
     useEffect(() => {
         fetchAds();
     }, [filters]);
@@ -65,8 +76,15 @@ export const HomePageParent = () => {
         });
     }, [ads]);
 
+    // const handleFilterChange = (newFilters) => {
+    //     setFilters({...newFilters, pageNumber: 0, pageSize: 5});
+    // };
     const handleFilterChange = (newFilters) => {
-        setFilters({...newFilters, pageNumber: 0, pageSize: 5});
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            ...newFilters,
+            pageNumber: 0
+        }));
     };
 
     const handlePreviousPage = () => {
@@ -108,12 +126,62 @@ export const HomePageParent = () => {
                         flex: "auto",
                     }}
                 >
+                    <Box sx={{
+                        display: "flex",
+                        gap: 2,
+                        mb: 2,
+                        paddingTop: '16px',
+                        justifyContent: {xs: "center", md: "flex-start"},
+                        width: "100%"
+                    }}>
+                        <TextField
+                            label="Căutare"
+                            value={filters.title}
+                            onChange={(e) => handleFilterChange({title: e.target.value})}
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <FormControl fullWidth variant="outlined">
+                            <InputLabel sx={{backgroundColor: "white", px: 1}}>Sortare după</InputLabel>
+                            <Select
+                                value={filters.sortBy}
+                                onChange={(e) => handleFilterChange({sortBy: e.target.value})}
+                            >
+                                <MenuItem value="id">Cele mai recente</MenuItem>
+                                <MenuItem value="price">Preț</MenuItem>
+                                <MenuItem value="title">Titlu</MenuItem>
+                                <MenuItem value="category">Categorie</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth variant="outlined">
+                            <InputLabel sx={{backgroundColor: "white", px: 1}}>Direcție</InputLabel>
+                            <Select
+                                value={filters.sortDirection}
+                                onChange={(e) => handleFilterChange({sortDirection: e.target.value})}
+                            >
+                                <MenuItem value="asc">Crescător</MenuItem>
+                                <MenuItem value="desc">Descrescător</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
                     {loading ? (
-                        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", left: 120, transform: "translateX(-50%)" }}>
-                            <CircularProgress />
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100vh",
+                            left: 120,
+                            transform: "translateX(-50%)"
+                        }}>
+                            <CircularProgress/>
                         </Box>
                     ) : error ? (
-                        <Alert severity="error">{error}</Alert>
+                        <Box sx={{
+                            minHeight: {xs: "auto", md: "600px"}
+                        }}>
+                            <Alert severity="error">{error}</Alert>
+                        </Box>
                     ) : (
                         ads.length > 0 ? (
                             <>
@@ -124,26 +192,42 @@ export const HomePageParent = () => {
                                 ))}
 
                                 <Grid2 item xs={12}
-                                       sx={{display: "flex", justifyContent: "space-between", mt: 3, gap: 8}}>
+                                       sx={{
+                                           display: "flex",
+                                           justifyContent: "space-between",
+                                           mt: 3,
+                                           gap: {xs: "auto", sm: 6},
+                                       }}>
                                     <Button
                                         variant="text"
                                         onClick={handlePreviousPage}
                                         disabled={filters.pageNumber === 0}
+                                        startIcon={<ArrowBack/>}
                                     >
-                                        Pagina anterioară
+                                        Înapoi
                                     </Button>
-
+                                    <Box sx={{
+                                        fontSize: "1.2rem", fontWeight: "bold",
+                                        textAlign: "center", display: "flex", alignItems: "center"
+                                    }}>
+                                        Pagina {filters.pageNumber + 1}
+                                    </Box>
                                     <Button
                                         variant="text"
                                         onClick={handleNextPage}
                                         disabled={!hasNextPage}
+                                        endIcon={<ArrowForward/>}
                                     >
-                                        Pagina următoare
+                                        Înainte
                                     </Button>
                                 </Grid2>
                             </>
                         ) : (
-                            <Alert severity="info">Niciun anunț găsit!</Alert>
+                            <Box sx={{
+                                minHeight: {xs: "auto", md: "600px"}
+                            }}>
+                                <Alert severity="info">Niciun anunț găsit!</Alert>
+                            </Box>
                         )
                     )}
                 </Grid2>

@@ -6,6 +6,8 @@ import {getAdImage} from "../api/ads/getAdImage";
 import {ActivityCategory, Gender} from "../Enum";
 import {ChildrenPopup} from "../components/ChildrenPopup";
 import {calculateAge} from "../helpers/calculateAge";
+import {isTrainer} from "../context/AuthContextProvider";
+import {EnrollmentRequestsPopup} from "../components/EnrollmentRequestsPopup";
 
 export const ViewAdPage = () => {
     const {id} = useParams();
@@ -14,6 +16,8 @@ export const ViewAdPage = () => {
     const [adImage, setAdImage] = useState(null);
     const [loading, setLoading] = useState(true);
     const [popupOpen, setPopupOpen] = useState(false);
+    const [enrollmentRequestsPopupOpen, setEnrollmentRequestsPopupOpen] = useState(false);
+    const userIsTrainer = isTrainer();
 
     useEffect(() => {
         const fetchAd = async () => {
@@ -192,13 +196,24 @@ export const ViewAdPage = () => {
                         {ad.price} RON
                     </Typography>
 
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setPopupOpen(true)}
-                    >
-                        Înscriere
-                    </Button>
+                    {!userIsTrainer &&
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => setPopupOpen(true)}
+                        >
+                            Înscriere
+                        </Button>
+                    }
+                    {userIsTrainer &&
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => setEnrollmentRequestsPopupOpen(true)}
+                        >
+                            Vizualizează cereri de înscriere
+                        </Button>
+                    }
                 </Box>
 
                 <Box>
@@ -262,7 +277,8 @@ export const ViewAdPage = () => {
                         Telefon: {trainer ? trainer.phoneNumber : ''}
                     </Typography>
                 </Box>
-                <ChildrenPopup open={popupOpen} onClose={() => setPopupOpen(false)} />
+                <ChildrenPopup open={popupOpen} onClose={() => setPopupOpen(false)}/>
+                <EnrollmentRequestsPopup open={enrollmentRequestsPopupOpen} onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
             </Box>
         </Box>
     );
