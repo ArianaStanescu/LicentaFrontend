@@ -2,7 +2,7 @@ import {Card, CardContent, Typography, Box, Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {ActivityCategory, Gender} from "../Enum";
 
-export const ActivityCard = ({id, title, description, category, gender}) => {
+export const ActivityCard = ({id, title, description, category, gender, onEdit}) => {
     const navigate = useNavigate();
 
     return (
@@ -29,7 +29,13 @@ export const ActivityCard = ({id, title, description, category, gender}) => {
                 <Button
                     size="small"
                     variant="text"
-                    onClick={() => navigate(`/activities/edit/${id}`)}
+                    onClick={() => onEdit({
+                        id,
+                        title,
+                        description,
+                        category,
+                        gender,
+                    })}
                 >
                     Editează
                 </Button>
