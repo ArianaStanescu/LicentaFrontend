@@ -11,6 +11,7 @@ export const FilterMenu = ({onFilterChange}) => {
         gender: "",
         minPrice: "",
         maxPrice: "",
+        status: 'ACTIVE',
         sortBy: "id",
         sortDirection: "desc",
     };

@@ -5,7 +5,6 @@ import {CardComponent} from "../components/CardComponent";
 import {
     Alert,
     Box,
-    CircularProgress,
     Button,
     FormControl,
     InputLabel,
@@ -20,7 +19,6 @@ import {ArrowBack, ArrowForward} from "@mui/icons-material";
 export const HomePageParent = () => {
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [hasNextPage, setHasNextPage] = useState(true);
 
@@ -32,6 +30,7 @@ export const HomePageParent = () => {
         gender: "",
         minPrice: "",
         maxPrice: "",
+        status: 'ACTIVE',
         pageNumber: 0,
         pageSize: 5,
         sortBy: "id",
@@ -39,7 +38,6 @@ export const HomePageParent = () => {
     });
 
     const fetchAds = async () => {
-        setLoading(true);
         setError(null);
         try {
             const ads = await search(filters);
@@ -47,8 +45,6 @@ export const HomePageParent = () => {
             setHasNextPage(ads.length === filters.pageSize);
         } catch (err) {
             setError("Failed to load ads. Please try again.");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -165,18 +161,7 @@ export const HomePageParent = () => {
                             </Select>
                         </FormControl>
                     </Box>
-                    {loading ? (
-                        <Box sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100vh",
-                            left: 120,
-                            transform: "translateX(-50%)"
-                        }}>
-                            <CircularProgress/>
-                        </Box>
-                    ) : error ? (
+                    {error ? (
                         <Box sx={{
                             minHeight: {xs: "auto", md: "600px"}
                         }}>

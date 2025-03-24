@@ -8,6 +8,7 @@ import {ChildrenPopup} from "../components/ChildrenPopup";
 import {calculateAge} from "../helpers/calculateAge";
 import {isTrainer} from "../context/AuthContextProvider";
 import {EnrollmentRequestsPopup} from "../components/EnrollmentRequestsPopup";
+import {createGroup} from "../api/group/createGroup";
 
 export const ViewAdPage = () => {
     const {id} = useParams();
@@ -196,7 +197,7 @@ export const ViewAdPage = () => {
                         {ad.price} RON
                     </Typography>
 
-                    {!userIsTrainer &&
+                    {!userIsTrainer && ad.status === 'ACTIVE' &&
                         <Button
                             variant="contained"
                             color="primary"
@@ -205,7 +206,31 @@ export const ViewAdPage = () => {
                             Înscriere
                         </Button>
                     }
-                    {userIsTrainer &&
+                    {!userIsTrainer && ad.status === 'PENDING' &&
+                        <Typography
+                            variant="h6"
+                            color="primary"
+                            sx={{
+                                fontSize: {xs: "1rem"},
+                                fontWeight: "bold"
+                            }}
+                        >
+                            Cererile de înscriere sunt în curs de procesare
+                        </Typography>
+                    }
+                    {!userIsTrainer && ad.status === 'COMPLETED' &&
+                        <Typography
+                            variant="h6"
+                            color="primary"
+                            sx={{
+                                fontSize: {xs: "1rem"},
+                                fontWeight: "bold"
+                            }}
+                        >
+                            Anunțul a fost închis
+                        </Typography>
+                    }
+                    {userIsTrainer && ad.status === 'ACTIVE' &&
                         <Button
                             variant="contained"
                             color="primary"
@@ -213,6 +238,36 @@ export const ViewAdPage = () => {
                         >
                             Vizualizează cereri de înscriere
                         </Button>
+                    }
+                    {userIsTrainer && ad.status === 'PENDING' &&
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => createGroup(ad.activity.id, ad.id)}
+                        >
+                            Creează grupă
+                        </Button>
+                    }
+                    {userIsTrainer && ad.status === 'COMPLETED' &&
+                        <Box>
+                            <Typography
+                                variant="h6"
+                                color="primary"
+                                sx={{
+                                    fontSize: {xs: "1rem"},
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                Anunțul a fost închis
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                // onClick={}
+                            >
+                                Vizualizare grupă
+                            </Button>
+                        </Box>
                     }
                 </Box>
 
@@ -278,7 +333,8 @@ export const ViewAdPage = () => {
                     </Typography>
                 </Box>
                 <ChildrenPopup open={popupOpen} onClose={() => setPopupOpen(false)}/>
-                <EnrollmentRequestsPopup open={enrollmentRequestsPopupOpen} onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
+                <EnrollmentRequestsPopup open={enrollmentRequestsPopupOpen}
+                                         onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
             </Box>
         </Box>
     );

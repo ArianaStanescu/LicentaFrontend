@@ -1,11 +1,9 @@
 import {useEffect, useState} from "react";
-import {search} from "../api/ads/search";
 import {getAdImage} from "../api/ads/getAdImage";
 import {
     Alert,
     Box,
     Button,
-    CircularProgress,
     FormControl,
     InputLabel,
     MenuItem,
@@ -22,7 +20,6 @@ import {searchByTrainerId} from "../api/ads/searchByTrainerId";
 export const MyAdsPage = () => {
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [hasNextPage, setHasNextPage] = useState(true);
     const trainerId = getTrainerId();
@@ -35,6 +32,7 @@ export const MyAdsPage = () => {
         gender: "",
         minPrice: "",
         maxPrice: "",
+        status: 'ACTIVE',
         pageNumber: 0,
         pageSize: 5,
         sortBy: "id",
@@ -42,7 +40,6 @@ export const MyAdsPage = () => {
     });
 
     const fetchAds = async () => {
-        setLoading(true);
         setError(null);
         try {
             const ads = await searchByTrainerId(trainerId, filters);
@@ -50,8 +47,6 @@ export const MyAdsPage = () => {
             setHasNextPage(ads.length === filters.pageSize);
         } catch (err) {
             setError("Failed to load ads. Please try again.");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -166,18 +161,7 @@ export const MyAdsPage = () => {
                             </Select>
                         </FormControl>
                     </Box>
-                    {loading ? (
-                        <Box sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100vh",
-                            left: 120,
-                            transform: "translateX(-50%)"
-                        }}>
-                            <CircularProgress/>
-                        </Box>
-                    ) : error ? (
+                    {error ? (
                         <Box sx={{
                             minHeight: {xs: "auto", md: "600px"}
                         }}>
