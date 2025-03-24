@@ -60,7 +60,6 @@ export const MyChildren = () => {
                 return;
             }
 
-            console.log("Copil adăugat cu succes!");
             fetchChildren();
             handleClose();
         } catch (err) {

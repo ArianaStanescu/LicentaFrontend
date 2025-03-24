@@ -49,7 +49,7 @@ export const Navbar = ({ onLogout }) => {
 
         if (userRole === "trainer") {
             items.push(
-                <MenuItem key="trainer-courses" onClick={() => handleNavigate('/trainer-courses', closeFn)}>Activitățile mele</MenuItem>,
+                <MenuItem key="my-activities" onClick={() => handleNavigate('/my-activities', closeFn)}>Activitățile mele</MenuItem>,
                 <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile mele</MenuItem>,
                 <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele mele</MenuItem>,
                 <MenuItem key="trainer-profile" onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul meu</MenuItem>

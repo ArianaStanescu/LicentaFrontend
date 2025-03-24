@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import {FilterMenu} from "../components/FilterMenu";
-import {CardComponent} from "../components/CardComponent";
+import {AdCard} from "../components/AdCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 import {getTrainerId} from "../helpers/localStorageHelper";
 import {searchByTrainerId} from "../api/ads/searchByTrainerId";
@@ -172,7 +172,7 @@ export const MyAdsPage = () => {
                             <>
                                 {ads.map((ad, index) => (
                                     <Grid2 xs={12} sm={6} md={4} key={ad.id}>
-                                        <CardComponent {...ad} imageUrl={images[ad.id]}/>
+                                        <AdCard {...ad} imageUrl={images[ad.id]}/>
                                     </Grid2>
                                 ))}
 

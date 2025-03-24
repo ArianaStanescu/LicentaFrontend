@@ -2,7 +2,7 @@ import {Box, Button, Card, CardContent, CardMedia, Typography} from "@mui/materi
 import {useNavigate} from "react-router-dom";
 import {ActivityCategory, Gender} from "../Enum";
 
-export const CardComponent = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
+export const AdCard = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
     const navigate = useNavigate();
 
     return (

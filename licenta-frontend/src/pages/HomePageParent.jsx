@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import Grid2 from "@mui/material/Grid2";
 import {FilterMenu} from "../components/FilterMenu";
-import {CardComponent} from "../components/CardComponent";
+import {AdCard} from "../components/AdCard";
 import {
     Alert,
     Box,
@@ -172,7 +172,7 @@ export const HomePageParent = () => {
                             <>
                                 {ads.map((ad, index) => (
                                     <Grid2 item xs={12} sm={6} md={4} key={ad.id}>
-                                        <CardComponent {...ad} imageUrl={images[ad.id]}/>
+                                        <AdCard {...ad} imageUrl={images[ad.id]}/>
                                     </Grid2>
                                 ))}
 

@@ -13,6 +13,7 @@ import {MyChildren} from "./pages/MyChildren";
 import {ViewAdPage} from "./pages/ViewAdPage";
 import {MyGroupsPage} from "./pages/MyGroupsPage";
 import {MyAdsPage} from "./pages/MyAdsPage";
+import {MyActivitiesPage} from "./pages/MyActivitiesPage";
 
 const PrivateRoute = ({customProps}) => {
     const {isRefreshTokenValid, logout} = useContext(AuthContext);
@@ -58,6 +59,7 @@ const AuthWrapper = () => {
                     <Route exact path='/my-children' element={<MyChildren/>}/>
                     {/*trainer routes*/}
                     <Route exact path="/my-groups" element={<MyGroupsPage/>}/>
+                    <Route exact path="/my-activities" element={<MyActivitiesPage/>}/>
                     <Route exact path="/my-ads" element={<MyAdsPage/>}/>
                     {/*<Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>*/}
                 </Route>
