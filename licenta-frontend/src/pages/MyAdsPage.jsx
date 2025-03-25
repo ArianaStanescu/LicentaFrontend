@@ -3,7 +3,7 @@ import {getAdImage} from "../api/ads/getAdImage";
 import {
     Alert,
     Box,
-    Button,
+    Button, Dialog, DialogActions, DialogContent, DialogTitle,
     FormControl,
     InputLabel,
     MenuItem,
@@ -16,6 +16,9 @@ import {AdCard} from "../components/AdCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 import {getTrainerId} from "../helpers/localStorageHelper";
 import {searchByTrainerId} from "../api/ads/searchByTrainerId";
+import {getActivities} from "../api/activities/getActivities";
+import {Weekday} from "../Enum";
+import {createAd} from "../api/ads/createAd";
 
 export const MyAdsPage = () => {
     const [ads, setAds] = useState([]);
@@ -23,7 +26,19 @@ export const MyAdsPage = () => {
     const [error, setError] = useState(null);
     const [hasNextPage, setHasNextPage] = useState(true);
     const trainerId = getTrainerId();
-
+    const [openAdDialog, setOpenAdDialog] = useState(false);
+    const [dropdownActivities, setDropdownActivities] = useState([]);
+    const [newAd, setNewAd] = useState({
+        activityId: "",
+        price: "",
+        minAge: "",
+        maxAge: "",
+        totalSpots: "",
+        startDate: "",
+        endDate: "",
+        activityDays: [],
+        image: null,
+    });
     const [filters, setFilters] = useState({
         title: "",
         category: "",
@@ -74,6 +89,15 @@ export const MyAdsPage = () => {
         });
     }, [ads]);
 
+    const fetchDropdownActivities = async () => {
+        try {
+            const data = await getActivities(getTrainerId());
+            setDropdownActivities(data || []);
+        } catch (err) {
+            console.error("Eroare la încărcarea activităților pentru dropdown:", err);
+        }
+    };
+
     // const handleFilterChange = (newFilters) => {
     //     setFilters({...newFilters, pageNumber: 0, pageSize: 5});
     // };
@@ -98,6 +122,70 @@ export const MyAdsPage = () => {
                 ...filters,
                 pageNumber: filters.pageNumber + 1
             });
+        }
+    };
+
+    const handleOpenAdDialog = () => {
+        setNewAd({
+            activityId: "",
+            price: "",
+            minAge: "",
+            maxAge: "",
+            totalSpots: "",
+            startDate: "",
+            endDate: "",
+            activityDays: [],
+            image: null,
+        });
+        fetchDropdownActivities();
+        setOpenAdDialog(true);
+    };
+
+    const handleCloseAdDialog = () => {
+        setOpenAdDialog(false);
+    };
+
+    const handleAdChange = (e) => {
+        const { name, value, type } = e.target;
+        setNewAd((prev) => ({
+            ...prev,
+            [name]: type === "number" ? Number(value) : value,
+        }));
+    };
+
+    const handleActivityDaysChange = (e) => {
+        setNewAd((prev) => ({
+            ...prev,
+            activityDays: e.target.value,
+        }));
+    };
+
+    const handleImageUpload = (e) => {
+        setNewAd((prev) => ({
+            ...prev,
+            image: e.target.files[0],
+        }));
+    };
+
+    const handleAdSubmit = async () => {
+        if (!newAd.activityId) {
+            setError("Selectează o activitate.");
+            return;
+        }
+
+        try {
+            console.log(newAd);
+            const response = await createAd(newAd.activityId, newAd);
+
+            if (!response.success) {
+                setError(response.error || "Anunțul nu a fost salvat.");
+                return;
+            }
+
+            setOpenAdDialog(false);
+            fetchAds();
+        } catch (err) {
+            setError("A apărut o eroare la salvarea anunțului.");
         }
     };
 
@@ -128,7 +216,8 @@ export const MyAdsPage = () => {
                         mb: 2,
                         paddingTop: '16px',
                         justifyContent: {xs: "center", md: "flex-start"},
-                        width: "100%"
+                        width: "100%",
+                        alignItems: "center",
                     }}>
                         <TextField
                             label="Căutare"
@@ -160,6 +249,16 @@ export const MyAdsPage = () => {
                                 <MenuItem value="desc">Descrescător</MenuItem>
                             </Select>
                         </FormControl>
+
+                    </Box>
+                    <Box sx={{flexDirection: 'column', alignItems: 'flex-end', display: 'flex', width: '100%'}}>
+                        <Button
+                            variant="contained"
+                            onClick={handleOpenAdDialog}
+                            sx={{ whiteSpace: "nowrap" }}
+                        >
+                            Adăugare anunț
+                        </Button>
                     </Box>
                     {error ? (
                         <Box sx={{
@@ -217,6 +316,113 @@ export const MyAdsPage = () => {
                     )}
                 </Grid2>
             </Grid2>
+            <Dialog open={openAdDialog} onClose={handleCloseAdDialog} fullWidth maxWidth="sm">
+                <DialogTitle>Adaugă anunț</DialogTitle>
+                <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+                    <TextField
+                        sx={{mt:1}}
+                        select
+                        label="Activitate"
+                        name="activityId"
+                        value={newAd.activityId}
+                        onChange={handleAdChange}
+                        fullWidth
+                    >
+                        {dropdownActivities.map((activity) => (
+                            <MenuItem key={activity.id} value={activity.id}>
+                                {activity.title}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
+                    <TextField
+                        label="Preț (RON)"
+                        name="price"
+                        type="number"
+                        value={newAd.price}
+                        onChange={handleAdChange}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Vârstă minimă"
+                        name="minAge"
+                        type="number"
+                        value={newAd.minAge}
+                        onChange={handleAdChange}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Vârstă maximă"
+                        name="maxAge"
+                        type="number"
+                        value={newAd.maxAge}
+                        onChange={handleAdChange}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Locuri disponibile"
+                        name="totalSpots"
+                        type="number"
+                        value={newAd.totalSpots}
+                        onChange={handleAdChange}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Dată început"
+                        name="startDate"
+                        type="date"
+                        value={newAd.startDate}
+                        onChange={handleAdChange}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Dată sfârșit"
+                        name="endDate"
+                        type="date"
+                        value={newAd.endDate}
+                        onChange={handleAdChange}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                    />
+                    <TextField
+                        select
+                        label="Zile activitate"
+                        name="activityDays"
+                        value={newAd.activityDays}
+                        onChange={handleActivityDaysChange}
+                        SelectProps={{ multiple: true }}
+                        fullWidth
+                    >
+                        {Object.entries(Weekday).map(([key, label]) => (
+                            <MenuItem key={key} value={key}>
+                                {label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
+                    <Button variant="contained" component="label">
+                        Încarcă imagine (JPEG)
+                        <input
+                            type="file"
+                            accept="image/jpeg"
+                            hidden
+                            onChange={handleImageUpload}
+                        />
+                    </Button>
+                    {newAd.image && (
+                        <Box sx={{ fontSize: "0.9rem", color: "gray" }}>
+                            Fișier selectat: {newAd.image.name}
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseAdDialog}>Anulează</Button>
+                    <Button onClick={handleAdSubmit} variant="contained">
+                        Salvează
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
