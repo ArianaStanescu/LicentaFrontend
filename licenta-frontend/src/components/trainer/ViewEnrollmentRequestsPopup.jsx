@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
     Dialog,
     DialogTitle,
@@ -18,14 +18,14 @@ import {
     Snackbar,
     Alert
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { getEnrollmentRequests } from "../../api/enrollment-requests/getEnrollmentRequests";
-import { calculateAge } from "../../helpers/calculateAge";
+import {useParams} from "react-router-dom";
+import {getEnrollmentRequests} from "../../api/enrollment-requests/getEnrollmentRequests";
+import {calculateAge} from "../../helpers/calculateAge";
 import {rejectEnrollmentRequest} from "../../api/enrollment-requests/rejectEnrollmentRequest";
 import {acceptEnrollmentRequest} from "../../api/enrollment-requests/acceptEnrollmentRequest";
 
-export const ViewEnrollmentRequestsPopup = ({ open, onClose }) => {
-    const { id: adId } = useParams();
+export const ViewEnrollmentRequestsPopup = ({open, onClose}) => {
+    const {id: adId} = useParams();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -73,20 +73,21 @@ export const ViewEnrollmentRequestsPopup = ({ open, onClose }) => {
     const handleCloseSnackbar = () => {
         setSuccessMessage(null);
     };
+    console.log('requests', requests);
 
     return (
         <>
             <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-                <DialogTitle sx={{ textAlign: "center", fontWeight: "bold" }}>Cereri de înscriere</DialogTitle>
+                <DialogTitle sx={{textAlign: "center", fontWeight: "bold"}}>Cereri de înscriere</DialogTitle>
                 <DialogContent>
                     {loading ? (
                         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100px">
-                            <CircularProgress />
+                            <CircularProgress/>
                         </Box>
                     ) : error ? (
-                        <Typography color="error" sx={{ textAlign: "center" }}>{error}</Typography>
+                        <Typography color="error" sx={{textAlign: "center"}}>{error}</Typography>
                     ) : requests.length > 0 ? (
-                        <TableContainer component={Paper} sx={{ mt: 2 }}>
+                        <TableContainer component={Paper} sx={{mt: 2}}>
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -101,23 +102,28 @@ export const ViewEnrollmentRequestsPopup = ({ open, onClose }) => {
                                             <TableCell>{request.child.firstName} {request.child.lastName}</TableCell>
                                             <TableCell>{calculateAge(request.child.birthDate)} ani</TableCell>
                                             <TableCell>
+                                                {request.status === 'PENDING' &&
+                                                    <Box>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="secondary"
+                                                            sx={{mr: 1}}
+                                                            onClick={() => handleReject(request.id, request.child.id)}
+                                                        >
+                                                            Respinge
+                                                        </Button>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
 
-                                                <Button
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    sx={{ mr: 1 }}
-                                                    onClick={() => handleReject(request.id, request.child.id)}
-                                                >
-                                                    Respinge
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-
-                                                    onClick={() => handleAccept(request.id, request.child.id)}
-                                                >
-                                                    Acceptă
-                                                </Button>
+                                                            onClick={() => handleAccept(request.id, request.child.id)}
+                                                        >
+                                                            Acceptă
+                                                        </Button>
+                                                    </Box>
+                                                }
+                                                {request.status === 'REJECTED' && <Typography color="error">Respinsă</Typography>}
+                                                {request.status === 'APPROVED' && <Typography color="primary">Acceptată</Typography>}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -125,12 +131,12 @@ export const ViewEnrollmentRequestsPopup = ({ open, onClose }) => {
                             </Table>
                         </TableContainer>
                     ) : (
-                        <Typography sx={{ textAlign: "center", fontSize: "1rem", mt: 2 }}>
+                        <Typography sx={{textAlign: "center", fontSize: "1rem", mt: 2}}>
                             Nu există cereri de înscriere.
                         </Typography>
                     )}
                 </DialogContent>
-                <DialogActions sx={{ justifyContent: "space-between", p: 2 }}>
+                <DialogActions sx={{justifyContent: "space-between", p: 2}}>
                     <Button onClick={onClose} variant="contained" color="secondary">
                         Închide
                     </Button>
@@ -140,8 +146,9 @@ export const ViewEnrollmentRequestsPopup = ({ open, onClose }) => {
                 </DialogActions>
             </Dialog>
 
-            <Snackbar open={Boolean(successMessage)} autoHideDuration={5000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-                <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+            <Snackbar open={Boolean(successMessage)} autoHideDuration={5000} onClose={handleCloseSnackbar}
+                      anchorOrigin={{vertical: "top", horizontal: "center"}}>
+                <Alert onClose={handleCloseSnackbar} severity="success" sx={{width: '100%'}}>
                     {successMessage}
                 </Alert>
             </Snackbar>

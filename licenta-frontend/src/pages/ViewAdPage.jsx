@@ -8,8 +8,9 @@ import {CreateEnrollmentRequestPopup} from "../components/parent/CreateEnrollmen
 import {calculateAge} from "../helpers/calculateAge";
 import {isTrainer} from "../context/AuthContextProvider";
 import {ViewEnrollmentRequestsPopup} from "../components/trainer/ViewEnrollmentRequestsPopup";
-import {createGroup} from "../api/group/createGroup";
 import {EditAdPopup} from "../components/trainer/EditAdPopup";
+import {createGroup} from "../api/group/createGroup";
+import {ConfirmDialog} from "../components/ConfirmDialog";
 
 export const ViewAdPage = () => {
     const {id} = useParams();
@@ -20,6 +21,7 @@ export const ViewAdPage = () => {
     const [popupOpen, setPopupOpen] = useState(false);
     const [enrollmentRequestsPopupOpen, setEnrollmentRequestsPopupOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const userIsTrainer = isTrainer();
 
     useEffect(() => {
@@ -226,20 +228,22 @@ export const ViewAdPage = () => {
                 >
                     Anunțul a fost închis
                 </Typography>}
-                {userIsTrainer && ad.status === 'ACTIVE' && <Button
+                {userIsTrainer && (ad.status === 'ACTIVE' || ad.status === 'PENDING') && <Button
                     variant="contained"
                     color="primary"
                     onClick={() => setEnrollmentRequestsPopupOpen(true)}
                 >
                     Vizualizează cereri de înscriere
                 </Button>}
-                {userIsTrainer && ad.status === 'PENDING' && <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => createGroup(ad.activity.id, ad.id)}
-                >
-                    Creează grupă
-                </Button>}
+                {userIsTrainer && (ad.status === 'ACTIVE' || ad.status === 'PENDING') && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setConfirmDialogOpen(true)}
+                    >
+                        Creează grupă
+                    </Button>
+                )}
                 {userIsTrainer && ad.status === 'COMPLETED' && <Box>
                     <Typography
                         variant="h6"
@@ -326,6 +330,16 @@ export const ViewAdPage = () => {
                 onSave={(updatedAd) => {
                     setAd((prev) => ({...prev, ...updatedAd}));
                     setEditDialogOpen(false);
+                }}
+            />
+            <ConfirmDialog
+                open={confirmDialogOpen}
+                title="Confirmare creare grupă"
+                message="Ești sigur că vrei să creezi această grupă?"
+                onCancel={() => setConfirmDialogOpen(false)}
+                onConfirm={() => {
+                    createGroup(ad.activity.id, ad.id);
+                    setConfirmDialogOpen(false);
                 }}
             />
         </Box>

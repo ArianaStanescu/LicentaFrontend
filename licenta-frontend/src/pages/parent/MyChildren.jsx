@@ -111,7 +111,6 @@ export const MyChildren = () => {
                 <DialogContent>
                     <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange} />
                     <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange} />
-                    <TextField fullWidth margin="dense" label="Vârstă" name="age" type="number" onChange={handleChange} />
                     <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date" InputLabelProps={{ shrink: true }} onChange={handleChange} />
                     <TextField
                         select
