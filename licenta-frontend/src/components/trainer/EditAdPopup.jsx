@@ -7,9 +7,9 @@ import {
     MenuItem,
     Button,
 } from "@mui/material";
-import {Weekday} from "../Enum";
+import {Weekday} from "../../Enum";
 import {useState, useEffect} from "react";
-import {updateAd} from "../api/ads/updateAd";
+import {updateAd} from "../../api/ads/updateAd";
 
 export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
     const [formData, setFormData] = useState({

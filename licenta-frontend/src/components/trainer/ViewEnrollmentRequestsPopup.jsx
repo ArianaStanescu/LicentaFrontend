@@ -19,13 +19,12 @@ import {
     Alert
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { getEnrollmentRequests } from "../api/enrollment-requests/getEnrollmentRequests";
-// import { acceptEnrollmentRequest, rejectEnrollmentRequest } from "../api/enrollment-requests/manageEnrollmentRequests";
-import { calculateAge } from "../helpers/calculateAge";
-import {rejectEnrollmentRequest} from "../api/enrollment-requests/rejectEnrollmentRequest";
-import {acceptEnrollmentRequest} from "../api/enrollment-requests/acceptEnrollmentRequest";
+import { getEnrollmentRequests } from "../../api/enrollment-requests/getEnrollmentRequests";
+import { calculateAge } from "../../helpers/calculateAge";
+import {rejectEnrollmentRequest} from "../../api/enrollment-requests/rejectEnrollmentRequest";
+import {acceptEnrollmentRequest} from "../../api/enrollment-requests/acceptEnrollmentRequest";
 
-export const EnrollmentRequestsPopup = ({ open, onClose }) => {
+export const ViewEnrollmentRequestsPopup = ({ open, onClose }) => {
     const { id: adId } = useParams();
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);

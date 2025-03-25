@@ -11,10 +11,10 @@ import {
     DialogActions,
     DialogTitle, Dialog, DialogContent, TextField, MenuItem
 } from "@mui/material";
-import {getParentId} from "../helpers/localStorageHelper";
-import {getChildren} from "../api/children/getChildren";
-import {Gender} from "../Enum";
-import {createChild} from "../api/children/createChild";
+import {getParentId} from "../../helpers/localStorageHelper";
+import {getChildren} from "../../api/children/getChildren";
+import {Gender} from "../../Enum";
+import {createChild} from "../../api/children/createChild";
 
 
 

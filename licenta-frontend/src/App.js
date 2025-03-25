@@ -1,7 +1,7 @@
 import {Container, CssBaseline, ThemeProvider} from "@mui/material";
 import {BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import MainRoutingPage from "./pages/MainRoutingPage";
-import {HomePageParent} from "./pages/HomePageParent";
+import {HomePageParent} from "./pages/parent/HomePageParent";
 import {LoginPage} from "./pages/LoginPage";
 import {RegisterPage} from "./pages/RegisterPage";
 import {AuthContext, AuthContextProvider} from "./context/AuthContextProvider";
@@ -9,11 +9,11 @@ import {HomePageTrainer} from "./pages/HomePageTrainer";
 import theme from "./theme";
 import {useContext} from "react";
 import {Navbar} from "./components/Navbar";
-import {MyChildren} from "./pages/MyChildren";
+import {MyChildren} from "./pages/parent/MyChildren";
 import {ViewAdPage} from "./pages/ViewAdPage";
-import {MyGroupsPage} from "./pages/MyGroupsPage";
-import {MyAdsPage} from "./pages/MyAdsPage";
-import {MyActivitiesPage} from "./pages/MyActivitiesPage";
+import {MyGroupsPage} from "./pages/trainer/MyGroupsPage";
+import {MyAdsPage} from "./pages/trainer/MyAdsPage";
+import {MyActivitiesPage} from "./pages/trainer/MyActivitiesPage";
 
 const PrivateRoute = ({customProps}) => {
     const {isRefreshTokenValid, logout} = useContext(AuthContext);

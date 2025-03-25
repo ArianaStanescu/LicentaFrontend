@@ -4,12 +4,12 @@ import {Typography, CircularProgress, Box, Button} from "@mui/material";
 import {getAd} from "../api/ads/getAd";
 import {getAdImage} from "../api/ads/getAdImage";
 import {ActivityCategory, Gender, Weekday} from "../Enum";
-import {ChildrenPopup} from "../components/ChildrenPopup";
+import {CreateEnrollmentRequestPopup} from "../components/parent/CreateEnrollmentRequestPopup";
 import {calculateAge} from "../helpers/calculateAge";
 import {isTrainer} from "../context/AuthContextProvider";
-import {EnrollmentRequestsPopup} from "../components/EnrollmentRequestsPopup";
+import {ViewEnrollmentRequestsPopup} from "../components/trainer/ViewEnrollmentRequestsPopup";
 import {createGroup} from "../api/group/createGroup";
-import {EditAdPopup} from "../components/EditAdPopup";
+import {EditAdPopup} from "../components/trainer/EditAdPopup";
 
 export const ViewAdPage = () => {
     const {id} = useParams();
@@ -316,9 +316,9 @@ export const ViewAdPage = () => {
                     Telefon: {trainer ? trainer.phoneNumber : ''}
                 </Typography>
             </Box>
-            <ChildrenPopup open={popupOpen} onClose={() => setPopupOpen(false)}/>
-            <EnrollmentRequestsPopup open={enrollmentRequestsPopupOpen}
-                                     onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
+            <CreateEnrollmentRequestPopup open={popupOpen} onClose={() => setPopupOpen(false)}/>
+            <ViewEnrollmentRequestsPopup open={enrollmentRequestsPopupOpen}
+                                         onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
             <EditAdPopup
                 open={editDialogOpen}
                 onClose={() => setEditDialogOpen(false)}

@@ -9,13 +9,13 @@ import {
     Typography,
     Box, List, ListItem, Avatar, ListItemAvatar, ListItemText, FormControlLabel, Radio, Alert, Snackbar
 } from "@mui/material";
-import { getChildren } from "../api/children/getChildren";
-import {getParentId} from "../helpers/localStorageHelper";
-import {calculateAge} from "../helpers/calculateAge";
+import { getChildren } from "../../api/children/getChildren";
+import {getParentId} from "../../helpers/localStorageHelper";
+import {calculateAge} from "../../helpers/calculateAge";
 import {useParams} from "react-router-dom";
-import {createEnrollmentRequest} from "../api/enrollment-requests/createEnrollmentRequest";
+import {createEnrollmentRequest} from "../../api/enrollment-requests/createEnrollmentRequest";
 
-export const ChildrenPopup = ({ open, onClose }) => {
+export const CreateEnrollmentRequestPopup = ({ open, onClose }) => {
     const { id: adId } = useParams();
     const [children, setChildren] = useState([]);
     const [loading, setLoading] = useState(false);

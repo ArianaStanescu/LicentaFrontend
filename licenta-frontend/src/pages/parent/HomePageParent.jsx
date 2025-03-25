@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import Grid2 from "@mui/material/Grid2";
-import {FilterMenu} from "../components/FilterMenu";
-import {AdCard} from "../components/AdCard";
+import {FilterMenu} from "../../components/FilterMenu";
+import {AdCard} from "../../components/AdCard";
 import {
     Alert,
     Box,
@@ -12,8 +12,8 @@ import {
     MenuItem,
     TextField
 } from "@mui/material";
-import {search} from "../api/ads/search";
-import {getAdImage} from "../api/ads/getAdImage";
+import {search} from "../../api/ads/search";
+import {getAdImage} from "../../api/ads/getAdImage";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 
 export const HomePageParent = () => {
@@ -102,12 +102,11 @@ export const HomePageParent = () => {
     return (
         <Box sx={{padding: 2}}>
             <Grid2 container spacing={2}>
-                <Grid2 item xs={12} sm={4} md={3}>
+                <Grid2 xs={12} sm={4} md={3}>
                     <FilterMenu onFilterChange={handleFilterChange}/>
                 </Grid2>
 
                 <Grid2
-                    item
                     xs={12}
                     sm={8}
                     md={9}
@@ -171,12 +170,12 @@ export const HomePageParent = () => {
                         ads.length > 0 ? (
                             <>
                                 {ads.map((ad, index) => (
-                                    <Grid2 item xs={12} sm={6} md={4} key={ad.id}>
+                                    <Grid2 xs={12} sm={6} md={4} key={ad.id}>
                                         <AdCard {...ad} imageUrl={images[ad.id]}/>
                                     </Grid2>
                                 ))}
 
-                                <Grid2 item xs={12}
+                                <Grid2 xs={12}
                                        sx={{
                                            display: "flex",
                                            justifyContent: "space-between",

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {getAdImage} from "../api/ads/getAdImage";
+import {getAdImage} from "../../api/ads/getAdImage";
 import {
     Alert,
     Box,
@@ -11,14 +11,14 @@ import {
     TextField
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
-import {FilterMenu} from "../components/FilterMenu";
-import {AdCard} from "../components/AdCard";
+import {FilterMenu} from "../../components/FilterMenu";
+import {AdCard} from "../../components/AdCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
-import {getTrainerId} from "../helpers/localStorageHelper";
-import {searchByTrainerId} from "../api/ads/searchByTrainerId";
-import {getActivities} from "../api/activities/getActivities";
-import {Weekday} from "../Enum";
-import {createAd} from "../api/ads/createAd";
+import {getTrainerId} from "../../helpers/localStorageHelper";
+import {searchByTrainerId} from "../../api/ads/searchByTrainerId";
+import {getActivities} from "../../api/activities/getActivities";
+import {Weekday} from "../../Enum";
+import {createAd} from "../../api/ads/createAd";
 
 export const MyAdsPage = () => {
     const [ads, setAds] = useState([]);

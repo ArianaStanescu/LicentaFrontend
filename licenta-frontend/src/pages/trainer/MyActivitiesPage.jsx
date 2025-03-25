@@ -11,14 +11,14 @@ import {
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import {useNavigate} from "react-router-dom";
-import {ActivityCard} from "../components/ActivityCard";
+import {ActivityCard} from "../../components/trainer/ActivityCard";
 import AddIcon from "@mui/icons-material/Add";
 import {useEffect, useState} from "react";
-import {ActivityCategory, Gender} from "../Enum";
-import {getActivities} from "../api/activities/getActivities";
-import {getTrainerId} from "../helpers/localStorageHelper";
-import {createActivity} from "../api/activities/createActivity";
-import {updateActivity} from "../api/activities/updateActivity";
+import {ActivityCategory, Gender} from "../../Enum";
+import {getActivities} from "../../api/activities/getActivities";
+import {getTrainerId} from "../../helpers/localStorageHelper";
+import {createActivity} from "../../api/activities/createActivity";
+import {updateActivity} from "../../api/activities/updateActivity";
 
 export const MyActivitiesPage = () => {
     const [activities, setActivities] = useState([]);

@@ -1,6 +1,6 @@
 import {Card, CardContent, Typography, Box, Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {ActivityCategory, Gender} from "../Enum";
+import {ActivityCategory, Gender} from "../../Enum";
 
 export const ActivityCard = ({id, title, description, category, gender, onEdit}) => {
     const navigate = useNavigate();
