@@ -21,6 +21,7 @@ import {createActivity} from "../../api/activities/createActivity";
 import {updateActivity} from "../../api/activities/updateActivity";
 
 export const MyActivitiesPage = () => {
+    const navigate = useNavigate();
     const [activities, setActivities] = useState([]);
     const [error, setError] = useState(null);
     const [errors, setErrors] = useState({
@@ -38,8 +39,6 @@ export const MyActivitiesPage = () => {
         category: "",
         gender: "",
     });
-
-
     const trainerId = getTrainerId();
 
     const fetchActivities = async () => {
@@ -187,6 +186,10 @@ export const MyActivitiesPage = () => {
         }
     };
 
+    const handleViewGroups = (activityId) => {
+        navigate(`/my-groups/${activityId}`);
+    };
+
     return (
         <Box sx={{padding: 2}}>
             <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2}}>
@@ -208,7 +211,7 @@ export const MyActivitiesPage = () => {
                 <Grid2 container spacing={2}>
                     {activities.map((activity) => (
                         <Grid2 xs={12} sm={6} md={4} key={activity.id}>
-                            <ActivityCard {...activity} onEdit={handleOpenEditDialog}/>
+                            <ActivityCard {...activity} onEdit={handleOpenEditDialog} onViewGroups={handleViewGroups}/>
                         </Grid2>
                     ))}
                 </Grid2>

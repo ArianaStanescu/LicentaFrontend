@@ -2,7 +2,7 @@ import {Card, CardContent, Typography, Box, Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {ActivityCategory, Gender} from "../../Enum";
 
-export const ActivityCard = ({id, title, description, category, gender, onEdit}) => {
+export const ActivityCard = ({id, title, description, category, gender, onEdit, onViewGroups}) => {
     const navigate = useNavigate();
 
     return (
@@ -44,7 +44,7 @@ export const ActivityCard = ({id, title, description, category, gender, onEdit})
                         sx={{ mr: 1, mb: {xs: 1, sm: 0} }}
                         size="small"
                         variant="contained"
-                        onClick={() => navigate(`/activities/${id}`)}
+                        onClick={() => onViewGroups(id)}
                     >
                         Vizualizare grupe
                     </Button>

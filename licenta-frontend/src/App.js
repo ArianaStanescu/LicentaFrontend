@@ -14,6 +14,7 @@ import {ViewAdPage} from "./pages/ViewAdPage";
 import {MyGroupsPage} from "./pages/trainer/MyGroupsPage";
 import {MyAdsPage} from "./pages/trainer/MyAdsPage";
 import {MyActivitiesPage} from "./pages/trainer/MyActivitiesPage";
+import {ViewGroupPage} from "./pages/ViewGroupPage";
 
 const PrivateRoute = ({customProps}) => {
     const {isRefreshTokenValid, logout} = useContext(AuthContext);
@@ -54,11 +55,15 @@ const AuthWrapper = () => {
                 <Route exact path="/login" element={<LoginPage/>}/>
                 <Route exact path="/register" element={<RegisterPage/>}/>
                 <Route element={<PrivateRoute/>}>
-                    <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
+                    {/*common routes*/}
                     <Route exact path="/view-ad/:id" element={<ViewAdPage/>} />
+                    <Route exact path="/view-group/:id" element={<ViewGroupPage/>} />
+                    {/*parent routes*/}
+                    <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
                     <Route exact path='/my-children' element={<MyChildren/>}/>
                     {/*trainer routes*/}
-                    <Route exact path="/my-groups" element={<MyGroupsPage/>}/>
+                    <Route exact path="/my-groups/:activityId" element={<MyGroupsPage/>}/>
+                    <Route exact path="/my-groups/" element={<MyGroupsPage/>}/>
                     <Route exact path="/my-activities" element={<MyActivitiesPage/>}/>
                     <Route exact path="/my-ads" element={<MyAdsPage/>}/>
                     {/*<Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>*/}

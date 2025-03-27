@@ -1,7 +1,9 @@
 import {Card, CardContent, Typography, Box, Button, IconButton} from "@mui/material";
 import {Gender, GroupStatus, Weekday} from "../Enum";
+import {useNavigate} from "react-router-dom";
 
 export const GroupCard = ({ group, onEdit }) => {
+    const navigate = useNavigate()
     return (
         <Card sx={{ width: "100%", minHeight: 180 }}>
             <CardContent>
@@ -29,6 +31,7 @@ export const GroupCard = ({ group, onEdit }) => {
                         <Button
                             size="small"
                             variant="text"
+                            onClick={() => onEdit?.(group)}
                         >
                             Editează
                         </Button>
@@ -36,8 +39,8 @@ export const GroupCard = ({ group, onEdit }) => {
                     <Button
                         variant="contained"
                         size="small"
-                        onClick={() => onEdit?.(group)}
                         sx={{ height: "fit-content" }}
+                        onClick={() => navigate(`/view-group/${group.id}`)}
                     >
                         Vizualizare
                     </Button>

@@ -18,8 +18,11 @@ import {getTrainerId} from "../../helpers/localStorageHelper";
 import {getGroups} from "../../api/group/getGroups";
 import {GroupCard} from "../../components/GroupCard";
 import {Gender, GroupStatus, Weekday} from "../../Enum";
+import {getGroupsByActivity} from "../../api/group/getGroupsByActivity";
+import {useParams} from "react-router-dom";
 
 export const MyGroupsPage = () => {
+    const {activityId} = useParams();
     const [groups, setGroups] = useState([]);
     const [error, setError] = useState(null);
     const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -42,10 +45,15 @@ export const MyGroupsPage = () => {
     const fetchGroups = async () => {
         setError(null);
         try {
-            const data = await getGroups(trainerId);
-            console.log(data);
-            const sorted = (data || []).sort((a, b) => b.id - a.id);
-            setGroups(sorted);
+            if (activityId) {
+                const data = await getGroupsByActivity(activityId);
+                const sorted = (data || []).sort((a, b) => b.id - a.id);
+                setGroups(sorted);
+            } else {
+                const data = await getGroups(trainerId);
+                const sorted = (data || []).sort((a, b) => b.id - a.id);
+                setGroups(sorted);
+            }
         } catch (err) {
             setError("Eroare la încărcarea grupurilor.");
         }
@@ -53,7 +61,7 @@ export const MyGroupsPage = () => {
 
     useEffect(() => {
         fetchGroups();
-    }, []);
+    }, [activityId]);
 
     const handleCloseEditDialog = () => {
         setOpenEditDialog(false);
@@ -129,7 +137,7 @@ export const MyGroupsPage = () => {
     return (
         <Box sx={{padding: 2}}>
             <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2}}>
-                <h2>Grupele mele</h2>
+                {activityId ? (<h2>Grupele mele pentru activitatea selectată</h2>) : (<h2>Toate grupele mele</h2>)}
             </Box>
 
             {error && <Alert severity="error">{error}</Alert>}
@@ -139,7 +147,7 @@ export const MyGroupsPage = () => {
                 <Grid2 container spacing={2}>
                     {groups.map((group) => (
                         <Grid2 sx={{width: '100%'}} xs={12} key={group.id}>
-                            <GroupCard group={group} onEdit={() => handleEditGroup(group)} />
+                            <GroupCard group={group} onEdit={() => handleEditGroup(group)}/>
                         </Grid2>
                     ))}
                 </Grid2>
@@ -150,22 +158,27 @@ export const MyGroupsPage = () => {
                 <DialogTitle>Editează grupă</DialogTitle>
                 <DialogContent sx={{display: "flex", flexDirection: "column", gap: 2, mt: 1}}>
                     <TextField label="Titlu" name="title" value={selectedGroup?.title || ""}
-                               onChange={(e) => handleChange(e, true)} error={!!errors.title} helperText={errors.title} fullWidth/>
+                               onChange={(e) => handleChange(e, true)} error={!!errors.title} helperText={errors.title}
+                               fullWidth/>
                     <TextField label="Descriere" name="description" value={selectedGroup?.description || ""}
                                onChange={(e) => handleChange(e, true)} multiline rows={3}
                                fullWidth error={!!errors.description} helperText={errors.description}/>
                     <TextField label="Vârstă minimă" name="minAge" type="number" value={selectedGroup?.minAge || ""}
-                               onChange={(e) => handleChange(e, true)} error={!!errors.minAge} helperText={errors.minAge} fullWidth/>
+                               onChange={(e) => handleChange(e, true)} error={!!errors.minAge}
+                               helperText={errors.minAge} fullWidth/>
                     <TextField label="Vârstă maximă" name="maxAge" type="number" value={selectedGroup?.maxAge || ""}
-                               onChange={(e) => handleChange(e, true)} error={!!errors.maxAge} helperText={errors.maxAge} fullWidth/>
+                               onChange={(e) => handleChange(e, true)} error={!!errors.maxAge}
+                               helperText={errors.maxAge} fullWidth/>
                     <TextField select label="Gen" name="gender" value={selectedGroup?.gender || ""}
-                               onChange={(e) => handleChange(e, true)} error={!!errors.gender} helperText={errors.gender} fullWidth>
+                               onChange={(e) => handleChange(e, true)} error={!!errors.gender}
+                               helperText={errors.gender} fullWidth>
                         {Object.entries(Gender).map(([key, label]) => (
                             <MenuItem key={key} value={key}>{label}</MenuItem>
                         ))}
                     </TextField>
                     <TextField select label="Status" name="status" value={selectedGroup?.status || ""}
-                               onChange={(e) => handleChange(e, true)} error={!!errors.status} helperText={errors.status} fullWidth>
+                               onChange={(e) => handleChange(e, true)} error={!!errors.status}
+                               helperText={errors.status} fullWidth>
                         {Object.entries(GroupStatus).map(([key, label]) => (
                             <MenuItem key={key} value={key}>{label}</MenuItem>
                         ))}
