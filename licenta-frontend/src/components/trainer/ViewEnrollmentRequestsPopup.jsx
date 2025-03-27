@@ -53,7 +53,11 @@ export const ViewEnrollmentRequestsPopup = ({open, onClose}) => {
     const handleAccept = async (requestId, childId) => {
         try {
             await acceptEnrollmentRequest(requestId);
-            setRequests(requests.filter(req => req.child.id !== childId)); //elimina din listă
+            setRequests(prev =>
+                prev.map(req =>
+                    req.id === requestId ? {...req, status: 'APPROVED'} : req
+                )
+            );
             setSuccessMessage("Cererea a fost acceptată!");
         } catch (err) {
             setError("Eroare la acceptarea cererii.");
@@ -63,7 +67,11 @@ export const ViewEnrollmentRequestsPopup = ({open, onClose}) => {
     const handleReject = async (requestId, childId) => {
         try {
             await rejectEnrollmentRequest(requestId);
-            setRequests(requests.filter(req => req.child.id !== childId)); //elimina din listă
+            setRequests(prev =>
+                prev.map(req =>
+                    req.id === requestId ? {...req, status: 'REJECTED'} : req
+                )
+            );
             setSuccessMessage("Cererea a fost respinsă!");
         } catch (err) {
             setError("Eroare la respingerea cererii.");
@@ -73,7 +81,6 @@ export const ViewEnrollmentRequestsPopup = ({open, onClose}) => {
     const handleCloseSnackbar = () => {
         setSuccessMessage(null);
     };
-    console.log('requests', requests);
 
     return (
         <>

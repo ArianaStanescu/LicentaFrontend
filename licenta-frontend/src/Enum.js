@@ -24,3 +24,8 @@ export const Weekday = {
     SATURDAY: 'Sâmbătă',
     SUNDAY: 'Duminică',
 }
+
+export const GroupStatus = {
+    ACTIVE: 'Activă',
+    COMPLETED: 'Finalizată',
+}

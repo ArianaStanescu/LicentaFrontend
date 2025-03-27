@@ -89,6 +89,7 @@ export const FilterMenu = ({onFilterChange}) => {
                 >
                     <MenuItem value="ACTIVE">Active</MenuItem>
                     <MenuItem value="PENDING">În așteptare</MenuItem>
+                    <MenuItem value="COMPLETED">Inactive</MenuItem>
                 </Select>
             </FormControl>
             }
