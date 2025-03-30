@@ -42,7 +42,8 @@ export const LoginPage = () => {
                 }
                 if (isTrainer) {
                     setTrainerId(parentOrTrainerId);
-                    navigate("/home-page-trainer");
+                    // navigate("/home-page-trainer");
+                    navigate("/my-groups");
                 } else {
                     setParentId(parentOrTrainerId);
                     navigate("/home-page-parent");

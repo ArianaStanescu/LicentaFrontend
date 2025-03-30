@@ -1,17 +1,17 @@
 import {BASE_URL, instance} from "../axiosInstance";
 
-export const createChild = async (parentId, childData) => {
-    const url = `${BASE_URL}/api/children/create/${parentId}`;
+export const updateActivity = async (activityId, activityData) => {
+    const url = `${BASE_URL}/api/activities/${activityId}`;
 
     try {
-        const response = await instance.post(url, childData);
+        const response = await instance.put(url, activityData);
         if (response.data.error) {
             return { success: false, error: response.data.error };
         } else {
             return { success: true};
         }
     } catch (error) {
-        console.error(`Error creating child for parent with id ${parentId}:`, error);
+        console.error(`Error updating activity with id ${activityId}:`, error);
         return null;
     }
 };

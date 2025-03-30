@@ -11,6 +11,14 @@ import {refreshToken as refreshTokenFunction} from "../services/keycloak";
 
 export const AuthContext = createContext();
 
+export const isTrainer = () => {
+    return getTrainerId() !== null;
+}
+
+export const isParent = () => {
+    return getParentId() !== null;
+}
+
 export const AuthContextProvider = ({children}) => {
     const isLoggedIn = async () => {
         if (await getValidAccessToken() && (getParentId() || getTrainerId())) {
@@ -19,13 +27,7 @@ export const AuthContextProvider = ({children}) => {
         return false;
     }
 
-    const isTrainer = () => {
-        return getTrainerId() !== null;
-    }
 
-    const isParent = () => {
-        return getParentId() !== null;
-    }
 
     const isRefreshTokenValid = () => {
         const refreshToken = getStoredRefreshToken();

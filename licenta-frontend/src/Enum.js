@@ -14,3 +14,18 @@ export const Gender = {
     FEMALE: 'Feminin',
     NEUTRAL: 'Neutru',
 };
+
+export const Weekday = {
+    MONDAY: 'Luni',
+    TUESDAY: 'Marți',
+    WEDNESDAY: 'Miercuri',
+    THURSDAY: 'Joi',
+    FRIDAY: 'Vineri',
+    SATURDAY: 'Sâmbătă',
+    SUNDAY: 'Duminică',
+}
+
+export const GroupStatus = {
+    ACTIVE: 'Activă',
+    COMPLETED: 'Finalizată',
+}

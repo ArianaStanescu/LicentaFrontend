@@ -1,15 +1,22 @@
 import {useState} from "react";
 import {MenuItem, Select, TextField, FormControl, InputLabel, Box, Button} from "@mui/material";
 import {ActivityCategory, Gender} from "../Enum";
+import {isTrainer} from "../context/AuthContextProvider";
 
 export const FilterMenu = ({onFilterChange}) => {
+    const userIsTrainer = isTrainer();
+
     const initialFilters = {
+        title: "",
         category: "",
         minAge: "",
         maxAge: "",
         gender: "",
         minPrice: "",
-        maxPrice: ""
+        maxPrice: "",
+        status: '',
+        sortBy: "id",
+        sortDirection: "desc",
     };
 
     const [filters, setFilters] = useState(initialFilters);
@@ -70,6 +77,22 @@ export const FilterMenu = ({onFilterChange}) => {
                     <MenuItem value="FEMALE">{Gender.FEMALE}</MenuItem>
                 </Select>
             </FormControl>
+
+            {userIsTrainer && <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="status-select">Status</InputLabel>
+                <Select
+                    id="status-select"
+                    label="Status"
+                    name="status"
+                    value={filters.status}
+                    onChange={handleChange}
+                >
+                    <MenuItem value="ACTIVE">Active</MenuItem>
+                    <MenuItem value="PENDING">În așteptare</MenuItem>
+                    <MenuItem value="COMPLETED">Inactive</MenuItem>
+                </Select>
+            </FormControl>
+            }
 
             <TextField label="Preț minim" name="minPrice" type="number" value={filters.minPrice} onChange={handleChange}
                        fullWidth/>

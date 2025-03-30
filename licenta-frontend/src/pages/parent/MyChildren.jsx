@@ -11,10 +11,10 @@ import {
     DialogActions,
     DialogTitle, Dialog, DialogContent, TextField, MenuItem
 } from "@mui/material";
-import {getParentId} from "../helpers/localStorageHelper";
-import {getChildren} from "../api/children/getChildren";
-import {Gender} from "../Enum";
-import {createChild} from "../api/children/createChild";
+import {getParentId} from "../../helpers/localStorageHelper";
+import {getChildren} from "../../api/children/getChildren";
+import {Gender} from "../../Enum";
+import {createChild} from "../../api/children/createChild";
 
 
 
@@ -60,7 +60,6 @@ export const MyChildren = () => {
                 return;
             }
 
-            console.log("Copil adăugat cu succes!");
             fetchChildren();
             handleClose();
         } catch (err) {
@@ -74,14 +73,14 @@ export const MyChildren = () => {
             <Typography variant="h4" gutterBottom>
                 Copiii mei
             </Typography>
-            <Grid2 container spacing={3}>
+            <Grid2 container spacing={3} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 {loading ? (
                     <CircularProgress />
                 ) : error ? (
                     <Alert severity="error">{error}</Alert>
                 ) : children.length > 0 ? (
                     children.map((child) => (
-                        <Grid2 item xs={12} sm={6} md={4} key={child.id}>
+                        <Grid2 item xs={12} sm={6} md={4} key={child.id} sx={{width: '100%'}}>
                             <Card>
                                 <CardContent>
                                     <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>
@@ -112,7 +111,6 @@ export const MyChildren = () => {
                 <DialogContent>
                     <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange} />
                     <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange} />
-                    <TextField fullWidth margin="dense" label="Vârstă" name="age" type="number" onChange={handleChange} />
                     <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date" InputLabelProps={{ shrink: true }} onChange={handleChange} />
                     <TextField
                         select

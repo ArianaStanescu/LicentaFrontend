@@ -9,7 +9,8 @@ const theme = createTheme({
             contrastText: "#fff",
         },
         secondary: {
-            main: "#f50057",
+            main: "#ff0000",
+
         },
         action: {
             // active: "#33cc33",
@@ -50,7 +51,14 @@ const theme = createTheme({
                         backgroundColor: "transparent",
                         color: "#33cc33"
                     }
-                }
+                },
+                containedSecondary: {
+                    backgroundColor: "#ff0000",
+                    color: "#fff",
+                    "&:hover": {
+                        backgroundColor: "#e60000",
+                    },
+                },
             },
         },
         MuiTextField: {

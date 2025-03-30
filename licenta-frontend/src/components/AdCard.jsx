@@ -1,8 +1,8 @@
 import {Box, Button, Card, CardContent, CardMedia, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {ActivityCategory, Gender} from "../Enum";
 
-
-export const CardComponent = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
+export const AdCard = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
     const navigate = useNavigate();
 
     return (
@@ -25,8 +25,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                     sx={{
                         height: "100%",
                         width: "25%",
-                        objectFit: "cover",
-                        backgroundColor: "black"
+                        objectFit: "contain",
                     }}
                 />
             ) : (
@@ -43,6 +42,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                         fontWeight: "bold",
                         textAlign: "center",
                         padding: "8px",
+                        wordBreak: 'break-word',
                     }}
                 >
                     Imagine indisponibilă
@@ -57,6 +57,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                     justifyContent: "space-between",
                     padding: 2,
                     height: "100%",
+                    maxWidth: '75%',
                 }}
             >
                 <Box>
@@ -69,6 +70,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                             overflow: "hidden",
                             textOverflow: "ellipsis"
                         }}
+                        title='Titlu'
                     >
                         {title}
                     </Typography>
@@ -83,7 +85,32 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                             textOverflow: "ellipsis"
                         }}
                     >
-                        {category.toLowerCase()}
+                        Categorie: {ActivityCategory[category]}
+                    </Typography>
+
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                            fontSize: {xs: "0.85rem", md: "1rem"},
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                        }}
+                        title='Descriere'
+                    >
+                        {description} + Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                            fontSize: {xs: "0.85rem", md: "1rem"},
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                        }}
+                    >
+                        Interval de vârstă: {minAge} - {maxAge} ani
                     </Typography>
 
                     <Typography
@@ -95,30 +122,7 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
                             textOverflow: "ellipsis"
                         }}
                     >
-                        {description}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                            fontSize: {xs: "0.85rem", md: "1rem"},
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                        }}
-                    >
-                        {minAge} - {maxAge} years
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                            fontSize: {xs: "0.85rem", md: "1rem"},
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                        }}
-                    >
-                        {gender.toLowerCase()}
+                        Gen: {Gender[gender]}
                     </Typography>
                 </Box>
 
@@ -145,4 +149,3 @@ export const CardComponent = ({id, title, description, category, price, minAge, 
         </Card>
     );
 }
-
