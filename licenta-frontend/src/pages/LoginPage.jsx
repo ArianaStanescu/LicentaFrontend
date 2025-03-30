@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     Container,
     TextField,
@@ -12,6 +12,7 @@ import {useNavigate} from "react-router-dom";
 import {authenticate} from "../services/keycloak";
 import {clearTokensAndUsers, setParentId, setTrainerId} from "../helpers/localStorageHelper";
 import {findByEmail} from "../api/findByEmail";
+import {FirebaseMessagingContext} from "../context/FirebaseMessagingProvider";
 
 export const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export const LoginPage = () => {
     const [error, setError] = useState("");
     const [isTrainer, setIsTrainer] = useState(false);
     const navigate = useNavigate();
+    const {initializeMessaging} = useContext(FirebaseMessagingContext);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -42,10 +44,12 @@ export const LoginPage = () => {
                 }
                 if (isTrainer) {
                     setTrainerId(parentOrTrainerId);
+                    initializeMessaging(parentOrTrainerId, true);
                     // navigate("/home-page-trainer");
                     navigate("/my-groups");
                 } else {
                     setParentId(parentOrTrainerId);
+                    initializeMessaging(parentOrTrainerId, false);
                     navigate("/home-page-parent");
                 }
             }catch(e) {

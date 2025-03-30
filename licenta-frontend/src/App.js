@@ -4,10 +4,9 @@ import MainRoutingPage from "./pages/MainRoutingPage";
 import {HomePageParent} from "./pages/parent/HomePageParent";
 import {LoginPage} from "./pages/LoginPage";
 import {RegisterPage} from "./pages/RegisterPage";
-import {AuthContext, AuthContextProvider} from "./context/AuthContextProvider";
-import {HomePageTrainer} from "./pages/HomePageTrainer";
+import {AuthContext, AuthContextProvider, isTrainer} from "./context/AuthContextProvider";
 import theme from "./theme";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {Navbar} from "./components/Navbar";
 import {MyChildren} from "./pages/parent/MyChildren";
 import {ViewAdPage} from "./pages/ViewAdPage";
@@ -15,6 +14,10 @@ import {MyGroupsPage} from "./pages/trainer/MyGroupsPage";
 import {MyAdsPage} from "./pages/trainer/MyAdsPage";
 import {MyActivitiesPage} from "./pages/trainer/MyActivitiesPage";
 import {ViewGroupPage} from "./pages/ViewGroupPage";
+import {FirebaseMessagingContext, FirebaseMessagingProvider} from "./context/FirebaseMessagingProvider";
+
+import {getParentId, getTrainerId} from "./helpers/localStorageHelper";
+
 
 const PrivateRoute = ({customProps}) => {
     const {isRefreshTokenValid, logout} = useContext(AuthContext);
@@ -29,7 +32,9 @@ const App = () => {
             <Container maxWidth="lg">
                 <BrowserRouter>
                     <AuthContextProvider>
+                        <FirebaseMessagingProvider>
                         <AuthWrapper/>
+                        </FirebaseMessagingProvider>
                     </AuthContextProvider>
                 </BrowserRouter>
             </Container>
@@ -39,9 +44,11 @@ const App = () => {
 
 const AuthWrapper = () => {
     const {isRefreshTokenValid, logout} = useContext(AuthContext);
+    const {clearMessaging} = useContext(FirebaseMessagingContext);
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        clearMessaging(isTrainer() ? getTrainerId() : getParentId(), isTrainer());
         logout();
         navigate("/login");
     };
