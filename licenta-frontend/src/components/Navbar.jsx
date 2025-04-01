@@ -15,7 +15,7 @@ import {useNavigate} from "react-router-dom";
 import {isTrainer} from "../context/AuthContextProvider";
 import {getLatestNotifications} from "../api/notifications/getLatestNotifications";
 import {getParentId, getTrainerId} from "../helpers/localStorageHelper";
-import {markNotificationAsRead} from "../api/notifications/markAsRead";
+import {markNotificationsAsSeen} from "../api/notifications/markAsRead";
 import {FirebaseMessagingContext} from "../context/FirebaseMessagingProvider";
 
 export const Navbar = ({onLogout}) => {
@@ -62,8 +62,8 @@ export const Navbar = ({onLogout}) => {
         navigate(path);
     };
 
-    const markAsRead = async (notificationId) => {
-        await markNotificationAsRead(notificationId);
+    const markAsSeen = async (notificationIds) => {
+        await markNotificationsAsSeen(notificationIds);
         await getNotifications();
     }
 
@@ -84,8 +84,8 @@ export const Navbar = ({onLogout}) => {
                 </Typography>
                 <Box>
                     {!notification?.seen && (
-                        <Button size="small" variant="contained" onClick={() => markAsRead(notification.id)}>
-                            Mark as Read
+                        <Button size="small" variant="contained" onClick={() => markAsSeen([notification.id])}>
+                            Mark as Seen
                         </Button>
                     )}
                 </Box>
