@@ -25,7 +25,7 @@ export const Navbar = ({onLogout}) => {
     const [userRole, setUserRole] = useState(null);
     const isMobile = useMediaQuery("(max-width:600px)");
     const navigate = useNavigate();
-    const [notifications, setNotifications] = useState(null);
+    const [notifications, setNotifications] = useState([]);
     const [nrOfUnreadNotifications, setNrOfUnreadNotifications] = useState(0);
     const {refreshNotifications} = useContext(FirebaseMessagingContext);
 
@@ -39,7 +39,7 @@ export const Navbar = ({onLogout}) => {
 
     useEffect(() => {
         getNotifications();
-    },[refreshNotifications]);
+    }, [refreshNotifications]);
 
     const getNotifications = async () => {
         const response = await getLatestNotifications(isTrainer() ? getTrainerId() : getParentId(), isTrainer());
@@ -72,25 +72,34 @@ export const Navbar = ({onLogout}) => {
             return <MenuItem>No new notifications</MenuItem>;
         }
 
-        return notifications?.map((notification, index) => (
-            <MenuItem key={index} sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1}}>
-                <Box sx={{marginTop: 1, display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-                    <Typography variant="subtitle1" sx={{fontWeight: 'bold'}} color={notification.seen ? "success.main" : "error.main"}>
-                        {notification.title}
+        return <Box>
+            {notifications.filter(notification => !notification.seen).length > 0 &&
+                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+                    <Button size="small" variant="contained"
+                            onClick={() => markAsSeen(notifications.filter(notification => !notification.seen).map(notification => notification.id))}>
+                        Mark all as Seen
+                    </Button>
+                </Box>}
+            {notifications?.map((notification, index) => (
+                <MenuItem key={index} sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1}}>
+                    <Box sx={{marginTop: 1, display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+                        <Typography variant="subtitle1" sx={{fontWeight: 'bold'}}
+                                    color={notification.seen ? "success.main" : "error.main"}>
+                            {notification.title}
+                        </Typography>
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                        {notification.body}
                     </Typography>
-                </Box>
-                <Typography variant="body2" color="text.secondary">
-                    {notification.body}
-                </Typography>
-                <Box>
-                    {!notification?.seen && (
-                        <Button size="small" variant="contained" onClick={() => markAsSeen([notification.id])}>
-                            Mark as Seen
-                        </Button>
-                    )}
-                </Box>
-            </MenuItem>
-        ));
+                    <Box>
+                        {!notification?.seen && (
+                            <Button size="small" variant="contained" onClick={() => markAsSeen([notification.id])}>
+                                Mark as Seen
+                            </Button>
+                        )}
+                    </Box>
+                </MenuItem>))}
+        </Box>
     };
 
     const renderMenuItems = (closeFn, isMobileMenu) => {
