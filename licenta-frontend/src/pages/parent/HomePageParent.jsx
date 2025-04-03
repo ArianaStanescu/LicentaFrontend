@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Grid2 from "@mui/material/Grid2";
 import {FilterMenu} from "../../components/FilterMenu";
 import {AdCard} from "../../components/AdCard";
@@ -15,12 +15,16 @@ import {
 import {search} from "../../api/ads/search";
 import {getAdImage} from "../../api/ads/getAdImage";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import {AuthContext, isTrainer} from "../../context/AuthContextProvider";
+import {FirebaseMessagingContext} from "../../context/FirebaseMessagingProvider";
+import {getParentId, getTrainerId} from "../../helpers/localStorageHelper";
 
 export const HomePageParent = () => {
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
     const [error, setError] = useState(null);
     const [hasNextPage, setHasNextPage] = useState(true);
+    const {initializeMessaging} = useContext(FirebaseMessagingContext);
 
     const [filters, setFilters] = useState({
         title: "",
