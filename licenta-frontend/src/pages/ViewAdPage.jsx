@@ -174,7 +174,10 @@ export const ViewAdPage = () => {
                     sx={{fontSize: {xs: "1rem", md: "1.2rem"}, color: "gray"}}
                 >
                     Zilele de activitate:{" "}
-                    {ad.activityDays.map((day) => Weekday[day]).join(", ")}
+                    {ad.durationRules.map((durationRule) => {
+                        const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
+                        return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
+                    }).join(", ")}
                 </Typography>
             </Box>
 

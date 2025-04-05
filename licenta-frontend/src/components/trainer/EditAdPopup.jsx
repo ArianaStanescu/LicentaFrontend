@@ -5,7 +5,7 @@ import {
     DialogActions,
     TextField,
     MenuItem,
-    Button,
+    Button, Box, Typography,
 } from "@mui/material";
 import {Weekday} from "../../Enum";
 import {useState, useEffect} from "react";
@@ -19,7 +19,7 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
         totalSpots: "",
         startDate: "",
         endDate: "",
-        activityDays: [],
+        durationRules: [],
         description: ""
     });
 
@@ -34,53 +34,78 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
                 totalSpots: adToEdit.totalSpots || "",
                 startDate: adToEdit.startDate || "",
                 endDate: adToEdit.endDate || "",
-                activityDays: adToEdit.activityDays || [],
+                durationRules: adToEdit.durationRules || [],
                 description: adToEdit.description || ""
             });
             setErrors({});
         }
     }, [adToEdit]);
 
+    // const handleChange = (e) => {
+    //     const {name, value, type} = e.target;
+    //     setFormData((prev) => ({
+    //         ...prev,
+    //         [name]: type === "number" ? Number(value) : value
+    //     }));
+    //
+    //     setErrors((prev) => ({
+    //         ...prev,
+    //         [name]: ""
+    //     }));
+    // };
+
     const handleChange = (e) => {
-        const {name, value, type} = e.target;
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const addDurationRule = () => {
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "number" ? Number(value) : value
-        }));
-
-        setErrors((prev) => ({
-            ...prev,
-            [name]: ""
+            durationRules: [...prev.durationRules, { day: "", startHour: 8, numberOfHours: 1 }]
         }));
     };
 
-    const handleDaysChange = (e) => {
-        setFormData((prev) => ({
-            ...prev,
-            activityDays: e.target.value
-        }));
-    };
-
-    const validate = () => {
-        const newErrors = {};
-        const requiredFields = ["price", "minAge", "maxAge", "totalSpots", "startDate", "endDate", "activityDays"];
-
-        requiredFields.forEach((field) => {
-            if (!formData[field] || (Array.isArray(formData[field]) && formData[field].length === 0)) {
-                newErrors[field] = "Acest câmp este obligatoriu.";
-            }
+    const handleDurationRuleChange = (index, field, value) => {
+        setFormData((prev) => {
+            const updatedRules = [...prev.durationRules];
+            updatedRules[index] = { ...updatedRules[index], [field]: value };
+            return { ...prev, durationRules: updatedRules };
         });
+    };
 
-        if (formData.description && formData.description.length > 255) {
-            newErrors.description = "Descrierea nu poate depăși 255 de caractere.";
+    const removeDurationRule = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            durationRules: prev.durationRules.filter((_, i) => i !== index)
+        }));
+    };
+
+    const validateForm = () => {
+        let newErrors = {};
+        if (!formData.price) newErrors.price = "Prețul este obligatoriu";
+        if (!formData.minAge) newErrors.minAge = "Vârsta minimă este obligatorie";
+        if (!formData.maxAge) newErrors.maxAge = "Vârsta maximă este obligatorie";
+        if (!formData.totalSpots) newErrors.totalSpots = "Numărul de locuri este obligatoriu";
+        if (!formData.startDate) newErrors.startDate = "Data de început este obligatorie";
+        if (!formData.endDate) newErrors.endDate = "Data de sfârșit este obligatorie";
+        if (!formData.description) newErrors.description = "Descrierea este obligatorie";
+        if (!formData.durationRules || formData.durationRules.length === 0) {
+            newErrors.durationRules = "Regulile de durată sunt obligatorii";
         }
+
+        formData.durationRules.forEach((rule, index) => {
+            if (!rule.day) newErrors[`durationRules.${index}.day`] = "Ziua este obligatorie";
+            if (!rule.startHour) newErrors[`durationRules.${index}.startHour`] = "Ora de început este obligatorie";
+            if (!rule.numberOfHours) newErrors[`durationRules.${index}.numberOfHours`] = "Numărul de ore este obligatoriu";
+        });
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async () => {
-        if (validate()) {
+        if (validateForm()) {
             try {
                 const payload = {
                     ...adToEdit,
@@ -98,8 +123,7 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
                 alert("A apărut o eroare. Încearcă din nou.");
             }
         }
-
-    };
+    }
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -179,23 +203,65 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
                     helperText={errors.endDate}
                     fullWidth
                 />
-                <TextField
-                    select
-                    label="Zile activitate"
-                    name="activityDays"
-                    value={formData.activityDays}
-                    onChange={handleDaysChange}
-                    SelectProps={{multiple: true}}
-                    error={!!errors.activityDays}
-                    helperText={errors.activityDays}
-                    fullWidth
-                >
-                    {Object.entries(Weekday).map(([key, label]) => (
-                        <MenuItem key={key} value={key}>
-                            {label}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                <Button variant="contained" onClick={addDurationRule} fullWidth>
+                    Adaugă Regulă de Durată
+                </Button>
+
+                {formData.durationRules?.map((rule, index) => (
+                    <Box key={index} sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                        <TextField
+                            select
+                            label="Zi"
+                            name="day"
+                            value={rule.day}
+                            onChange={(e) => handleDurationRuleChange(index, "day", e.target.value)}
+                            error={!!errors[`durationRules.${index}.day`]}
+                            helperText={errors[`durationRules.${index}.day`]}
+                            fullWidth
+                        >
+                            {Object.entries(Weekday).map(([key, label]) => (
+                                <MenuItem key={key} value={key}>
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            select
+                            label="Ora început"
+                            name="startHour"
+                            value={rule.startHour}
+                            onChange={(e) => handleDurationRuleChange(index, "startHour", Number(e.target.value))}
+                            error={!!errors[`durationRules.${index}.startHour`]}
+                            helperText={errors[`durationRules.${index}.startHour`]}
+                            fullWidth
+                        >
+                            {Array.from({ length: 14 }, (_, i) => i + 8).map((hour) => (
+                                <MenuItem key={hour} value={hour}>
+                                    {hour.toString().padStart(2, '0')}:00
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            label="Număr de ore"
+                            name="numberOfHours"
+                            type="number"
+                            value={rule.numberOfHours}
+                            onChange={(e) => handleDurationRuleChange(index, "numberOfHours", Number(e.target.value))}
+                            error={!!errors[`durationRules.${index}.numberOfHours`]}
+                            helperText={errors[`durationRules.${index}.numberOfHours`]}
+                            fullWidth
+                        />
+                        <Button variant="containedSecondary" onClick={() => removeDurationRule(index)}>
+                            Șterge
+                        </Button>
+                    </Box>
+                ))}
+
+                {errors.durationRules && (
+                    <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                        {errors.durationRules}
+                    </Typography>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Anulează</Button>

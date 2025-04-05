@@ -14,7 +14,7 @@ export const GroupCard = ({ group, onEdit }) => {
                     {group.description}
                 </Typography>
                 <Typography variant="body2">
-                    Zilele de activitate: {group.activityDays.map(day => Weekday[day]).join(", ")}
+                    Zilele de activitate: {group?.activityDays?.map(day => Weekday[day]).join(", ")}
                 </Typography>
                 <Typography variant="body2">Copii înscriși: {group.childrenCount}</Typography>
                 <Typography variant="body2">
