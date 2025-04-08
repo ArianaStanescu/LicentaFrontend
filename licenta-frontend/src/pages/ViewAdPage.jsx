@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {Typography, CircularProgress, Box, Button} from "@mui/material";
 import {getAd} from "../api/ads/getAd";
@@ -6,10 +6,12 @@ import {getAdImage} from "../api/ads/getAdImage";
 import {ActivityCategory, Gender, Weekday} from "../Enum";
 import {CreateEnrollmentRequestPopup} from "../components/parent/CreateEnrollmentRequestPopup";
 import {calculateAge} from "../helpers/calculateAge";
-import {isTrainer} from "../context/AuthContextProvider";
+import {AuthContext, isTrainer} from "../context/AuthContextProvider";
 import {ViewEnrollmentRequestsPopup} from "../components/trainer/ViewEnrollmentRequestsPopup";
 import {EditAdPopup} from "../components/trainer/EditAdPopup";
 import {createGroup} from "../api/group/createGroup";
+import {addFavoriteTrainer} from "../api/parent/addFavoriteTrainer";
+import {hasFavoriteTrainer} from "../api/parent/hasFavoriteTrainer";
 import {ConfirmDialog} from "../components/ConfirmDialog";
 
 export const ViewAdPage = () => {
@@ -22,20 +24,11 @@ export const ViewAdPage = () => {
     const [enrollmentRequestsPopupOpen, setEnrollmentRequestsPopupOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+    const [showAddFavoriteTrainer, setShowAddFavoriteTrainer] = useState(false);
     const userIsTrainer = isTrainer();
+    const {getParentId} = useContext(AuthContext);
 
     useEffect(() => {
-        const fetchAd = async () => {
-            try {
-                const response = await getAd(id);
-                setAd(response);
-            } catch (error) {
-                console.error("Eroare la preluarea anunțului:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         const fetchAdImage = async () => {
             try {
                 const response = await getAdImage(id);
@@ -56,6 +49,38 @@ export const ViewAdPage = () => {
             setTrainer(ad.activity.trainer);
         }
     }, [ad]);
+
+    useEffect(() => {
+        if (trainer) {
+            verifyIfTrainerIsFavorite();
+        }
+    }, [trainer]);
+
+    const fetchAd = async () => {
+        try {
+            const response = await getAd(id);
+            setAd(response);
+        } catch (error) {
+            console.error("Eroare la preluarea anunțului:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    //
+    //
+    const handleAddFavoriteTrainer = async () => {
+        await addFavoriteTrainer(getParentId(), ad?.activity?.trainer?.id);
+        await verifyIfTrainerIsFavorite();
+    };
+
+    const verifyIfTrainerIsFavorite = async () => {
+        try {
+            const response = await hasFavoriteTrainer(getParentId(), ad?.activity?.trainer?.id);
+            setShowAddFavoriteTrainer(!response);
+        } catch (error) {
+            console.error("Eroare la verificarea antrenorului favorit:", error);
+        }
+    }
 
     if (loading) {
         return (<Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
@@ -322,8 +347,13 @@ export const ViewAdPage = () => {
                 >
                     Telefon: {trainer ? trainer.phoneNumber : ''}
                 </Typography>
+                {showAddFavoriteTrainer &&
+                    <Button onClick={handleAddFavoriteTrainer} variant="followText">Aboneaza-te!</Button>}
             </Box>
-            <CreateEnrollmentRequestPopup open={popupOpen} onClose={() => setPopupOpen(false)}/>
+            <CreateEnrollmentRequestPopup open={popupOpen}
+                                          onClose={() => setPopupOpen(false)}
+                                          refreshAd={fetchAd}
+                                          />
             <ViewEnrollmentRequestsPopup open={enrollmentRequestsPopupOpen}
                                          onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
             <EditAdPopup

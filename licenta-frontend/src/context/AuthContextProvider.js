@@ -79,6 +79,8 @@ export const AuthContextProvider = ({children}) => {
                 getValidAccessToken,
                 isRefreshTokenValid,
                 isLoggedIn,
+                getParentId,
+                getTrainerId
             }}
         >
             {children}

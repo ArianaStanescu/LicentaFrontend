@@ -15,7 +15,7 @@ import {calculateAge} from "../../helpers/calculateAge";
 import {useParams} from "react-router-dom";
 import {createEnrollmentRequest} from "../../api/enrollment-requests/createEnrollmentRequest";
 
-export const CreateEnrollmentRequestPopup = ({ open, onClose }) => {
+export const CreateEnrollmentRequestPopup = ({ open, onClose, refreshAd }) => {
     const { id: adId } = useParams();
     const [children, setChildren] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -62,10 +62,11 @@ export const CreateEnrollmentRequestPopup = ({ open, onClose }) => {
                 }
 
                 setSuccessMessage(true);
-                console.log("Copil adăugat cu succes!");
+                await refreshAd();
                 onCloseButton();
             } catch (err) {
-                setError("A apărut o eroare neașteptată. Te rugăm să încerci din nou.");;
+                console.log(err);
+                setError("A apărut o eroare neașteptată. Te rugăm să încerci din nou.");
             }
         } else {
             setError("Te rog selectează un copil înainte de a înscrie.");

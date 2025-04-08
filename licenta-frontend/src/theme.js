@@ -70,6 +70,17 @@ const theme = createTheme({
                         color: "#33cc33"
                     }
                 },
+                followText: {
+                    backgroundColor: "transparent",
+                    borderRadius: "0px",
+                    padding: "0px",
+                    fontSize: "1rem",
+                    color: "#5cd65c",
+                    "&:hover": {
+                        backgroundColor: "transparent",
+                        color: "#33cc33"
+                    }
+                },
             },
         },
         MuiTextField: {
