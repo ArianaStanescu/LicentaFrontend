@@ -22,6 +22,7 @@ import Grid2 from "@mui/material/Grid2";
 import {calculateAge} from "../helpers/calculateAge";
 import {getSessionsByGroup} from "../api/session/getSessionsByGroup";
 import {SessionCard} from "../components/SessionCard";
+import {ArrowBack, ArrowForward} from "@mui/icons-material";
 
 export const ViewGroupPage = () => {
     const {id: groupId} = useParams();
@@ -29,7 +30,14 @@ export const ViewGroupPage = () => {
     const [error, setError] = useState(null);
     const [openChildrenDialog, setOpenChildrenDialog] = useState(false);
     const [sessions, setSessions] = useState(null);
+    const [hasNextPage, setHasNextPage] = useState(false);
     const [nextSession, setNextSession] = useState(null);
+    const [filters, setFilters] = useState({
+        pageNumber: 0,
+        pageSize: 10,
+        sortBy: "startDateTime",
+        sortDirection: "asc"
+    });
 
 
     const fetchGroup = async () => {
@@ -44,27 +52,43 @@ export const ViewGroupPage = () => {
     useEffect(() => {
         fetchGroup();
         fetchSessions();
-    }, [groupId]);
+    }, [groupId, filters]);
 
     const fetchSessions = async () => {
         try {
-            const data = await getSessionsByGroup(groupId);
-            const sortedData = (data || []).sort((a, b) => a.id - b.id);
-            console.log(sortedData);
-            const now = new Date();
-            const nextSession = sortedData.reduce((closest, session) => {
-                const sessionDate = new Date(session.startDateTime);
-                if (sessionDate > now && (!closest || sessionDate < new Date(closest.startDateTime))) {
-                    return session;
-                }
-                return closest;
-            }, null);
-
-            setNextSession(nextSession);
-            setSessions(sortedData);
+            const data = await getSessionsByGroup(groupId, filters);
+            if(!nextSession) {
+                const now = new Date();
+                const nextSession = data.reduce((closest, session) => {
+                    const sessionDate = new Date(session.startDateTime);
+                    if (sessionDate > now && (!closest || sessionDate < new Date(closest.startDateTime))) {
+                        return session;
+                    }
+                    return closest;
+                }, null);
+                setNextSession(nextSession);
+            }
+            setSessions(data);
+            setHasNextPage(data.length === filters.pageSize);
         } catch (err) {
             setError("Eroare la încărcarea sesiunilor.");
         }
+    }
+
+    const handleNextPage = () => {
+        if (hasNextPage) {
+            setFilters({
+                ...filters,
+                pageNumber: filters.pageNumber + 1
+            });
+        }
+    };
+
+    const handlePreviousPage = () => {
+        setFilters({
+            ...filters,
+            pageNumber: Math.max(filters.pageNumber - 1, 0)
+        });
     };
 
     const createSessions = async () => {
@@ -111,12 +135,12 @@ export const ViewGroupPage = () => {
             </Button>
             {sessions?.length === 0 &&
                 <Button
-                variant="contained"
-                sx={{mt: 2}}
-                onClick={() => createSessions()}
-            >
-                Creare sesiuni
-            </Button>
+                    variant="contained"
+                    sx={{mt: 2}}
+                    onClick={() => createSessions()}
+                >
+                    Creare sesiuni
+                </Button>
             }
 
         </Paper>
@@ -125,17 +149,50 @@ export const ViewGroupPage = () => {
         {sessions?.length === 0 ? (
             <Typography color="text.secondary">Nicio sesiune înregistrată.</Typography>
         ) : (
-            <Grid2 container spacing={2} sx={{padding: 2}}>
-                {sessions.map((session) => (
-                    <Grid2 item xs={12} sm={6} md={4} key={session.id}>
-                        <SessionCard
-                            session={session}
-                            isNextSession={nextSession && session.id === nextSession.id}
-                            onView={(id) => console.log("Vizualizare sesiune:", id)}
-                        />
-                    </Grid2>
-                ))}
-            </Grid2>
+            <>
+                <Grid2 container spacing={2} sx={{padding: 2}}>
+                    {sessions.map((session) => (
+                        <Grid2 item xs={12} sm={6} md={4} key={session.id}>
+                            <SessionCard
+                                session={session}
+                                isNextSession={nextSession && session.id === nextSession.id}
+                                onView={(id) => console.log("Vizualizare sesiune:", id)}
+                            />
+                        </Grid2>
+                    ))}
+
+                </Grid2>
+                <Grid2 xs={12}
+                       sx={{
+                           display: "flex",
+                           justifyContent: "center",
+                           mt: 3,
+                           gap: {xs: "auto", sm: 6},
+                       }}>
+                    <Button
+                        variant="text"
+                        onClick={handlePreviousPage}
+                        disabled={filters.pageNumber === 0}
+                        startIcon={<ArrowBack/>}
+                    >
+                        Înapoi
+                    </Button>
+                    <Box sx={{
+                        fontSize: "1.2rem", fontWeight: "bold",
+                        textAlign: "center", display: "flex", alignItems: "center"
+                    }}>
+                        Pagina {filters.pageNumber + 1}
+                    </Box>
+                    <Button
+                        variant="text"
+                        onClick={handleNextPage}
+                        disabled={!hasNextPage}
+                        endIcon={<ArrowForward/>}
+                    >
+                        Înainte
+                    </Button>
+                </Grid2>
+            </>
         )}
         <Dialog
             open={openChildrenDialog}
