@@ -57,16 +57,33 @@ export const ViewGroupPage = () => {
     const fetchSessions = async () => {
         try {
             const data = await getSessionsByGroup(groupId, filters);
-            if(!nextSession) {
+            // if(!nextSession) {
+            //     const now = new Date();
+            //     const nextSession = data.reduce((closest, session) => {
+            //         const sessionDate = new Date(session.startDateTime);
+            //         if (sessionDate > now && (!closest || sessionDate < new Date(closest.startDateTime))) {
+            //             return session;
+            //         }
+            //         return closest;
+            //     }, null);
+            //     setNextSession(nextSession);
+            // }
+            if (!nextSession) {
                 const now = new Date();
-                const nextSession = data.reduce((closest, session) => {
-                    const sessionDate = new Date(session.startDateTime);
-                    if (sessionDate > now && (!closest || sessionDate < new Date(closest.startDateTime))) {
+                //setam ora la 00:00 pentru a compara doar in functie de data
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                const upcoming = data.reduce((closest, session) => {
+                    const sessionDateRaw = new Date(session.startDateTime);
+                    const sessionDate = new Date(sessionDateRaw.getFullYear(), sessionDateRaw.getMonth(), sessionDateRaw.getDate());
+
+                    if (sessionDate >= today && (!closest || sessionDate < new Date(closest.startDateTime))) {
                         return session;
                     }
                     return closest;
                 }, null);
-                setNextSession(nextSession);
+
+                setNextSession(upcoming);
             }
             setSessions(data);
             setHasNextPage(data.length === filters.pageSize);
@@ -156,7 +173,7 @@ export const ViewGroupPage = () => {
                             <SessionCard
                                 session={session}
                                 isNextSession={nextSession && session.id === nextSession.id}
-                                onView={(id) => console.log("Vizualizare sesiune:", id)}
+                                groupId={group?.id}
                             />
                         </Grid2>
                     ))}

@@ -1,17 +1,18 @@
 import React from "react";
 import {Box, Button, Card, CardContent, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {dayIndexToEnum} from "../Enum";
 
-const daysOfWeek = ["Duminică", "Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă"];
-
-const formatDateTime = (dateTime) => {
+export const formatDateTime = (dateTime) => {
     const date = new Date(dateTime);
-    const dayName = daysOfWeek[date.getDay()];
+    const dayName = dayIndexToEnum[date.getDay()];
     const dateFormatted = date.toLocaleDateString();
     const hours = date.getHours().toString().padStart(2, '0');
-    return {dateFormatted, dayName, hours};
+    return { dateFormatted, dayName, hours };
 };
 
-export const SessionCard = ({session, onView, isNextSession}) => {
+export const SessionCard = ({session, isNextSession, groupId}) => {
+    const navigate = useNavigate();
     const start = formatDateTime(session.startDateTime);
     const end = formatDateTime(session.endDateTime);
 
@@ -38,7 +39,7 @@ export const SessionCard = ({session, onView, isNextSession}) => {
                     {`Notă: ${session.note || "- "} Lorem Ipsum is simply dummy text of the printing and typesetting industry.`}
                 </Typography>
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                    <Button variant="text" onClick={() => onView(session.id)}>
+                    <Button variant="text"  onClick={() => navigate(`/view-session/${session?.id}/${groupId}`)}>
                         Vizualizare
                     </Button>
                 </Box>

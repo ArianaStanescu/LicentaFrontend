@@ -25,6 +25,16 @@ export const Weekday = {
     SUNDAY: 'Duminică',
 }
 
+export const dayIndexToEnum = {
+    0: Weekday.SUNDAY,
+    1: Weekday.MONDAY,
+    2: Weekday.TUESDAY,
+    3: Weekday.WEDNESDAY,
+    4: Weekday.THURSDAY,
+    5: Weekday.FRIDAY,
+    6: Weekday.SATURDAY,
+};
+
 export const GroupStatus = {
     ACTIVE: 'Activă',
     COMPLETED: 'Finalizată',
