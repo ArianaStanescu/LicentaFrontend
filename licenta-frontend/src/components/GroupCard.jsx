@@ -1,20 +1,30 @@
 import {Card, CardContent, Typography, Box, Button, IconButton} from "@mui/material";
 import {Gender, GroupStatus, Weekday} from "../Enum";
 import {useNavigate} from "react-router-dom";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContextProvider";
 
-export const GroupCard = ({ group, onEdit }) => {
-    const navigate = useNavigate()
+export const GroupCard = ({group, onEdit}) => {
+    const {isTrainer} = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const userIsTrainer = isTrainer();
+
     return (
-        <Card sx={{ width: "100%", minHeight: 180 }}>
+        <Card sx={{width: "100%", minHeight: 180}}>
             <CardContent>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6">{group.title}</Typography>
                 </Box>
-                <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                <Typography variant="body2" color="textSecondary" sx={{mb: 1}}>
                     {group.description}
                 </Typography>
                 <Typography variant="body2">
-                    Zilele de activitate: {group?.activityDays?.map(day => Weekday[day]).join(", ")}
+                    Zilele de activitate:{" "}
+                    {group.durationRules.map((durationRule) => {
+                        const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
+                        return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
+                    }).join(", ")}
                 </Typography>
                 <Typography variant="body2">Copii înscriși: {group.childrenCount}</Typography>
                 <Typography variant="body2">
@@ -28,18 +38,18 @@ export const GroupCard = ({ group, onEdit }) => {
                 </Typography>
                 <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                     <Box>
-                        <Button
+                        {userIsTrainer && <Button
                             size="small"
                             variant="text"
                             onClick={() => onEdit?.(group)}
                         >
                             Editează
-                        </Button>
+                        </Button>}
                     </Box>
                     <Button
                         variant="contained"
                         size="small"
-                        sx={{ height: "fit-content" }}
+                        sx={{height: "fit-content"}}
                         onClick={() => navigate(`/view-group/${group.id}`)}
                     >
                         Vizualizare

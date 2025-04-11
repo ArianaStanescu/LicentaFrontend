@@ -15,19 +15,20 @@ import {getParentId} from "../../helpers/localStorageHelper";
 import {getChildren} from "../../api/children/getChildren";
 import {Gender} from "../../Enum";
 import {createChild} from "../../api/children/createChild";
-
+import {useNavigate} from "react-router-dom";
 
 
 export const MyChildren = () => {
+    const navigate = useNavigate();
     const [children, setChildren] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
-    const [newChild, setNewChild] = useState({ firstName: "", lastName: "", age: "", birthDate: "", gender: "" });
+    const [newChild, setNewChild] = useState({firstName: "", lastName: "", age: "", birthDate: "", gender: ""});
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleChange = (e) => setNewChild({ ...newChild, [e.target.name]: e.target.value });
+    const handleChange = (e) => setNewChild({...newChild, [e.target.name]: e.target.value});
 
     useEffect(() => {
         fetchChildren();
@@ -39,6 +40,7 @@ export const MyChildren = () => {
         try {
             const children = await getChildren(getParentId());
             setChildren(children || []);
+            console.log(children);
         } catch (err) {
             setError("Failed to load children. Please try again.");
         } finally {
@@ -69,39 +71,53 @@ export const MyChildren = () => {
     };
 
     return (
-        <Box sx={{ padding: 3 }}>
+        <Box sx={{padding: 3}}>
             <Typography variant="h4" gutterBottom>
                 Copiii mei
             </Typography>
             <Grid2 container spacing={3} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 {loading ? (
-                    <CircularProgress />
+                    <CircularProgress/>
                 ) : error ? (
                     <Alert severity="error">{error}</Alert>
                 ) : children.length > 0 ? (
                     children.map((child) => (
                         <Grid2 item xs={12} sm={6} md={4} key={child.id} sx={{width: '100%'}}>
                             <Card>
-                                <CardContent>
-                                    <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Vârstă: {child.age} ani
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Data nașterii: {child.birthDate}
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Gen: {Gender[child.gender]}
-                                    </Typography>
-                                </CardContent>
+                                <Box display="flex" justifyContent="space-between" alignItems="start" p={2}>
+                                    <CardContent sx={{padding: 0, paddingRight: 2}}>
+                                        <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Vârstă: {child.age} ani
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Data nașterii: {child.birthDate}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Gen: {Gender[child.gender]}
+                                        </Typography>
+                                    </CardContent>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{height: 'fit-content', mt: 2}}
+                                        onClick={() => {
+                                            // navigate(`/grupa/${child.groupId}`);
+                                            navigate(`/child-groups/${child.id}`)
+                                        }}
+                                    >
+                                        Vizualizare grupă
+                                    </Button>
+                                </Box>
                             </Card>
+
                         </Grid2>
                     ))
                 ) : (
                     <Alert severity="info">Niciun copil găsit!</Alert>
                 )}
             </Grid2>
-            <Box sx={{ marginTop: 3, textAlign: "center" }}>
+            <Box sx={{marginTop: 3, textAlign: "center"}}>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
                     Adaugă copil
                 </Button>
@@ -109,9 +125,10 @@ export const MyChildren = () => {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Adaugă un copil</DialogTitle>
                 <DialogContent>
-                    <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange} />
-                    <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange} />
-                    <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date" InputLabelProps={{ shrink: true }} onChange={handleChange} />
+                    <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange}/>
+                    <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange}/>
+                    <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date"
+                               InputLabelProps={{shrink: true}} onChange={handleChange}/>
                     <TextField
                         select
                         fullWidth

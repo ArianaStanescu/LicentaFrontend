@@ -25,7 +25,7 @@ import {SessionCard} from "../components/SessionCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 
 export const ViewGroupPage = () => {
-    const {id: groupId} = useParams();
+    const {groupId} = useParams();
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
     const [openChildrenDialog, setOpenChildrenDialog] = useState(false);

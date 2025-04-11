@@ -18,6 +18,9 @@ import {FirebaseMessagingContext, FirebaseMessagingProvider} from "./context/Fir
 
 import {getParentId, getTrainerId} from "./helpers/localStorageHelper";
 import {ViewSessionPage} from "./pages/trainer/ViewSessionPage";
+import {ViewGroupPageForParent} from "./pages/parent/ViewGroupPageForParent";
+import {ChildGroupsPage} from "./pages/parent/ChildGroupsPage";
+import {MyFavoriteTrainers} from "./pages/parent/MyFavoriteTrainers";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -65,14 +68,17 @@ const AuthWrapper = () => {
                 <Route element={<PrivateRoute/>}>
                     {/*common routes*/}
                     <Route exact path="/view-ad/:id" element={<ViewAdPage/>} />
-                    <Route exact path="/view-group/:id" element={<ViewGroupPage/>} />
                     <Route path="/view-session/:sessionId/:groupId" element={<ViewSessionPage />} />
                     {/*parent routes*/}
                     <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
+                    <Route exact path="/child-groups/:childId" element={<ChildGroupsPage/>}/>
+                    {/*<Route exact path="/view-group-parent/:childId" element={<ViewGroupPageForParent/>} />*/}
                     <Route exact path='/my-children' element={<MyChildren/>}/>
+                    <Route exact path="my-favorite-trainers" element={<MyFavoriteTrainers/>}/>
                     {/*trainer routes*/}
                     <Route exact path="/my-groups/:activityId" element={<MyGroupsPage/>}/>
                     <Route exact path="/my-groups/" element={<MyGroupsPage/>}/>
+                    <Route exact path="/view-group/:groupId" element={<ViewGroupPage/>} />
                     <Route exact path="/my-activities" element={<MyActivitiesPage/>}/>
                     <Route exact path="/my-ads" element={<MyAdsPage/>}/>
                     {/*<Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>*/}
