@@ -138,7 +138,7 @@ export const ViewGroupPage = () => {
             <Typography><strong>Vârste acceptate:</strong> {group.minAge} - {group.maxAge} ani</Typography>
             <Typography><strong>Copii înscriși:</strong> {group.childrenCount}</Typography>
             <Typography><strong>Zile de
-                activitate:</strong> {group.durationRules.map((durationRule) => {
+                activitate:</strong> {group?.durationRules?.map((durationRule) => {
                 const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
                 return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
             }).join(", ")}

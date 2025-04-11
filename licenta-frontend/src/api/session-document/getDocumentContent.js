@@ -13,7 +13,7 @@ export const getDocumentContent = async (sessionId, title = "document") => {
 
         const link = document.createElement("a");
         link.href = blobUrl;
-        link.download = `${title}.pdf`;
+        link.download = `${title}`;
 
         document.body.appendChild(link);
         link.click();
