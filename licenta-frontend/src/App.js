@@ -17,6 +17,7 @@ import {ViewGroupPage} from "./pages/ViewGroupPage";
 import {FirebaseMessagingContext, FirebaseMessagingProvider} from "./context/FirebaseMessagingProvider";
 
 import {getParentId, getTrainerId} from "./helpers/localStorageHelper";
+import {ViewSessionPage} from "./pages/trainer/ViewSessionPage";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -65,6 +66,7 @@ const AuthWrapper = () => {
                     {/*common routes*/}
                     <Route exact path="/view-ad/:id" element={<ViewAdPage/>} />
                     <Route exact path="/view-group/:id" element={<ViewGroupPage/>} />
+                    <Route path="/view-session/:sessionId/:groupId" element={<ViewSessionPage />} />
                     {/*parent routes*/}
                     <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
                     <Route exact path='/my-children' element={<MyChildren/>}/>

@@ -8,7 +8,7 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField
+    TextField, Typography
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import {FilterMenu} from "../../components/FilterMenu";
@@ -24,6 +24,7 @@ export const MyAdsPage = () => {
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
     const [error, setError] = useState(null);
+    const [errors, setErrors] = useState({});
     const [hasNextPage, setHasNextPage] = useState(true);
     const trainerId = getTrainerId();
     const [openAdDialog, setOpenAdDialog] = useState(false);
@@ -36,7 +37,7 @@ export const MyAdsPage = () => {
         totalSpots: "",
         startDate: "",
         endDate: "",
-        activityDays: [],
+        durationRules: [],
         image: null,
     });
     const [filters, setFilters] = useState({
@@ -98,9 +99,6 @@ export const MyAdsPage = () => {
         }
     };
 
-    // const handleFilterChange = (newFilters) => {
-    //     setFilters({...newFilters, pageNumber: 0, pageSize: 5});
-    // };
     const handleFilterChange = (newFilters) => {
         setFilters((prevFilters) => ({
             ...prevFilters,
@@ -134,7 +132,7 @@ export const MyAdsPage = () => {
             totalSpots: "",
             startDate: "",
             endDate: "",
-            activityDays: [],
+            durationRules: [],
             image: null,
         });
         fetchDropdownActivities();
@@ -153,10 +151,28 @@ export const MyAdsPage = () => {
         }));
     };
 
-    const handleActivityDaysChange = (e) => {
+    const handleDurationRuleChange = (index, field, value) => {
+        setNewAd((prev) => {
+            const updatedRules = [...prev.durationRules];
+            updatedRules[index] = {
+                ...updatedRules[index],
+                [field]: value,
+            };
+            return { ...prev, durationRules: updatedRules };
+        });
+    };
+
+    const addDurationRule = () => {
         setNewAd((prev) => ({
             ...prev,
-            activityDays: e.target.value,
+            durationRules: [...prev.durationRules, { day: "", startHour: 8, numberOfHours: 1 }],
+        }));
+    };
+
+    const removeDurationRule = (index) => {
+        setNewAd((prev) => ({
+            ...prev,
+            durationRules: prev.durationRules.filter((_, i) => i !== index),
         }));
     };
 
@@ -167,14 +183,29 @@ export const MyAdsPage = () => {
         }));
     };
 
-    const handleAdSubmit = async () => {
-        if (!newAd.activityId) {
-            setError("Selectează o activitate.");
-            return;
+    const validateForm = () => {
+        let newErrors = {};
+        if (!newAd.activityId) newErrors.activityId = "Activitatea este obligatorie";
+        if (!newAd.price) newErrors.price = "Prețul este obligatoriu";
+        if (!newAd.minAge) newErrors.minAge = "Vârsta minimă este obligatorie";
+        if (!newAd.maxAge) newErrors.maxAge = "Vârsta maximă este obligatorie";
+        if (!newAd.totalSpots) newErrors.totalSpots = "Numărul de locuri este obligatoriu";
+        if (!newAd.startDate) newErrors.startDate = "Data de început este obligatorie";
+        if (!newAd.endDate) newErrors.endDate = "Data de sfârșit este obligatorie";
+        if (!newAd.image) newErrors.image = "Imaginea este obligatorie";
+        if (!newAd.durationRules || newAd.durationRules.length === 0) {
+            newErrors.durationRules = "Regulile de durată sunt obligatorii";
         }
 
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleAdSubmit = async () => {
+        if (!validateForm()) return;
+
+
         try {
-            console.log(newAd);
             const response = await createAd(newAd.activityId, newAd);
 
             if (!response.success) {
@@ -326,6 +357,8 @@ export const MyAdsPage = () => {
                         name="activityId"
                         value={newAd.activityId}
                         onChange={handleAdChange}
+                        error={!!errors.activityId}
+                        helperText={errors.activityId}
                         fullWidth
                     >
                         {dropdownActivities.map((activity) => (
@@ -341,6 +374,8 @@ export const MyAdsPage = () => {
                         type="number"
                         value={newAd.price}
                         onChange={handleAdChange}
+                        error={!!errors.price}
+                        helperText={errors.price}
                         fullWidth
                     />
                     <TextField
@@ -349,6 +384,8 @@ export const MyAdsPage = () => {
                         type="number"
                         value={newAd.minAge}
                         onChange={handleAdChange}
+                        error={!!errors.minAge}
+                        helperText={errors.minAge}
                         fullWidth
                     />
                     <TextField
@@ -357,6 +394,8 @@ export const MyAdsPage = () => {
                         type="number"
                         value={newAd.maxAge}
                         onChange={handleAdChange}
+                        error={!!errors.maxAge}
+                        helperText={errors.maxAge}
                         fullWidth
                     />
                     <TextField
@@ -365,6 +404,8 @@ export const MyAdsPage = () => {
                         type="number"
                         value={newAd.totalSpots}
                         onChange={handleAdChange}
+                        error={!!errors.totalSpots}
+                        helperText={errors.totalSpots}
                         fullWidth
                     />
                     <TextField
@@ -374,6 +415,8 @@ export const MyAdsPage = () => {
                         value={newAd.startDate}
                         onChange={handleAdChange}
                         InputLabelProps={{ shrink: true }}
+                        error={!!errors.startDate}
+                        helperText={errors.startDate}
                         fullWidth
                     />
                     <TextField
@@ -383,23 +426,69 @@ export const MyAdsPage = () => {
                         value={newAd.endDate}
                         onChange={handleAdChange}
                         InputLabelProps={{ shrink: true }}
+                        error={!!errors.endDate}
+                        helperText={errors.endDate}
                         fullWidth
                     />
-                    <TextField
-                        select
-                        label="Zile activitate"
-                        name="activityDays"
-                        value={newAd.activityDays}
-                        onChange={handleActivityDaysChange}
-                        SelectProps={{ multiple: true }}
-                        fullWidth
-                    >
-                        {Object.entries(Weekday).map(([key, label]) => (
-                            <MenuItem key={key} value={key}>
-                                {label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    <Button variant="contained" onClick={addDurationRule} fullWidth>
+                        Adaugă Regulă de Durată
+                    </Button>
+
+                    {newAd.durationRules?.map((rule, index) => (
+                        <Box key={index} sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                            <TextField
+                                select
+                                label="Zi"
+                                name="day"
+                                value={rule.day}
+                                onChange={(e) => handleDurationRuleChange(index, "day", e.target.value)}
+                                error={!!errors[`durationRules.${index}.day`]}
+                                helperText={errors[`durationRules.${index}.day`]}
+                                fullWidth
+                            >
+                                {Object.entries(Weekday).map(([key, label]) => (
+                                    <MenuItem key={key} value={key}>
+                                        {label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                select
+                                label="Ora început"
+                                name="startHour"
+                                value={rule.startHour}
+                                onChange={(e) => handleDurationRuleChange(index, "startHour", Number(e.target.value))}
+                                error={!!errors[`durationRules.${index}.startHour`]}
+                                helperText={errors[`durationRules.${index}.startHour`]}
+                                fullWidth
+                            >
+                                {Array.from({ length: 14 }, (_, i) => i + 8).map((hour) => (
+                                    <MenuItem key={hour} value={hour}>
+                                        {hour.toString().padStart(2, '0')}:00
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                label="Număr de ore"
+                                name="numberOfHours"
+                                type="number"
+                                value={rule.numberOfHours}
+                                onChange={(e) => handleDurationRuleChange(index, "numberOfHours", Number(e.target.value))}
+                                error={!!errors[`durationRules.${index}.numberOfHours`]}
+                                helperText={errors[`durationRules.${index}.numberOfHours`]}
+                                fullWidth
+                            />
+                            <Button variant="containedSecondary" onClick={() => removeDurationRule(index)}>
+                                Șterge
+                            </Button>
+                        </Box>
+                    ))}
+
+                    {errors.durationRules && (
+                        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            {errors.durationRules}
+                        </Typography>
+                    )}
 
                     <Button variant="contained" component="label">
                         Încarcă imagine (JPEG)
@@ -410,6 +499,11 @@ export const MyAdsPage = () => {
                             onChange={handleImageUpload}
                         />
                     </Button>
+                    {errors.image && (
+                        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            {errors.image}
+                        </Typography>
+                    )}
                     {newAd.image && (
                         <Box sx={{ fontSize: "0.9rem", color: "gray" }}>
                             Fișier selectat: {newAd.image.name}

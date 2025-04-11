@@ -35,7 +35,7 @@ export const MyGroupsPage = () => {
         minAge: "",
         maxAge: "",
         status: "",
-        activityDays: []
+        durationRules: []
     });
 
     const [errors, setErrors] = useState({});
@@ -145,7 +145,7 @@ export const MyGroupsPage = () => {
                 <Alert severity="info">Nu ai încă grupuri create.</Alert>
             ) : (
                 <Grid2 container spacing={2}>
-                    {groups.map((group) => (
+                    {groups?.map((group) => (
                         <Grid2 sx={{width: '100%'}} xs={12} key={group.id}>
                             <GroupCard group={group} onEdit={() => handleEditGroup(group)}/>
                         </Grid2>
@@ -172,19 +172,19 @@ export const MyGroupsPage = () => {
                     <TextField select label="Gen" name="gender" value={selectedGroup?.gender || ""}
                                onChange={(e) => handleChange(e, true)} error={!!errors.gender}
                                helperText={errors.gender} fullWidth>
-                        {Object.entries(Gender).map(([key, label]) => (
+                        {Object.entries(Gender)?.map(([key, label]) => (
                             <MenuItem key={key} value={key}>{label}</MenuItem>
                         ))}
                     </TextField>
                     <TextField select label="Status" name="status" value={selectedGroup?.status || ""}
                                onChange={(e) => handleChange(e, true)} error={!!errors.status}
                                helperText={errors.status} fullWidth>
-                        {Object.entries(GroupStatus).map(([key, label]) => (
+                        {Object.entries(GroupStatus)?.map(([key, label]) => (
                             <MenuItem key={key} value={key}>{label}</MenuItem>
                         ))}
                     </TextField>
                     <FormGroup row>
-                        {Object.entries(Weekday).map(([key, label]) => (
+                        {Object.entries(Weekday)?.map(([key, label]) => (
                             <FormControlLabel
                                 key={key}
                                 control={

@@ -1,16 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import {
-    AppBar,
-    Toolbar,
-    IconButton,
-    Typography,
-    Menu,
-    MenuItem,
-    Button,
-    useMediaQuery,
-    Box, Badge
+    AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Button, useMediaQuery, Box, Badge
 } from "@mui/material";
-import {Menu as MenuIcon, Logout, Notifications} from "@mui/icons-material";
+import {Menu as MenuIcon, Logout, Notifications, DoneAll, Check} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import {isTrainer} from "../context/AuthContextProvider";
 import {getLatestNotifications} from "../api/notifications/getLatestNotifications";
@@ -74,30 +66,26 @@ export const Navbar = ({onLogout}) => {
 
         return <Box>
             {notifications.filter(notification => !notification.seen).length > 0 &&
-                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-                    <Button size="small" variant="contained"
+                <Box sx={{display: "flex", justifyContent: "center", mb: 1}}>
+                    <Button startIcon={<DoneAll/>} variant="notification"
                             onClick={() => markAsSeen(notifications.filter(notification => !notification.seen).map(notification => notification.id))}>
-                        Mark all as Seen
+                        Mark all as seen
                     </Button>
                 </Box>}
             {notifications?.map((notification, index) => (
                 <MenuItem key={index} sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1}}>
-                    <Box sx={{marginTop: 1, display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-                        <Typography variant="subtitle1" sx={{fontWeight: 'bold'}}
-                                    color={notification.seen ? "success.main" : "error.main"}>
-                            {notification.title}
-                        </Typography>
-                    </Box>
+                    <Typography variant="subtitle1" sx={{fontWeight: 'bold'}}
+                                color={notification.seen ? "success.main" : "error.main"}>
+                        {notification.title}
+                    </Typography>
                     <Typography variant="body2" color="text.secondary">
                         {notification.body}
                     </Typography>
-                    <Box>
-                        {!notification?.seen && (
-                            <Button size="small" variant="contained" onClick={() => markAsSeen([notification.id])}>
-                                Mark as Seen
-                            </Button>
-                        )}
-                    </Box>
+                    {!notification?.seen && (
+                        <Button startIcon={<Check/>} variant="notification"
+                                onClick={() => markAsSeen([notification.id])}>
+                            Mark as seen
+                        </Button>)}
                 </MenuItem>))}
         </Box>
     };
@@ -106,87 +94,87 @@ export const Navbar = ({onLogout}) => {
         const items = [];
 
         if (userRole === "parent") {
-            items.push(
-                <MenuItem key="home-parent"
-                          onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
+            items.push(<MenuItem key="home-parent"
+                                 onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
                 <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare
-                    copii</MenuItem>,
-                <MenuItem key="parent-profile" onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul
-                    meu</MenuItem>
-            );
+                    copii</MenuItem>, <MenuItem key="parent-profile"
+                                                onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul
+                    meu</MenuItem>);
         }
 
         if (userRole === "trainer") {
-            items.push(
-                <MenuItem key="my-activities" onClick={() => handleNavigate('/my-activities', closeFn)}>Activitățile
-                    mele</MenuItem>,
-                <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile mele</MenuItem>,
-                <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele mele</MenuItem>,
-                <MenuItem key="trainer-profile" onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul
-                    meu</MenuItem>
-            );
+            items.push(<MenuItem key="my-activities" onClick={() => handleNavigate('/my-activities', closeFn)}>Activitățile
+                mele</MenuItem>, <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile
+                mele</MenuItem>, <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele
+                mele</MenuItem>, <MenuItem key="trainer-profile"
+                                           onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul
+                meu</MenuItem>);
         }
 
         if (isMobileMenu) {
-            items.push(
-                <MenuItem key="logout" onClick={onLogout}>
-                    <Logout/> Logout
-                </MenuItem>
-            );
+            items.push(<MenuItem key="logout" onClick={onLogout}>
+                <Logout/> Logout
+            </MenuItem>);
         }
 
         return items;
     };
 
-    return (
-        <AppBar position="static">
-            <Toolbar>
-                {isMobile ? (
-                    <>
-                        <IconButton edge="start" color="inherit" onClick={handleMobileMenuOpen}>
-                            <MenuIcon/>
-                        </IconButton>
-                        <Menu
-                            anchorEl={mobileAnchorEl}
-                            open={Boolean(mobileAnchorEl)}
-                            onClose={handleMobileMenuClose}
-                        >
-                            {renderMenuItems(handleMobileMenuClose, true)}
-                        </Menu>
-                    </>
-                ) : (
-                    <>
-                        <Box>
-                            <Button variant="navigation-bar" onClick={handleDesktopMenuOpen}>Meniu</Button>
-                            <Menu
-                                anchorEl={desktopAnchorEl}
-                                open={Boolean(desktopAnchorEl)}
-                                onClose={handleDesktopMenuClose}
-                            >
-                                {renderMenuItems(handleDesktopMenuClose)}
-                            </Menu>
-                            <IconButton color="inherit" onClick={handleNotificationsOpen}>
-                                <Badge badgeContent={nrOfUnreadNotifications} color="error">
-                                    <Notifications/>
-                                </Badge>
-                            </IconButton>
-                            <Menu
-                                anchorEl={notificationsAnchorEl}
-                                open={Boolean(notificationsAnchorEl)}
-                                onClose={handleNotificationsClose}
-                            >
-                                {renderNotifications()}
-                            </Menu>
-                        </Box>
-                        <Typography variant="h6" sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
-                            My App
-                        </Typography>
-                        <Button variant={'navigation-bar'} startIcon={<Logout/>} onClick={onLogout}>
-                            Logout
-                        </Button>
-                    </>
-                )}
-            </Toolbar>
-        </AppBar>
-    );
+    return (<AppBar position="static">
+        <Toolbar>
+            {isMobile ? (<>
+                <IconButton edge="start" color="inherit" onClick={handleMobileMenuOpen}>
+                    <MenuIcon/>
+                </IconButton>
+                <Menu
+                    anchorEl={mobileAnchorEl}
+                    open={Boolean(mobileAnchorEl)}
+                    onClose={handleMobileMenuClose}
+                >
+                    {renderMenuItems(handleMobileMenuClose, true)}
+                </Menu>
+                <IconButton color="inherit" onClick={handleNotificationsOpen}>
+                    <Badge badgeContent={nrOfUnreadNotifications} color="error">
+                        <Notifications/>
+                    </Badge>
+                </IconButton>
+                <Menu
+                    anchorEl={notificationsAnchorEl}
+                    open={Boolean(notificationsAnchorEl)}
+                    onClose={handleNotificationsClose}
+                >
+                    {renderNotifications()}
+                </Menu>
+            </>) : (<>
+                <Box>
+                    <Button variant="navigation-bar" onClick={handleDesktopMenuOpen}>Meniu</Button>
+                    <Menu
+                        anchorEl={desktopAnchorEl}
+                        open={Boolean(desktopAnchorEl)}
+                        onClose={handleDesktopMenuClose}
+                    >
+                        {renderMenuItems(handleDesktopMenuClose)}
+                    </Menu>
+                    <IconButton color="inherit" onClick={handleNotificationsOpen}>
+                        <Badge badgeContent={nrOfUnreadNotifications} color="error">
+                            <Notifications/>
+                        </Badge>
+                    </IconButton>
+                    <Menu
+                        anchorEl={notificationsAnchorEl}
+                        open={Boolean(notificationsAnchorEl)}
+                        onClose={handleNotificationsClose}
+                    >
+                        {renderNotifications()}
+                    </Menu>
+                </Box>
+                <Typography variant="h6" sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
+                    My App
+                </Typography>
+                <Button variant={'navigation-bar'} startIcon={<Logout/>} onClick={onLogout}>
+                    Logout
+                </Button>
+            </>)}
+        </Toolbar>
+    </AppBar>);
 };
