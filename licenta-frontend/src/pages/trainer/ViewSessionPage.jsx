@@ -12,6 +12,7 @@ import {AddFileDialog} from "../../components/trainer/AddFileDialog";
 import {createSessionDocument} from "../../api/session-document/createSessionDocument";
 import {getDocumentTitle} from "../../api/session-document/getDocumentTitle";
 import {getDocumentContent} from "../../api/session-document/getDocumentContent";
+import {SessionComments} from "../../components/trainer/SessionComments";
 
 export const ViewSessionPage = () => {
     const {sessionId, groupId} = useParams();
@@ -26,20 +27,19 @@ export const ViewSessionPage = () => {
     const start = formatDateTime(session?.startDateTime);
     const end = formatDateTime(session?.endDateTime);
 
+    const fetchSession = async () => {
+        try {
+            const data = await getSession(sessionId);
+            setSession(data || {});
+
+            const docTitle = await getDocumentTitle(sessionId);
+            setDocumentTitle(docTitle.title);
+
+        } catch (err) {
+            setError('Eroare la încărcarea sesiunii');
+        }
+    };
     useEffect(() => {
-        const fetchSession = async () => {
-            try {
-                const data = await getSession(sessionId);
-                setSession(data || {});
-
-                const docTitle = await getDocumentTitle(sessionId);
-                setDocumentTitle(docTitle.title);
-
-            } catch (err) {
-                setError('Eroare la încărcarea sesiunii');
-            }
-        };
-
         if (sessionId) {
             fetchSession();
         }
@@ -71,6 +71,7 @@ export const ViewSessionPage = () => {
                 ...session, note: note
             };
             await updateSessionNote(sessionId, updatedSession);
+            await fetchSession()
         } catch (err) {
             setError('Nu s-a putut salva nota');
         } finally {
@@ -87,6 +88,7 @@ export const ViewSessionPage = () => {
         const result = await createSessionDocument(session.id, formData);
 
         if (result.success) {
+            await fetchSession();
             console.log("Document încărcat cu succes");
         } else {
             console.error("Eroare la încărcare:", result.error);
@@ -141,6 +143,7 @@ export const ViewSessionPage = () => {
                 </Box>
             </Box>
         </Paper>)}
+        <SessionComments sessionId={sessionId} />
         <AddNoteDialog
             open={noteOpen}
             onClose={() => setNoteOpen(false)}
