@@ -8,7 +8,6 @@ import DownloadIcon from "@mui/icons-material/Download";
 import DeleteIcon from '@mui/icons-material/Delete';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import { ActivityCategory, GroupStatus } from "../../Enum";
-import { AddNoteDialog } from "../../components/trainer/AddNoteDialog";
 import { updateSessionNote } from "../../api/session/updateSessionNote";
 import { AddFileDialog } from "../../components/trainer/AddFileDialog";
 import { createSessionDocument } from "../../api/session-document/createSessionDocument";
@@ -16,12 +15,13 @@ import { getDocumentTitle } from "../../api/session-document/getDocumentTitle";
 import { getDocumentContent } from "../../api/session-document/getDocumentContent";
 import { SessionNote } from "../../components/trainer/SessionNote";
 import { deleteSessionDocument as deleteSessionDocumentService } from '../../api/session-document/deleteSessionDocument';
+import { EditSessionDatesDialog } from '../../components/trainer/EditSessionDatesDialog';
+import { updateSessionDate } from '../../api/session/updateSessionDate';
 
 export const ViewSessionPage = () => {
     const { sessionId, groupId } = useParams();
-    const [noteOpen, setNoteOpen] = useState(false);
     const [fileOpen, setFileOpen] = useState(false);
-    const [dateOpen, setDateOpen] = useState(false);
+    const [editSessionPageModalOpen, setEditSessionPageModalOpen] = useState(false);
     const [note, setNote] = useState('');
     const [session, setSession] = useState(null);
     const [group, setGroup] = useState(null);
@@ -64,11 +64,6 @@ export const ViewSessionPage = () => {
         }
     }, [groupId]);
 
-    const handleAddNote = () => {
-        setNote(session?.note || '');
-        setNoteOpen(true);
-    };
-
     const handleSaveNote = async () => {
         try {
             const updatedSession = {
@@ -78,8 +73,6 @@ export const ViewSessionPage = () => {
             await fetchSession()
         } catch (err) {
             setError('Nu s-a putut salva nota');
-        } finally {
-            setNoteOpen(false);
         }
     };
 
@@ -108,10 +101,20 @@ export const ViewSessionPage = () => {
         }
     };
 
+    const editSessionPeriod = async (period) => {
+        const result = await updateSessionDate(session.id, period);
+
+        if (result.success) {
+            await fetchSession();
+        } else {
+            console.error("Eroare la editare perioada sesiune:", result.error);
+        }
+    };
+
 
     return (<Container maxWidth="lg" sx={{ mt: 4 }}>
         {session && (<Typography variant="h4" gutterBottom>
-            Vizualizare sesiune - {start.dayName}: {`${start.hours} - ${end.hours}`}
+            Vizualizare sesiune - {start.dayName}, {start.dateFormatted}: {`${start.hours} - ${end.hours}`}
         </Typography>)}
 
         {error ? (<Alert severity="error">{error}</Alert>) : (<Paper elevation={3} sx={{ p: 3 }}>
@@ -160,24 +163,23 @@ export const ViewSessionPage = () => {
                     </Typography>
                 </Box>
                 <Box display="flex" flexDirection="column" gap={1}>
-                    <Button variant="outlined" color="primary">
+                    <Button variant="outlined" color="primary" onClick={() => setEditSessionPageModalOpen(true)}>
                         Editează data
                     </Button>
                 </Box>
             </Box>
         </Paper>)}
         <SessionNote note={note} setNote={setNote} updateNote={handleSaveNote} />
-        <AddNoteDialog
-            open={noteOpen}
-            onClose={() => setNoteOpen(false)}
-            note={note}
-            setNote={setNote}
-            onSave={handleSaveNote}
-        />
         <AddFileDialog
             open={fileOpen}
             onClose={() => setFileOpen(false)}
             onUpload={handleUploadFile}
         />
+        {session && <EditSessionDatesDialog
+            open={editSessionPageModalOpen}
+            onClose={() => setEditSessionPageModalOpen(false)}
+            session={session} 
+            onSave={editSessionPeriod}
+            />}
     </Container>);
 }
