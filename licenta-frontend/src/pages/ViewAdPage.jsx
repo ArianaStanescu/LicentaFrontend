@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Typography, Box, Button} from "@mui/material";
 import {getAd} from "../api/ads/getAd";
 import {getAdImage} from "../api/ads/getAdImage";
@@ -16,6 +16,7 @@ import {ConfirmDialog} from "../components/ConfirmDialog";
 
 export const ViewAdPage = () => {
     const {id} = useParams();
+    const navigate = useNavigate();
     const [ad, setAd] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [trainer, setTrainer] = useState(null);
@@ -107,7 +108,7 @@ export const ViewAdPage = () => {
             {adImage ? (<Box
                 component="img"
                 src={adImage}
-                alt={ad.title}
+                alt={ad?.title}
                 sx={{
                     width: "100%", height: "auto", objectFit: "contain", borderRadius: 2,
                 }}
@@ -339,13 +340,22 @@ export const ViewAdPage = () => {
                 >
                     Telefon: {trainer ? trainer.phoneNumber : ''}
                 </Typography>
-                {showAddFavoriteTrainer &&
-                    <Button onClick={handleAddFavoriteTrainer} variant="followText">Aboneaza-te!</Button>}
+                <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+                    {!userIsTrainer &&
+                        <Button
+                            variant="followText"
+                            onClick={() => navigate('/view-trainer-profile/' + trainer.id)}
+                        >
+                            Vizualizare profil trainer
+                        </Button>}
+                    {showAddFavoriteTrainer && !userIsTrainer &&
+                        <Button onClick={handleAddFavoriteTrainer} variant="followText">Aboneaza-te!</Button>}
+                </Box>
             </Box>
             <CreateEnrollmentRequestPopup open={popupOpen}
                                           onClose={() => setPopupOpen(false)}
                                           refreshAd={fetchAd}
-                                          />
+            />
             <ViewEnrollmentRequestsPopup open={enrollmentRequestsPopupOpen}
                                          onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
             <EditAdPopup
