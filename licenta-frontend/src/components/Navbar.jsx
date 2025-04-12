@@ -93,7 +93,6 @@ export const Navbar = ({onLogout}) => {
         const items = [];
 
         if (userRole === "parent") {
-            // const parentId = getParentId();
             items.push(
                 <MenuItem key="home-parent" onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
                 <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare copii</MenuItem>,
