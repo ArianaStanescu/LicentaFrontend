@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {
     Box,
@@ -26,6 +26,7 @@ import {ArrowBack, ArrowForward} from "@mui/icons-material";
 
 export const ViewGroupPage = () => {
     const {groupId} = useParams();
+    const navigate = useNavigate();
     const [group, setGroup] = useState(null);
     const [error, setError] = useState(null);
     const [openChildrenDialog, setOpenChildrenDialog] = useState(false);
@@ -43,6 +44,7 @@ export const ViewGroupPage = () => {
     const fetchGroup = async () => {
         try {
             const data = await getGroup(groupId);
+            console.log(data);
             setGroup(data || {});
         } catch (err) {
             setError("Eroare la încărcarea grupului.");
@@ -57,17 +59,6 @@ export const ViewGroupPage = () => {
     const fetchSessions = async () => {
         try {
             const data = await getSessionsByGroup(groupId, filters);
-            // if(!nextSession) {
-            //     const now = new Date();
-            //     const nextSession = data.reduce((closest, session) => {
-            //         const sessionDate = new Date(session.startDateTime);
-            //         if (sessionDate > now && (!closest || sessionDate < new Date(closest.startDateTime))) {
-            //             return session;
-            //         }
-            //         return closest;
-            //     }, null);
-            //     setNextSession(nextSession);
-            // }
             if (!nextSession) {
                 const now = new Date();
                 //setam ora la 00:00 pentru a compara doar in functie de data
@@ -143,13 +134,22 @@ export const ViewGroupPage = () => {
                 return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
             }).join(", ")}
             </Typography>
-            <Button
-                variant="contained"
-                sx={{mt: 2}}
-                onClick={() => setOpenChildrenDialog(true)}
-            >
-                Vizualizare copii
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
+                <Button
+                    variant="contained"
+                    sx={{mt: 2}}
+                    onClick={() => navigate('/view-trainer-profile/' + group?.activity?.trainer.id)}
+                >
+                    Vizualizare profil trainer
+                </Button>
+                <Button
+                    variant="contained"
+                    sx={{mt: 2}}
+                    onClick={() => setOpenChildrenDialog(true)}
+                >
+                    Vizualizare copii
+                </Button>
+            </Box>
             {sessions?.length === 0 &&
                 <Button
                     variant="contained"
