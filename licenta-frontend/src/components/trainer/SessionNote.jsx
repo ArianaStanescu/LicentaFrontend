@@ -12,7 +12,7 @@ export const SessionNote = ({ note, setNote, updateNote }) => {
     const userIsTrainer = isTrainer();
     return (
         <Box mt={5}>
-            <Typography variant="h6" gutterBottom>Nota sesiune</Typography>
+            <Typography variant="h6" gutterBottom>Notă sesiune</Typography>
 
             <Box mt={2} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextareaAutosize

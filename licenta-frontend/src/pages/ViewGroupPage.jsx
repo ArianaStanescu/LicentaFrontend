@@ -23,6 +23,8 @@ import {calculateAge} from "../helpers/calculateAge";
 import {getSessionsByGroup} from "../api/session/getSessionsByGroup";
 import {SessionCard} from "../components/SessionCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import { isTrainer } from "../context/AuthContextProvider";
+import { getParentId, getTrainerId } from "../helpers/localStorageHelper";
 
 export const ViewGroupPage = () => {
     const {id: groupId} = useParams();
@@ -56,7 +58,7 @@ export const ViewGroupPage = () => {
 
     const fetchSessions = async () => {
         try {
-            const data = await getSessionsByGroup(groupId, filters);
+            const data = await getSessionsByGroup(groupId, isTrainer(), isTrainer() ? getTrainerId() : getParentId(), filters);
             // if(!nextSession) {
             //     const now = new Date();
             //     const nextSession = data.reduce((closest, session) => {

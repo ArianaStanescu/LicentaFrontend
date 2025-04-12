@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { use, useEffect, useState } from "react";
 import { getSession } from "../../api/session/getSession";
-import { Alert, Box, Button, Container, IconButton, Paper, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { formatDateTime } from "../../components/SessionCard";
 import { getGroup } from "../../api/group/getGroup";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -18,6 +18,8 @@ import { deleteSessionDocument as deleteSessionDocumentService } from '../../api
 import { EditSessionDatesDialog } from '../../components/trainer/EditSessionDatesDialog';
 import { updateSessionDate } from '../../api/session/updateSessionDate';
 import { isTrainer } from '../../context/AuthContextProvider';
+import { getParentId, getTrainerId } from '../../helpers/localStorageHelper';
+import EmailIcon from '@mui/icons-material/Email';
 
 export const ViewSessionPage = () => {
     const { sessionId, groupId } = useParams();
@@ -35,7 +37,7 @@ export const ViewSessionPage = () => {
 
     const fetchSession = async () => {
         try {
-            const data = await getSession(sessionId);
+            const data = await getSession(sessionId, isTrainer(), isTrainer() ? getTrainerId() : getParentId());
             setSession(data || {});
             setNote(data.note || '');
 
@@ -172,9 +174,17 @@ export const ViewSessionPage = () => {
                 </Box>}
             </Box>
         </Paper>)}
-        <Button sx={{marginTop: 3}} variant="contained" color="primary" onClick={() => navigate(`/view-session-comments/${sessionId}/${groupId}`)}>
-            Comentarii
-        </Button>
+        <Box display={"flex"} justifyContent="flex-start" alignItems="center" sx={{ mt: 3 }}>
+            <Button variant="contained" color="primary" onClick={() => navigate(`/view-session-comments/${sessionId}/${groupId}`)}>
+                Comentarii
+            </Button>
+            {session?.newComments &&
+                <Tooltip title="Ai comment-uri necitite!">
+                    <Box sx={{ color: "red", ml: 2, mt: 0.5 }}>
+                        <EmailIcon fontSize="small" />
+                    </Box>
+                </Tooltip>}
+        </Box>
         <SessionNote note={note} setNote={setNote} updateNote={handleSaveNote} />
         <AddFileDialog
             open={fileOpen}

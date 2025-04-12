@@ -1,7 +1,7 @@
 import {BASE_URL, instance} from "../axiosInstance";
 
-export const getSessionsByGroup = async (groupId, params) => {
-    const url = `${BASE_URL}/api/sessions/list/${groupId}`;
+export const getSessionsByGroup = async (groupId, isTrainer, userId, params) => {
+    const url = `${BASE_URL}/api/sessions/list/${groupId}?isTrainer=${isTrainer}&userId=${userId}`;
 
     try {
         const response = await instance.get(url, { params });

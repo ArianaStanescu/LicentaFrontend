@@ -9,24 +9,24 @@ import {
 } from '@mui/material';
 import { isTrainer } from '../context/AuthContextProvider';
 import { getParentId, getTrainerId } from '../helpers/localStorageHelper';
-import { createCommentByParent } from '../api/session-comment/createCommentByParent';
-import { createCommentByTrainer } from '../api/session-comment/createCommentByTrainer';
+import { editCommentByParent } from '../api/session-comment/editCommentByParent';
+import { editCommentByTrainer } from '../api/session-comment/editCommentByTrainer';
 
-export const AddSessionCommentDialog = ({ open, onClose, sessionId, onSave }) => {
-    const [comment, setComment] = React.useState('');
+export const EditSessionCommentDialog = ({ open, onClose, commentToEdit, onSave }) => {
+    const [comment, setComment] = React.useState(commentToEdit?.content);
     const userIsTrainer = isTrainer();
-    const createComment = async () => {
+    const editComment = async () => {
         try {
             if (userIsTrainer) {
-                await createCommentByTrainer(
+                await editCommentByTrainer(
                     getTrainerId(),
-                    sessionId,
+                    commentToEdit?.id,
                     comment,
                 );
             } else {
-                await createCommentByParent(
+                await editCommentByParent(
                     getParentId(),
-                    sessionId,
+                    commentToEdit?.id,
                     comment
                 );
             }
@@ -40,7 +40,7 @@ export const AddSessionCommentDialog = ({ open, onClose, sessionId, onSave }) =>
     };
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle>Adaugă comment</DialogTitle>
+            <DialogTitle>Modifică comment</DialogTitle>
             <DialogContent>
                 <TextField
                     label="Comment sesiune"
@@ -54,7 +54,7 @@ export const AddSessionCommentDialog = ({ open, onClose, sessionId, onSave }) =>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Închide</Button>
-                <Button onClick={() => createComment()} variant="contained">
+                <Button onClick={() => editComment()} variant="contained">
                     Salvează
                 </Button>
             </DialogActions>

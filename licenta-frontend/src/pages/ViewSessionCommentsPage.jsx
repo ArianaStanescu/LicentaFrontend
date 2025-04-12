@@ -1,20 +1,18 @@
 import { Box, Button, Container, Grid2, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { isParent, isTrainer } from "../context/AuthContextProvider";
+import { isTrainer } from "../context/AuthContextProvider";
 import { getAllCommentsForTrainer } from "../api/session-comment/getAllCommentsForTrainer";
 import { getParentId, getTrainerId } from "../helpers/localStorageHelper";
 import { getAllCommentsForParent } from "../api/session-comment/getAllCommentsForParent";
 import { AddSessionCommentDialog } from "../components/AddSessionCommentDialog";
-import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { SessionCommentCard } from "../components/SessionCommentCard";
 
 export const ViewSessionCommentsPage = () => {
     const { sessionId, groupId } = useParams();
     const [error, setError] = useState(null);
     const [comments, setComments] = useState([]);
-    const userIsTrainer = isTrainer();
-    const userIsParent = isParent();
     const [addCommentDialogOpen, setAddCommentDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState({
@@ -61,7 +59,7 @@ export const ViewSessionCommentsPage = () => {
 
     useEffect(() => {
         fetchComments();
-    }, []);
+    }, [filters]);
 
     return (<Container maxWidth="lg" sx={{ mt: 4 }}>
         <Typography variant="h4" gutterBottom>
@@ -78,10 +76,11 @@ export const ViewSessionCommentsPage = () => {
             <>
                 <Grid2 container spacing={2}>
                     {comments?.map((comment) => (
-                        <Grid2 item xs={12} sm={6} md={4} key={comment.id} style={{"width": "100%"}}>
+                        <Grid2 item xs={12} sm={6} md={4} key={comment.id} style={{ "width": "100%" }}>
                             <SessionCommentCard
                                 comment={comment}
                                 sessionId={sessionId}
+                                refresh={fetchComments}
                             />
                         </Grid2>
                     ))}
