@@ -4,7 +4,9 @@ export const createCommentByTrainer = async (trainerId, sessionId, comment) => {
     const url = `${BASE_URL}/api/session-comments/create-by-trainer/${sessionId}/${trainerId}`;
 
     try {
-        const response = await instance.post(url, comment);
+        const response = await instance.post(url, {
+            comment: comment
+        });
         if (response.data.error) {
             return { success: false, error: response.data.error };
         } else {

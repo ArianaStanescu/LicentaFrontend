@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
+import { use, useEffect, useState } from "react";
 import { getSession } from "../../api/session/getSession";
 import { Alert, Box, Button, Container, IconButton, Paper, Typography } from "@mui/material";
 import { formatDateTime } from "../../components/SessionCard";
@@ -31,7 +31,8 @@ export const ViewSessionPage = () => {
     const start = formatDateTime(session?.startDateTime);
     const end = formatDateTime(session?.endDateTime);
     const userIsTrainer = isTrainer();
- 
+    const navigate = useNavigate();
+
     const fetchSession = async () => {
         try {
             const data = await getSession(sessionId);
@@ -144,7 +145,7 @@ export const ViewSessionPage = () => {
                                 <DriveFolderUploadIcon />
                             </IconButton>
                         }
-                        {documentTitle && <span style={{marginLeft: 5}}>{documentTitle}</span>}
+                        {documentTitle && <span style={{ marginLeft: 5 }}>{documentTitle}</span>}
                         {documentTitle &&
                             <IconButton
                                 onClick={() => getDocumentContent(sessionId, documentTitle)}
@@ -171,6 +172,9 @@ export const ViewSessionPage = () => {
                 </Box>}
             </Box>
         </Paper>)}
+        <Button sx={{marginTop: 3}} variant="contained" color="primary" onClick={() => navigate(`/view-session-comments/${sessionId}/${groupId}`)}>
+            Comentarii
+        </Button>
         <SessionNote note={note} setNote={setNote} updateNote={handleSaveNote} />
         <AddFileDialog
             open={fileOpen}
@@ -180,8 +184,8 @@ export const ViewSessionPage = () => {
         {session && <EditSessionDatesDialog
             open={editSessionPageModalOpen}
             onClose={() => setEditSessionPageModalOpen(false)}
-            session={session} 
+            session={session}
             onSave={editSessionPeriod}
-            />}
+        />}
     </Container>);
 }
