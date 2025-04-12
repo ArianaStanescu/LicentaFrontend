@@ -168,7 +168,7 @@ export const ViewGroupPage = () => {
         ) : (
             <>
                 <Grid2 container spacing={2} sx={{padding: 2}}>
-                    {sessions.map((session) => (
+                    {sessions?.map((session) => (
                         <Grid2 item xs={12} sm={6} md={4} key={session.id}>
                             <SessionCard
                                 session={session}
@@ -218,10 +218,10 @@ export const ViewGroupPage = () => {
         >
             <DialogTitle>Copii înscriși în grup</DialogTitle>
             <DialogContent dividers sx={{py: 0}}>
-                {group.children?.length === 0 ? (
+                {group?.children?.length === 0 ? (
                     <Typography color="text.secondary">Niciun copil înscris.</Typography>) : (<Grid2 container>
                     <List>
-                        {group.children.map(child => (<ListItem key={child.id}>
+                        {group?.children?.map(child => (<ListItem key={child.id}>
                             <ListItemText
                                 primary={`${child.firstName} ${child.lastName}`}
                                 secondary={`Vârstă: ${calculateAge(child.birthDate)} ani`}

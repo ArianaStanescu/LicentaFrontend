@@ -163,8 +163,8 @@ export const ViewSessionPage = () => {
                     </Typography>
                 </Box>
                 <Box display="flex" flexDirection="column" gap={1}>
-                    <Button variant="outlined" color="primary" onClick={() => setEditSessionPageModalOpen(true)}>
-                        Editează data
+                    <Button variant="text" color="primary" onClick={() => setEditSessionPageModalOpen(true)}>
+                        Editează perioada de desfășurare
                     </Button>
                 </Box>
             </Box>
