@@ -114,7 +114,7 @@ export const ViewSessionPage = () => {
 
     return (<Container maxWidth="lg" sx={{ mt: 4 }}>
         {session && (<Typography variant="h4" gutterBottom>
-            Vizualizare sesiune - {start.dayName}, {start.dateFormatted}: {`${start.hours} - ${end.hours}`}
+            Vizualizare sesiune - {start.dayName}, {start.dateFormatted}: {`${start.hours}:${start.minutes} - ${end.hours}:${end.minutes}`}
         </Typography>)}
 
         {error ? (<Alert severity="error">{error}</Alert>) : (<Paper elevation={3} sx={{ p: 3 }}>

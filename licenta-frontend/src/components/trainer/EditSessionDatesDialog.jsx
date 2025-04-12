@@ -11,6 +11,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { setHours, setMinutes } from "date-fns";
+import { ro } from 'date-fns/locale';
 
 export const EditSessionDatesDialog = ({ open, onClose, onSave, session }) => {
     const [selectedDate, setSelectedDate] = useState(new Date(session?.startDateTime));
@@ -51,7 +52,9 @@ export const EditSessionDatesDialog = ({ open, onClose, onSave, session }) => {
                         dateFormat="yyyy/MM/dd"
                         inline
                         minDate={currentDate}
+                        locale={ro}
                     />
+                    <Box display={"flex"} gap={5} justifyContent="center">
                     <DatePicker
                         selected={startTime}
                         onChange={updateStartTime}
@@ -61,6 +64,7 @@ export const EditSessionDatesDialog = ({ open, onClose, onSave, session }) => {
                         timeFormat="HH:mm"
                         dateFormat="HH:mm"
                         inline
+                        timeCaption="Start"
                     />
                     <DatePicker
                         selected={endTime}
@@ -71,7 +75,9 @@ export const EditSessionDatesDialog = ({ open, onClose, onSave, session }) => {
                         timeFormat="HH:mm"
                         dateFormat="HH:mm"
                         inline
+                        timeCaption="Final"
                     />
+                    </Box>
                     {startTime >= endTime && (
                         <Typography color="error" variant="body2">
                             Data de final trebuie să fie după data de început!

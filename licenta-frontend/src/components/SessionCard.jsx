@@ -6,9 +6,10 @@ import {dayIndexToEnum} from "../Enum";
 export const formatDateTime = (dateTime) => {
     const date = new Date(dateTime);
     const dayName = dayIndexToEnum[date.getDay()];
-    const dateFormatted = date.toLocaleDateString();
+    const dateFormatted = date.toLocaleDateString('ro-RO');
     const hours = date.getHours().toString().padStart(2, '0');
-    return { dateFormatted, dayName, hours };
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return { dateFormatted, dayName, hours, minutes };
 };
 
 export const SessionCard = ({session, isNextSession, groupId}) => {
