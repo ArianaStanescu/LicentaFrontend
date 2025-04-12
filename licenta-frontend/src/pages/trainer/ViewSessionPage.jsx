@@ -17,6 +17,7 @@ import { SessionNote } from "../../components/trainer/SessionNote";
 import { deleteSessionDocument as deleteSessionDocumentService } from '../../api/session-document/deleteSessionDocument';
 import { EditSessionDatesDialog } from '../../components/trainer/EditSessionDatesDialog';
 import { updateSessionDate } from '../../api/session/updateSessionDate';
+import { isTrainer } from '../../context/AuthContextProvider';
 
 export const ViewSessionPage = () => {
     const { sessionId, groupId } = useParams();
@@ -29,7 +30,8 @@ export const ViewSessionPage = () => {
     const [error, setError] = useState(null);
     const start = formatDateTime(session?.startDateTime);
     const end = formatDateTime(session?.endDateTime);
-
+    const userIsTrainer = isTrainer();
+ 
     const fetchSession = async () => {
         try {
             const data = await getSession(sessionId);
@@ -134,7 +136,7 @@ export const ViewSessionPage = () => {
                     </Typography>
                     <Typography variant="body1">
                         Document:
-                        {!documentTitle &&
+                        {!documentTitle && userIsTrainer &&
                             <IconButton
                                 onClick={() => handleAddFile()}
                                 size="small"
@@ -151,7 +153,7 @@ export const ViewSessionPage = () => {
                                 <DownloadIcon />
                             </IconButton>
                         }
-                        {documentTitle &&
+                        {documentTitle && userIsTrainer &&
                             <IconButton
                                 onClick={() => deleteSessionDocument(sessionId)}
                                 size="small"
@@ -162,11 +164,11 @@ export const ViewSessionPage = () => {
                         }
                     </Typography>
                 </Box>
-                <Box display="flex" flexDirection="column" gap={1}>
+                {userIsTrainer && <Box display="flex" flexDirection="column" gap={1}>
                     <Button variant="text" color="primary" onClick={() => setEditSessionPageModalOpen(true)}>
                         Editează perioada de desfășurare
                     </Button>
-                </Box>
+                </Box>}
             </Box>
         </Paper>)}
         <SessionNote note={note} setNote={setNote} updateNote={handleSaveNote} />

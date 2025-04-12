@@ -6,8 +6,10 @@ import {
     Button,
     TextareaAutosize
 } from "@mui/material";
+import { isTrainer } from "../../context/AuthContextProvider";
 
 export const SessionNote = ({ note, setNote, updateNote }) => {
+    const userIsTrainer = isTrainer();
     return (
         <Box mt={5}>
             <Typography variant="h6" gutterBottom>Nota sesiune</Typography>
@@ -23,9 +25,9 @@ export const SessionNote = ({ note, setNote, updateNote }) => {
                     style={{
                         resize: 'vertical', maxHeight: '500px', minHeight: '50px'
                     }}
-
+                    readOnly={!userIsTrainer}
                 />
-                <Box mt={1}>
+               {userIsTrainer && <Box mt={1}>
                     <Button
                         variant="contained"
                         onClick={() => updateNote()}
@@ -33,7 +35,7 @@ export const SessionNote = ({ note, setNote, updateNote }) => {
                     >
                         Salveaza
                     </Button>
-                </Box>
+                </Box>}
             </Box>
         </Box>
     );
