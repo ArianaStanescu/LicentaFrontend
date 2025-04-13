@@ -23,6 +23,8 @@ import {calculateAge} from "../helpers/calculateAge";
 import {getSessionsByGroup} from "../api/session/getSessionsByGroup";
 import {SessionCard} from "../components/SessionCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import { isTrainer } from "../context/AuthContextProvider";
+import { getParentId, getTrainerId } from "../helpers/localStorageHelper";
 
 export const ViewGroupPage = () => {
     const {groupId} = useParams();
@@ -58,7 +60,7 @@ export const ViewGroupPage = () => {
 
     const fetchSessions = async () => {
         try {
-            const data = await getSessionsByGroup(groupId, filters);
+            const data = await getSessionsByGroup(groupId, isTrainer(), isTrainer() ? getTrainerId() : getParentId(), filters);
             if (!nextSession) {
                 const now = new Date();
                 //setam ora la 00:00 pentru a compara doar in functie de data
@@ -129,7 +131,7 @@ export const ViewGroupPage = () => {
             <Typography><strong>Vârste acceptate:</strong> {group.minAge} - {group.maxAge} ani</Typography>
             <Typography><strong>Copii înscriși:</strong> {group.childrenCount}</Typography>
             <Typography><strong>Zile de
-                activitate:</strong> {group.durationRules.map((durationRule) => {
+                activitate:</strong> {group?.durationRules?.map((durationRule) => {
                 const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
                 return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
             }).join(", ")}
@@ -168,7 +170,7 @@ export const ViewGroupPage = () => {
         ) : (
             <>
                 <Grid2 container spacing={2} sx={{padding: 2}}>
-                    {sessions.map((session) => (
+                    {sessions?.map((session) => (
                         <Grid2 item xs={12} sm={6} md={4} key={session.id}>
                             <SessionCard
                                 session={session}
@@ -218,10 +220,10 @@ export const ViewGroupPage = () => {
         >
             <DialogTitle>Copii înscriși în grup</DialogTitle>
             <DialogContent dividers sx={{py: 0}}>
-                {group.children?.length === 0 ? (
+                {group?.children?.length === 0 ? (
                     <Typography color="text.secondary">Niciun copil înscris.</Typography>) : (<Grid2 container>
                     <List>
-                        {group.children.map(child => (<ListItem key={child.id}>
+                        {group?.children?.map(child => (<ListItem key={child.id}>
                             <ListItemText
                                 primary={`${child.firstName} ${child.lastName}`}
                                 secondary={`Vârstă: ${calculateAge(child.birthDate)} ani`}

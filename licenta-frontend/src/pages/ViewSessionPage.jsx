@@ -1,24 +1,30 @@
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {getSession} from "../api/session/getSession";
-import {Alert, Box, Button, Container, IconButton, Paper, Typography} from "@mui/material";
+import {Alert, Box, Button, Container, IconButton, Paper, Tooltip, Typography} from "@mui/material";
 import {formatDateTime} from "../components/SessionCard";
 import {getGroup} from "../api/group/getGroup";
 import DownloadIcon from "@mui/icons-material/Download";
+import DeleteIcon from '@mui/icons-material/Delete';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import {ActivityCategory, GroupStatus} from "../Enum";
-import {AddNoteDialog} from "../components/trainer/AddNoteDialog";
 import {updateSessionNote} from "../api/session/updateSessionNote";
 import {AddFileDialog} from "../components/trainer/AddFileDialog";
 import {createSessionDocument} from "../api/session-document/createSessionDocument";
 import {getDocumentTitle} from "../api/session-document/getDocumentTitle";
 import {getDocumentContent} from "../api/session-document/getDocumentContent";
-import {SessionComments} from "../components/trainer/SessionComments";
+import {SessionNote } from "../components/trainer/SessionNote";
+import {deleteSessionDocument as deleteSessionDocumentService } from '../api/session-document/deleteSessionDocument';
+import {EditSessionDatesDialog} from '../components/trainer/EditSessionDatesDialog';
+import {updateSessionDate} from '../api/session/updateSessionDate';
+import {isTrainer} from '../context/AuthContextProvider';
+import {getParentId, getTrainerId} from '../helpers/localStorageHelper';
+import EmailIcon from '@mui/icons-material/Email';
 
 export const ViewSessionPage = () => {
-    const {sessionId, groupId} = useParams();
-    const [noteOpen, setNoteOpen] = useState(false);
+    const { sessionId, groupId } = useParams();
     const [fileOpen, setFileOpen] = useState(false);
-    const [dateOpen, setDateOpen] = useState(false);
+    const [editSessionPageModalOpen, setEditSessionPageModalOpen] = useState(false);
     const [note, setNote] = useState('');
     const [session, setSession] = useState(null);
     const [group, setGroup] = useState(null);
@@ -26,14 +32,17 @@ export const ViewSessionPage = () => {
     const [error, setError] = useState(null);
     const start = formatDateTime(session?.startDateTime);
     const end = formatDateTime(session?.endDateTime);
+    const userIsTrainer = isTrainer();
+    const navigate = useNavigate();
 
     const fetchSession = async () => {
         try {
-            const data = await getSession(sessionId);
+            const data = await getSession(sessionId, isTrainer(), isTrainer() ? getTrainerId() : getParentId());
             setSession(data || {});
+            setNote(data.note || '');
 
             const docTitle = await getDocumentTitle(sessionId);
-            setDocumentTitle(docTitle.title);
+            setDocumentTitle(docTitle?.title);
 
         } catch (err) {
             setError('Eroare la încărcarea sesiunii');
@@ -60,11 +69,6 @@ export const ViewSessionPage = () => {
         }
     }, [groupId]);
 
-    const handleAddNote = () => {
-        setNote(session?.note || '');
-        setNoteOpen(true);
-    };
-
     const handleSaveNote = async () => {
         try {
             const updatedSession = {
@@ -74,8 +78,6 @@ export const ViewSessionPage = () => {
             await fetchSession()
         } catch (err) {
             setError('Nu s-a putut salva nota');
-        } finally {
-            setNoteOpen(false);
         }
     };
 
@@ -95,13 +97,32 @@ export const ViewSessionPage = () => {
         }
     };
 
+    const deleteSessionDocument = async (sessionId) => {
+        try {
+            await deleteSessionDocumentService(sessionId);
+            setDocumentTitle(null);
+        } catch (error) {
+            console.error("Eroare la ștergere:", error);
+        }
+    };
 
-    return (<Container maxWidth="lg" sx={{mt: 4}}>
+    const editSessionPeriod = async (period) => {
+        const result = await updateSessionDate(session.id, period);
+
+        if (result.success) {
+            await fetchSession();
+        } else {
+            console.error("Eroare la editare perioada sesiune:", result.error);
+        }
+    };
+
+
+    return (<Container maxWidth="lg" sx={{ mt: 4 }}>
         {session && (<Typography variant="h4" gutterBottom>
-            Vizualizare sesiune - {start.dayName}: {`${start.hours} - ${end.hours}`}
+            Vizualizare sesiune - {start.dayName}, {start.dateFormatted}: {`${start.hours}:${start.minutes} - ${end.hours}:${end.minutes}`}
         </Typography>)}
 
-        {error ? (<Alert severity="error">{error}</Alert>) : (<Paper elevation={3} sx={{p: 3}}>
+        {error ? (<Alert severity="error">{error}</Alert>) : (<Paper elevation={3} sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="start">
                 <Box>
                     <Typography variant="h6" gutterBottom>
@@ -117,44 +138,64 @@ export const ViewSessionPage = () => {
                         Grupă: {GroupStatus[group?.status]}
                     </Typography>
                     <Typography variant="body1">
-                        Notă sesiune: {session?.note || "-"}
-                    </Typography>
-                    <Typography variant="body1">
-                        Document: {documentTitle || "-"}
-                        {documentTitle && <IconButton
-                            onClick={() => getDocumentContent(sessionId)}
-                            size="small"
-                        >
-                            <DownloadIcon/>
-                        </IconButton>
+                        Document:
+                        {!documentTitle && userIsTrainer &&
+                            <IconButton
+                                onClick={() => handleAddFile()}
+                                size="small"
+                            >
+                                <DriveFolderUploadIcon />
+                            </IconButton>
+                        }
+                        {documentTitle && <span style={{ marginLeft: 5 }}>{documentTitle}</span>}
+                        {documentTitle &&
+                            <IconButton
+                                onClick={() => getDocumentContent(sessionId, documentTitle)}
+                                size="small"
+                            >
+                                <DownloadIcon />
+                            </IconButton>
+                        }
+                        {documentTitle && userIsTrainer &&
+                            <IconButton
+                                onClick={() => deleteSessionDocument(sessionId)}
+                                size="small"
+                                sx={{ color: "red" }}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
                         }
                     </Typography>
                 </Box>
-                <Box display="flex" flexDirection="column" gap={1}>
-                    <Button variant="contained" color="primary" onClick={handleAddNote}>
-                        Adaugă notă
+                {userIsTrainer && <Box display="flex" flexDirection="column" gap={1}>
+                    <Button variant="text" color="primary" onClick={() => setEditSessionPageModalOpen(true)}>
+                        Editează perioada de desfășurare
                     </Button>
-                    {!documentTitle && <Button variant="contained" color="primary" onClick={handleAddFile}>
-                        Adaugă document
-                    </Button>}
-                    <Button variant="outlined" color="primary">
-                        Editează data
-                    </Button>
-                </Box>
+                </Box>}
             </Box>
         </Paper>)}
-        <SessionComments sessionId={sessionId} />
-        <AddNoteDialog
-            open={noteOpen}
-            onClose={() => setNoteOpen(false)}
-            note={note}
-            setNote={setNote}
-            onSave={handleSaveNote}
-        />
+        <Box display={"flex"} justifyContent="flex-start" alignItems="center" sx={{ mt: 3 }}>
+            <Button variant="contained" color="primary" onClick={() => navigate(`/view-session-comments/${sessionId}/${groupId}`)}>
+                Comentarii
+            </Button>
+            {session?.newComments &&
+                <Tooltip title="Ai comment-uri necitite!">
+                    <Box sx={{ color: "red", ml: 2, mt: 0.5 }}>
+                        <EmailIcon fontSize="small" />
+                    </Box>
+                </Tooltip>}
+        </Box>
+        <SessionNote note={note} setNote={setNote} updateNote={handleSaveNote} />
         <AddFileDialog
             open={fileOpen}
             onClose={() => setFileOpen(false)}
             onUpload={handleUploadFile}
         />
+        {session && <EditSessionDatesDialog
+            open={editSessionPageModalOpen}
+            onClose={() => setEditSessionPageModalOpen(false)}
+            session={session}
+            onSave={editSessionPeriod}
+        />}
     </Container>);
 }
