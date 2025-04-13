@@ -1,18 +1,18 @@
 import {useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import {getSession} from "../../api/session/getSession";
+import {getSession} from "../api/session/getSession";
 import {Alert, Box, Button, Container, IconButton, Paper, Typography} from "@mui/material";
-import {formatDateTime} from "../../components/SessionCard";
-import {getGroup} from "../../api/group/getGroup";
+import {formatDateTime} from "../components/SessionCard";
+import {getGroup} from "../api/group/getGroup";
 import DownloadIcon from "@mui/icons-material/Download";
-import {ActivityCategory, GroupStatus} from "../../Enum";
-import {AddNoteDialog} from "../../components/trainer/AddNoteDialog";
-import {updateSessionNote} from "../../api/session/updateSessionNote";
-import {AddFileDialog} from "../../components/trainer/AddFileDialog";
-import {createSessionDocument} from "../../api/session-document/createSessionDocument";
-import {getDocumentTitle} from "../../api/session-document/getDocumentTitle";
-import {getDocumentContent} from "../../api/session-document/getDocumentContent";
-import {SessionComments} from "../../components/trainer/SessionComments";
+import {ActivityCategory, GroupStatus} from "../Enum";
+import {AddNoteDialog} from "../components/trainer/AddNoteDialog";
+import {updateSessionNote} from "../api/session/updateSessionNote";
+import {AddFileDialog} from "../components/trainer/AddFileDialog";
+import {createSessionDocument} from "../api/session-document/createSessionDocument";
+import {getDocumentTitle} from "../api/session-document/getDocumentTitle";
+import {getDocumentContent} from "../api/session-document/getDocumentContent";
+import {SessionComments} from "../components/trainer/SessionComments";
 
 export const ViewSessionPage = () => {
     const {sessionId, groupId} = useParams();

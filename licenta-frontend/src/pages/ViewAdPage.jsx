@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {Typography, CircularProgress, Box, Button} from "@mui/material";
+import {useNavigate, useParams} from "react-router-dom";
+import {Typography, Box, Button} from "@mui/material";
 import {getAd} from "../api/ads/getAd";
 import {getAdImage} from "../api/ads/getAdImage";
 import {ActivityCategory, Gender, Weekday} from "../Enum";
@@ -16,10 +16,11 @@ import {ConfirmDialog} from "../components/ConfirmDialog";
 
 export const ViewAdPage = () => {
     const {id} = useParams();
+    const navigate = useNavigate();
     const [ad, setAd] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [trainer, setTrainer] = useState(null);
     const [adImage, setAdImage] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [popupOpen, setPopupOpen] = useState(false);
     const [enrollmentRequestsPopupOpen, setEnrollmentRequestsPopupOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -35,8 +36,6 @@ export const ViewAdPage = () => {
                 setAdImage(response);
             } catch (error) {
                 console.error("Eroare la preluarea anunțului:", error);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -58,16 +57,16 @@ export const ViewAdPage = () => {
 
     const fetchAd = async () => {
         try {
+            setIsLoading(true);
             const response = await getAd(id);
             setAd(response);
         } catch (error) {
             console.error("Eroare la preluarea anunțului:", error);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
-    //
-    //
+
     const handleAddFavoriteTrainer = async () => {
         await addFavoriteTrainer(getParentId(), ad?.activity?.trainer?.id);
         await verifyIfTrainerIsFavorite();
@@ -82,13 +81,7 @@ export const ViewAdPage = () => {
         }
     }
 
-    if (loading) {
-        return (<Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
-            <CircularProgress/>
-        </Box>);
-    }
-
-    if (!ad) {
+    if (!ad && !isLoading) {
         return <Typography variant="h6" color="error">Anunțul nu a fost găsit!</Typography>;
     }
     return (<Box
@@ -115,7 +108,7 @@ export const ViewAdPage = () => {
             {adImage ? (<Box
                 component="img"
                 src={adImage}
-                alt={ad.title}
+                alt={ad?.title}
                 sx={{
                     width: "100%", height: "auto", objectFit: "contain", borderRadius: 2,
                 }}
@@ -155,7 +148,7 @@ export const ViewAdPage = () => {
                     fontSize: {xs: "1.5rem", md: "2rem"}, textAlign: "center", fontWeight: "bold",
                 }}
             >
-                {ad.title}
+                {ad?.title}
             </Typography>
 
             <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", mt: 1}}>
@@ -170,7 +163,7 @@ export const ViewAdPage = () => {
                             fontSize: {xs: "1rem", md: "1.2rem"}, textTransform: "capitalize"
                         }}
                     >
-                        Categorie: {ActivityCategory[ad.category]}
+                        Categorie: {ActivityCategory[ad?.category]}
                     </Typography>
 
                     {userIsTrainer && <Button
@@ -186,20 +179,20 @@ export const ViewAdPage = () => {
                     variant="body2"
                     sx={{fontSize: {xs: "1rem", md: "1.2rem"}, color: "gray"}}
                 >
-                    Interval de vârstă: {ad.minAge} - {ad.maxAge} ani
+                    Interval de vârstă: {ad?.minAge} - {ad?.maxAge} ani
                 </Typography>
                 <Typography
                     variant="body2"
                     sx={{fontSize: {xs: "1rem", md: "1.2rem"}, color: "gray"}}
                 >
-                    Gen: {Gender[ad.gender]}
+                    Gen: {Gender[ad?.gender]}
                 </Typography>
                 <Typography
                     variant="body2"
                     sx={{fontSize: {xs: "1rem", md: "1.2rem"}, color: "gray"}}
                 >
                     Zilele de activitate:{" "}
-                    {ad.durationRules.map((durationRule) => {
+                    {ad?.durationRules.map((durationRule) => {
                         const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
                         return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
                     }).join(", ")}
@@ -213,7 +206,7 @@ export const ViewAdPage = () => {
                     fontSize: {xs: "0.9rem", md: "1rem"}, mt: 2, textAlign: "left",
                 }}
             >
-                {ad.description + '"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"'}
+                {ad?.description + '"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"'}
             </Typography>
 
             <Box
@@ -228,17 +221,17 @@ export const ViewAdPage = () => {
                         fontSize: {xs: "1rem", md: "1.25rem"}, fontWeight: "bold"
                     }}
                 >
-                    {ad.price} RON
+                    {ad?.price} RON
                 </Typography>
 
-                {!userIsTrainer && ad.status === 'ACTIVE' && <Button
+                {!userIsTrainer && ad?.status === 'ACTIVE' && <Button
                     variant="contained"
                     color="primary"
                     onClick={() => setPopupOpen(true)}
                 >
                     Înscriere
                 </Button>}
-                {!userIsTrainer && ad.status === 'PENDING' && <Typography
+                {!userIsTrainer && ad?.status === 'PENDING' && <Typography
                     variant="h6"
                     color="primary"
                     sx={{
@@ -247,7 +240,7 @@ export const ViewAdPage = () => {
                 >
                     Cererile de înscriere sunt în curs de procesare
                 </Typography>}
-                {!userIsTrainer && ad.status === 'COMPLETED' && <Typography
+                {!userIsTrainer && ad?.status === 'COMPLETED' && <Typography
                     variant="h6"
                     color="primary"
                     sx={{
@@ -256,14 +249,14 @@ export const ViewAdPage = () => {
                 >
                     Anunțul a fost închis
                 </Typography>}
-                {userIsTrainer && (ad.status === 'ACTIVE' || ad.status === 'PENDING') && <Button
+                {userIsTrainer && (ad?.status === 'ACTIVE' || ad?.status === 'PENDING') && <Button
                     variant="contained"
                     color="primary"
                     onClick={() => setEnrollmentRequestsPopupOpen(true)}
                 >
                     Vizualizează cereri de înscriere
                 </Button>}
-                {userIsTrainer && (ad.status === 'ACTIVE' || ad.status === 'PENDING') && (
+                {userIsTrainer && (ad?.status === 'ACTIVE' || ad?.status === 'PENDING') && (
                     <Button
                         variant="contained"
                         color="primary"
@@ -272,7 +265,7 @@ export const ViewAdPage = () => {
                         Creează grupă
                     </Button>
                 )}
-                {userIsTrainer && ad.status === 'COMPLETED' && <Box>
+                {userIsTrainer && ad?.status === 'COMPLETED' && <Box>
                     <Typography
                         variant="h6"
                         color="primary"
@@ -316,7 +309,7 @@ export const ViewAdPage = () => {
                         fontSize: {xs: "0.9rem", md: "1rem"}, textAlign: "left",
                     }}
                 >
-                    Vârstă: {trainer ? calculateAge(trainer.birthDate) + ' ani' : ''}
+                    Vârstă: {trainer ? `${calculateAge(trainer.birthDate)}` + ' ani' : ''}
                 </Typography>
 
                 <Typography
@@ -347,13 +340,22 @@ export const ViewAdPage = () => {
                 >
                     Telefon: {trainer ? trainer.phoneNumber : ''}
                 </Typography>
-                {showAddFavoriteTrainer &&
-                    <Button onClick={handleAddFavoriteTrainer} variant="followText">Aboneaza-te!</Button>}
+                <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+                    {!userIsTrainer &&
+                        <Button
+                            variant="followText"
+                            onClick={() => navigate('/view-trainer-profile/' + trainer.id)}
+                        >
+                            Vizualizare profil trainer
+                        </Button>}
+                    {showAddFavoriteTrainer && !userIsTrainer &&
+                        <Button onClick={handleAddFavoriteTrainer} variant="followText">Aboneaza-te!</Button>}
+                </Box>
             </Box>
             <CreateEnrollmentRequestPopup open={popupOpen}
                                           onClose={() => setPopupOpen(false)}
                                           refreshAd={fetchAd}
-                                          />
+            />
             <ViewEnrollmentRequestsPopup open={enrollmentRequestsPopupOpen}
                                          onClose={() => setEnrollmentRequestsPopupOpen(false)}/>
             <EditAdPopup

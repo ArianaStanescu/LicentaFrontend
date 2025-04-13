@@ -280,7 +280,7 @@ export const MyActivitiesPage = () => {
                     <Button onClick={handleSubmit} variant="contained">Salvează</Button>
                 </DialogActions>
             </Dialog>
-            {/*formular pt editare*/}
+
             <Dialog open={openEditDialog} onClose={handleCloseEditDialog} fullWidth maxWidth="sm">
                 <DialogTitle>Editează Activitatea</DialogTitle>
                 <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>

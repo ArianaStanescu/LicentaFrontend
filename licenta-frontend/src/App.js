@@ -6,7 +6,7 @@ import {LoginPage} from "./pages/LoginPage";
 import {RegisterPage} from "./pages/RegisterPage";
 import {AuthContext, AuthContextProvider, isTrainer} from "./context/AuthContextProvider";
 import theme from "./theme";
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {Navbar} from "./components/Navbar";
 import {MyChildren} from "./pages/parent/MyChildren";
 import {ViewAdPage} from "./pages/ViewAdPage";
@@ -17,7 +17,10 @@ import {ViewGroupPage} from "./pages/ViewGroupPage";
 import {FirebaseMessagingContext, FirebaseMessagingProvider} from "./context/FirebaseMessagingProvider";
 
 import {getParentId, getTrainerId} from "./helpers/localStorageHelper";
-import {ViewSessionPage} from "./pages/trainer/ViewSessionPage";
+import {ViewSessionPage} from "./pages/ViewSessionPage";
+import {ChildGroupsPage} from "./pages/parent/ChildGroupsPage";
+import {MyFavoriteTrainers} from "./pages/parent/MyFavoriteTrainers";
+import {ViewTrainerProfilePage} from "./pages/ViewTrainerProfilePage";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -65,11 +68,14 @@ const AuthWrapper = () => {
                 <Route element={<PrivateRoute/>}>
                     {/*common routes*/}
                     <Route exact path="/view-ad/:id" element={<ViewAdPage/>} />
-                    <Route exact path="/view-group/:id" element={<ViewGroupPage/>} />
                     <Route path="/view-session/:sessionId/:groupId" element={<ViewSessionPage />} />
+                    <Route exact path="/view-group/:groupId" element={<ViewGroupPage/>} />
+                    <Route exact path="/view-trainer-profile/:trainerId" element={<ViewTrainerProfilePage/>} />
                     {/*parent routes*/}
                     <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
+                    <Route exact path="/child-groups/:childId" element={<ChildGroupsPage/>}/>
                     <Route exact path='/my-children' element={<MyChildren/>}/>
+                    <Route exact path="my-favorite-trainers" element={<MyFavoriteTrainers/>}/>
                     {/*trainer routes*/}
                     <Route exact path="/my-groups/:activityId" element={<MyGroupsPage/>}/>
                     <Route exact path="/my-groups/" element={<MyGroupsPage/>}/>

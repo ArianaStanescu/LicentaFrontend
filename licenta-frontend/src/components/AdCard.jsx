@@ -36,16 +36,10 @@ export const AdCard = ({id, title, description, category, price, minAge, maxAge,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: "#f0f0f0",
-                        color: "black",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        padding: "8px",
-                        wordBreak: 'break-word',
+                        backgroundColor: "white",
                     }}
                 >
-                    Imagine indisponibilă
+
                 </Box>
             )}
 
