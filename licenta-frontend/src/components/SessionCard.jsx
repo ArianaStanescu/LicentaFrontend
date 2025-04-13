@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, Button, Card, CardContent, IconButton, Tooltip, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { dayIndexToEnum } from "../Enum";
+import {Box, Button, Card, CardContent, Tooltip, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {dayIndexToEnum} from "../Enum";
 import EmailIcon from '@mui/icons-material/Email';
+
 export const formatDateTime = (dateTime) => {
     const date = new Date(dateTime);
     const dayName = dayIndexToEnum[date.getDay()];
@@ -43,7 +44,7 @@ export const SessionCard = ({ session, isNextSession, groupId }) => {
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
                     {session?.newComments &&
-                        <Tooltip title="Ai comment-uri necitite!" sx={{fontSize: "1rem"}}>
+                        <Tooltip title="Ai comment-uri necitite!">
                             <Box sx={{ color: "red", alignSelf: "center" }}>
                                 <EmailIcon fontSize="small" sx={{ m: 0, p: 0, verticalAlign: "middle" }} />
                             </Box>

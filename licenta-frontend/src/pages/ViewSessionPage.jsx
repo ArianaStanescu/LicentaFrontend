@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from 'react-router-dom';
-import {use, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {getSession} from "../api/session/getSession";
 import {Alert, Box, Button, Container, IconButton, Paper, Tooltip, Typography} from "@mui/material";
 import {formatDateTime} from "../components/SessionCard";
@@ -14,7 +14,7 @@ import {createSessionDocument} from "../api/session-document/createSessionDocume
 import {getDocumentTitle} from "../api/session-document/getDocumentTitle";
 import {getDocumentContent} from "../api/session-document/getDocumentContent";
 import {SessionNote } from "../components/trainer/SessionNote";
-import {deleteSessionDocument as deleteSessionDocumentService } from '.../api/session-document/deleteSessionDocument';
+import {deleteSessionDocument as deleteSessionDocumentService } from '../api/session-document/deleteSessionDocument';
 import {EditSessionDatesDialog} from '../components/trainer/EditSessionDatesDialog';
 import {updateSessionDate} from '../api/session/updateSessionDate';
 import {isTrainer} from '../context/AuthContextProvider';
