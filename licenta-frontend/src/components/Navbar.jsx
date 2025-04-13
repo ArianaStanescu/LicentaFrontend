@@ -81,11 +81,10 @@ export const Navbar = ({onLogout}) => {
                     <Typography variant="body2" color="text.secondary">
                         {notification.body}
                     </Typography>
-                    {!notification?.seen && (
-                        <Button startIcon={<Check/>} variant="notification"
-                                onClick={() => markAsSeen([notification.id])}>
-                            Mark as seen
-                        </Button>)}
+                    {!notification?.seen && (<Button startIcon={<Check/>} variant="notification"
+                                                     onClick={() => markAsSeen([notification.id])}>
+                        Mark as seen
+                    </Button>)}
                 </MenuItem>))}
         </Box>
     };
@@ -94,21 +93,19 @@ export const Navbar = ({onLogout}) => {
         const items = [];
 
         if (userRole === "parent") {
-            items.push(<MenuItem key="home-parent"
-                                 onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
-                <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare
-                    copii</MenuItem>, <MenuItem key="parent-profile"
-                                                onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul
-                    meu</MenuItem>);
+            items.push(
+                <MenuItem key="home-parent" onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
+                <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare copii</MenuItem>,
+                <MenuItem key="my-favorite-trainers" onClick={() => handleNavigate(`/my-favorite-trainers`, closeFn)}>Vizualizare traineri favoriți</MenuItem>,
+                <MenuItem key="parent-profile" onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul meu</MenuItem>);
         }
 
         if (userRole === "trainer") {
-            items.push(<MenuItem key="my-activities" onClick={() => handleNavigate('/my-activities', closeFn)}>Activitățile
-                mele</MenuItem>, <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile
-                mele</MenuItem>, <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele
-                mele</MenuItem>, <MenuItem key="trainer-profile"
-                                           onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul
-                meu</MenuItem>);
+            items.push(
+                <MenuItem key="my-activities" onClick={() => handleNavigate('/my-activities', closeFn)}>Activitățile mele</MenuItem>,
+                <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile mele</MenuItem>,
+                <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele mele</MenuItem>,
+                <MenuItem key="trainer-profile" onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul meu</MenuItem>);
         }
 
         if (isMobileMenu) {
@@ -169,7 +166,7 @@ export const Navbar = ({onLogout}) => {
                     </Menu>
                 </Box>
                 <Typography variant="h6" sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
-                    My App
+                    KidSphere
                 </Typography>
                 <Button variant={'navigation-bar'} startIcon={<Logout/>} onClick={onLogout}>
                     Logout

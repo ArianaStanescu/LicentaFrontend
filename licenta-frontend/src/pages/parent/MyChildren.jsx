@@ -5,7 +5,6 @@ import {
     CardContent,
     Typography,
     Grid2,
-    CircularProgress,
     Alert,
     Button,
     DialogActions,
@@ -15,34 +14,38 @@ import {getParentId} from "../../helpers/localStorageHelper";
 import {getChildren} from "../../api/children/getChildren";
 import {Gender} from "../../Enum";
 import {createChild} from "../../api/children/createChild";
-
+import {useNavigate} from "react-router-dom";
+import {EditChildDialog} from "../../components/parent/EditChildDialog";
+import {updateChild} from "../../api/children/updateChild";
 
 
 export const MyChildren = () => {
+    const navigate = useNavigate();
     const [children, setChildren] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
-    const [newChild, setNewChild] = useState({ firstName: "", lastName: "", age: "", birthDate: "", gender: "" });
+    const [newChild, setNewChild] = useState({firstName: "", lastName: "", age: "", birthDate: "", gender: ""});
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
-    const handleChange = (e) => setNewChild({ ...newChild, [e.target.name]: e.target.value });
+    const [editChild, setEditChild] = useState(null);
+    const [editOpen, setEditOpen] = useState(false);
 
     useEffect(() => {
         fetchChildren();
     }, []);
 
     const fetchChildren = async () => {
-        setLoading(true);
         setError(null);
         try {
+            setIsLoading(true)
             const children = await getChildren(getParentId());
             setChildren(children || []);
+            console.log(children);
         } catch (err) {
             setError("Failed to load children. Please try again.");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -68,50 +71,94 @@ export const MyChildren = () => {
         }
     };
 
+    const handleEditOpen = (child) => {
+        setEditChild(child);
+        setEditOpen(true);
+    };
+    const handleEditClose = () => {
+        setEditChild(null);
+        setEditOpen(false);
+    };
+
+    const handleChange = (e) => setNewChild({ ...newChild, [e.target.name]: e.target.value });
+
+    const handleUpdateChild = async (updatedChild) => {
+        try {
+            const response = await updateChild(updatedChild.id, updatedChild);
+            if (!response?.success) {
+                setError("Actualizarea a eșuat.");
+                return;
+            }
+            await fetchChildren();
+        } catch (err) {
+            console.error("Eroare la actualizare:", err);
+            setError("A apărut o eroare la actualizarea copilului.");
+        }
+    };
+
     return (
-        <Box sx={{ padding: 3 }}>
+        <Box sx={{padding: 3}}>
             <Typography variant="h4" gutterBottom>
                 Copiii mei
             </Typography>
-            <Grid2 container spacing={3} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                {loading ? (
-                    <CircularProgress />
-                ) : error ? (
-                    <Alert severity="error">{error}</Alert>
-                ) : children.length > 0 ? (
+            <Grid2 container spacing={1} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button variant="contained" color="primary" onClick={handleOpen}>
+                        Adaugă copil
+                    </Button>
+                </Box>
+                {error && (
+                    <Box sx={{ minHeight: { xs: "auto", md: "600px" } }}>
+                        <Alert severity="error">{error}</Alert>
+                    </Box>
+                )}
+                {!error && !isLoading && children.length === 0 && (
+                    <Box sx={{ minHeight: { xs: "auto", md: "600px" } }}>
+                        <Alert severity="info">Niciun copil găsit!</Alert>
+                    </Box>
+                )}
+                {!error && !isLoading && children.length > 0 && (
                     children.map((child) => (
                         <Grid2 item xs={12} sm={6} md={4} key={child.id} sx={{width: '100%'}}>
                             <Card>
-                                <CardContent>
-                                    <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Vârstă: {child.age} ani
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Data nașterii: {child.birthDate}
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Gen: {Gender[child.gender]}
-                                    </Typography>
-                                </CardContent>
+                                <Box display="flex" justifyContent="space-between" alignItems="start" p={2}>
+                                    <CardContent sx={{padding: 0, paddingRight: 2}}>
+                                        <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Vârstă: {child.age} ani
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Data nașterii: {child.birthDate}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            Gen: {Gender[child.gender]}
+                                        </Typography>
+                                        <Button variant='text'  onClick={() => handleEditOpen(child)}>Editează</Button>
+                                    </CardContent>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{height: 'fit-content', mt: 6}}
+                                        onClick={() => {
+                                            navigate(`/child-groups/${child.id}`)
+                                        }}
+                                    >
+                                        Vizualizare grupă
+                                    </Button>
+                                </Box>
                             </Card>
+
                         </Grid2>
                     ))
-                ) : (
-                    <Alert severity="info">Niciun copil găsit!</Alert>
                 )}
             </Grid2>
-            <Box sx={{ marginTop: 3, textAlign: "center" }}>
-                <Button variant="contained" color="primary" onClick={handleOpen}>
-                    Adaugă copil
-                </Button>
-            </Box>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Adaugă un copil</DialogTitle>
                 <DialogContent>
-                    <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange} />
-                    <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange} />
-                    <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date" InputLabelProps={{ shrink: true }} onChange={handleChange} />
+                    <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange}/>
+                    <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange}/>
+                    <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date"
+                               InputLabelProps={{shrink: true}} onChange={handleChange}/>
                     <TextField
                         select
                         fullWidth
@@ -130,6 +177,14 @@ export const MyChildren = () => {
                     <Button variant="contained" color="primary" onClick={handleSubmit}>Adaugă</Button>
                 </DialogActions>
             </Dialog>
+
+            <EditChildDialog
+                open={editOpen}
+                onClose={handleEditClose}
+                child={editChild}
+                setChild={setEditChild}
+                onSave={handleUpdateChild}
+            />
         </Box>
     );
 };

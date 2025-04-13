@@ -15,16 +15,14 @@ import {
 import {search} from "../../api/ads/search";
 import {getAdImage} from "../../api/ads/getAdImage";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
-import {AuthContext, isTrainer} from "../../context/AuthContextProvider";
 import {FirebaseMessagingContext} from "../../context/FirebaseMessagingProvider";
-import {getParentId, getTrainerId} from "../../helpers/localStorageHelper";
 
 export const HomePageParent = () => {
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [hasNextPage, setHasNextPage] = useState(true);
-    const {initializeMessaging} = useContext(FirebaseMessagingContext);
 
     const [filters, setFilters] = useState({
         title: "",
@@ -44,11 +42,14 @@ export const HomePageParent = () => {
     const fetchAds = async () => {
         setError(null);
         try {
+            setIsLoading(true);
             const ads = await search(filters);
             setAds(ads || []);
             setHasNextPage(ads.length === filters.pageSize);
         } catch (err) {
             setError("Failed to load ads. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -76,9 +77,6 @@ export const HomePageParent = () => {
         });
     }, [ads]);
 
-    // const handleFilterChange = (newFilters) => {
-    //     setFilters({...newFilters, pageNumber: 0, pageSize: 5});
-    // };
     const handleFilterChange = (newFilters) => {
         setFilters((prevFilters) => ({
             ...prevFilters,
@@ -120,8 +118,6 @@ export const HomePageParent = () => {
                         display: "flex",
                         flexWrap: "wrap",
                         flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
                         flex: "auto",
                     }}
                 >
@@ -164,59 +160,64 @@ export const HomePageParent = () => {
                             </Select>
                         </FormControl>
                     </Box>
-                    {error ? (
-                        <Box sx={{
-                            minHeight: {xs: "auto", md: "600px"}
-                        }}>
+                    {error && (
+                        <Box sx={{ minHeight: { xs: "auto", md: "600px" } }}>
                             <Alert severity="error">{error}</Alert>
                         </Box>
-                    ) : (
-                        ads.length > 0 ? (
-                            <>
-                                {ads.map((ad, index) => (
-                                    <Grid2 xs={12} sm={6} md={4} key={ad.id}>
-                                        <AdCard {...ad} imageUrl={images[ad.id]}/>
-                                    </Grid2>
-                                ))}
+                    )}
 
-                                <Grid2 xs={12}
-                                       sx={{
-                                           display: "flex",
-                                           justifyContent: "space-between",
-                                           mt: 3,
-                                           gap: {xs: "auto", sm: 6},
-                                       }}>
-                                    <Button
-                                        variant="text"
-                                        onClick={handlePreviousPage}
-                                        disabled={filters.pageNumber === 0}
-                                        startIcon={<ArrowBack/>}
-                                    >
-                                        Înapoi
-                                    </Button>
-                                    <Box sx={{
-                                        fontSize: "1.2rem", fontWeight: "bold",
-                                        textAlign: "center", display: "flex", alignItems: "center"
-                                    }}>
-                                        Pagina {filters.pageNumber + 1}
-                                    </Box>
-                                    <Button
-                                        variant="text"
-                                        onClick={handleNextPage}
-                                        disabled={!hasNextPage}
-                                        endIcon={<ArrowForward/>}
-                                    >
-                                        Înainte
-                                    </Button>
+                    {!error && !isLoading && ads.length > 0 && (
+                        <>
+                            {ads.map((ad, index) => (
+                                <Grid2 xs={12} sm={6} md={4} key={ad.id}>
+                                    <AdCard {...ad} imageUrl={images[ad.id]} />
                                 </Grid2>
-                            </>
-                        ) : (
-                            <Box sx={{
-                                minHeight: {xs: "auto", md: "600px"}
-                            }}>
-                                <Alert severity="info">Niciun anunț găsit!</Alert>
-                            </Box>
-                        )
+                            ))}
+
+                            <Grid2
+                                xs={12}
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    mt: 3,
+                                    gap: { xs: "auto", sm: 2 },
+                                }}
+                            >
+                                <Button
+                                    variant="text"
+                                    onClick={handlePreviousPage}
+                                    disabled={filters.pageNumber === 0}
+                                    startIcon={<ArrowBack />}
+                                >
+                                    Înapoi
+                                </Button>
+                                <Box
+                                    sx={{
+                                        fontSize: "1.2rem",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    Pagina {filters.pageNumber + 1}
+                                </Box>
+                                <Button
+                                    variant="text"
+                                    onClick={handleNextPage}
+                                    disabled={!hasNextPage}
+                                    endIcon={<ArrowForward />}
+                                >
+                                    Înainte
+                                </Button>
+                            </Grid2>
+                        </>
+                    )}
+
+                    {!error && !isLoading && ads.length === 0 && (
+                        <Box sx={{ minHeight: { xs: "auto", md: "600px" } }}>
+                            <Alert severity="info">Niciun anunț găsit!</Alert>
+                        </Box>
                     )}
                 </Grid2>
             </Grid2>
