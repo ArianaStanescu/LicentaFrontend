@@ -22,6 +22,7 @@ import {ChildGroupsPage} from "./pages/parent/ChildGroupsPage";
 import {MyFavoriteTrainers} from "./pages/parent/MyFavoriteTrainers";
 import {ViewTrainerProfilePage} from "./pages/ViewTrainerProfilePage";
 import {ViewSessionCommentsPage} from "./pages/ViewSessionCommentsPage";
+import { ChatButton } from "./pages/ChatButton";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -86,6 +87,8 @@ const AuthWrapper = () => {
                     {/*<Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>*/}
                 </Route>
             </Routes>
+            {isRefreshTokenValid() &&
+                <ChatButton/>}
         </>
     );
 };
