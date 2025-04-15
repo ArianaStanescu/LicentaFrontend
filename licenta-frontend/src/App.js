@@ -22,6 +22,7 @@ import {ChildGroupsPage} from "./pages/parent/ChildGroupsPage";
 import {MyFavoriteTrainers} from "./pages/parent/MyFavoriteTrainers";
 import {ViewTrainerProfilePage} from "./pages/ViewTrainerProfilePage";
 import {ViewSessionCommentsPage} from "./pages/ViewSessionCommentsPage";
+import {ViewTrainerReviewsPage} from "./pages/ViewTrainerReviewsPage";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -72,6 +73,7 @@ const AuthWrapper = () => {
                     <Route path="/view-session/:sessionId/:groupId" element={<ViewSessionPage />} />
                     <Route exact path="/view-group/:groupId" element={<ViewGroupPage/>} />
                     <Route exact path="/view-trainer-profile/:trainerId" element={<ViewTrainerProfilePage/>} />
+                    <Route exact path="/view-trainer-reviews/:trainerId" element={<ViewTrainerReviewsPage/>} />
                     <Route path="/view-session-comments/:sessionId/:groupId" element={<ViewSessionCommentsPage />} />
                     {/*parent routes*/}
                     <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
