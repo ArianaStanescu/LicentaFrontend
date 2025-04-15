@@ -105,7 +105,7 @@ export const Navbar = ({onLogout}) => {
                 <MenuItem key="my-activities" onClick={() => handleNavigate('/my-activities', closeFn)}>Activitățile mele</MenuItem>,
                 <MenuItem key="my-ads" onClick={() => handleNavigate('/my-ads', closeFn)}>Anunțurile mele</MenuItem>,
                 <MenuItem key="my-groups" onClick={() => handleNavigate('/my-groups', closeFn)}>Grupele mele</MenuItem>,
-                <MenuItem key="trainer-profile" onClick={() => handleNavigate('/trainer-profile', closeFn)}>Profilul meu</MenuItem>);
+                <MenuItem key="trainer-profile" onClick={() => handleNavigate(`/view-trainer-profile/${getTrainerId()}`, closeFn)}>Profilul meu</MenuItem>);
         }
 
         if (isMobileMenu) {

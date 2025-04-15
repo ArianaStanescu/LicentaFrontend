@@ -1,9 +1,9 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {Typography, Box, Button} from "@mui/material";
+import {Typography, Box, Button, Rating} from "@mui/material";
 import {getAd} from "../api/ads/getAd";
 import {getAdImage} from "../api/ads/getAdImage";
-import {ActivityCategory, Gender, Weekday} from "../Enum";
+import {ActivityCategory, Gender, TrainerReviewGradeFromNumberToText, Weekday} from "../Enum";
 import {CreateEnrollmentRequestPopup} from "../components/parent/CreateEnrollmentRequestPopup";
 import {calculateAge} from "../helpers/calculateAge";
 import {AuthContext, isTrainer} from "../context/AuthContextProvider";
