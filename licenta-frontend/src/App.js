@@ -50,7 +50,7 @@ const App = () => {
 };
 
 const AuthWrapper = () => {
-    const {isRefreshTokenValid, logout} = useContext(AuthContext);
+    const {isRefreshTokenValid, logout, isParent} = useContext(AuthContext);
     const {clearMessaging} = useContext(FirebaseMessagingContext);
     const navigate = useNavigate();
 
@@ -89,7 +89,7 @@ const AuthWrapper = () => {
                     {/*<Route exact path="/home-page-trainer" element={<HomePageTrainer/>}/>*/}
                 </Route>
             </Routes>
-            {isRefreshTokenValid() &&
+            {isParent() && isRefreshTokenValid() &&
                 <ChatButton/>}
         </>
     );
