@@ -41,7 +41,7 @@ export const SessionCommentCard = ({ comment, refresh }) => {
                                 }
                             </Box>
                             <Typography variant="subtitle2" fontWeight="bold">
-                                {comment?.authorParent ? "Parinte" : "Trainer"}
+                                {comment?.authorParent ? `Parinte ${comment?.authorParent?.children?.join(', ')}` : "Trainer"}
                             </Typography>
                             <Typography variant="subtitle2" color="text.primary">
                                 {new Date(comment?.createdAt).toLocaleString("ro-RO")}

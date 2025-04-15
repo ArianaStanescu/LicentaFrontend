@@ -2,11 +2,11 @@ import {
     Alert,
     Box,
     Button,
-    Paper,
+    Paper, Rating, Tooltip,
     Typography
 } from "@mui/material";
-import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import {calculateAge} from "../helpers/calculateAge";
 import {Gender} from "../Enum";
 import {getTrainer} from "../api/trainer/getTrainer";
@@ -21,6 +21,7 @@ import {ArrowBack, ArrowForward} from "@mui/icons-material";
 
 export const ViewTrainerProfilePage = () => {
     const {trainerId} = useParams();
+    const navigate = useNavigate();
     const [trainer, setTrainer] = useState(null);
     const [showAddFavoriteTrainer, setShowAddFavoriteTrainer] = useState(false);
     const [ads, setAds] = useState([]);
@@ -57,7 +58,7 @@ export const ViewTrainerProfilePage = () => {
     }, [trainerId]);
 
     useEffect(() => {
-        if (trainer) {
+        if (trainer && getParentId()) {
             verifyIfTrainerIsFavorite();
         }
     }, [trainer]);
@@ -131,7 +132,6 @@ export const ViewTrainerProfilePage = () => {
         }
     };
 
-
     return (
         <>
             <Box sx={{padding: 3}}>
@@ -139,7 +139,7 @@ export const ViewTrainerProfilePage = () => {
                     Profil trainer
                 </Typography>
 
-                <Paper elevation={3} sx={{padding: 3, mt: 3}}>
+                <Paper elevation={3} sx={{padding: 3, mt: 3, display: "flex", flexDirection: "column"}}>
                     <Typography
                         variant="body1"
                         sx={{fontSize: {xs: "1rem", md: "1.2rem"}, mb: 2}}
@@ -186,12 +186,35 @@ export const ViewTrainerProfilePage = () => {
                     >
                         Telefon: {trainer ? trainer.phoneNumber : ""}
                     </Typography>
-
+                    <Box sx={{gap: 1, display: "flex", flexDirection: "row", alignItems: "center"}}>
+                    <Rating
+                        name="rating"
+                        value={trainer?.reviewGrade ?? 5}
+                        max={5}
+                        precision={0.1}
+                        sx={{alignSelf: "flex-start"}}
+                        readOnly={true}
+                    />
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{fontSize: {xs: "0.9rem", md: "1rem", mt: 1}}}
+                        >
+                            ({trainer?.reviewGrade})
+                        </Typography>
+                    </Box>
                     {showAddFavoriteTrainer && (
-                        <Button variant="text" onClick={handleAddFavoriteTrainer}>
+                        <Button variant="text"
+                                onClick={handleAddFavoriteTrainer}
+                                sx={{alignSelf: "flex-start"}}>
                             Abonează-te!
                         </Button>
                     )}
+                    <Button variant="text"
+                            onClick={() => navigate('/view-trainer-reviews/' + trainerId)}
+                            sx={{alignSelf: "flex-start"}}>
+                        Recenzii
+                    </Button>
                 </Paper>
 
                 <Box
@@ -214,7 +237,7 @@ export const ViewTrainerProfilePage = () => {
 
                     {!error && !isLoading && ads.length > 0 && (
                         <>
-                            <Box sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+                            <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                                 {ads.map((ad, index) => (
                                     <Grid2 xs={12} sm={6} md={4} key={ad.id}>
                                         <AdCard {...ad} imageUrl={images[ad.id]}/>
