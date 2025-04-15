@@ -41,7 +41,7 @@ export const ViewGroupPage = () => {
         sortBy: "startDateTime",
         sortDirection: "asc"
     });
-
+    const userIsTrainer = isTrainer();
 
     const fetchGroup = async () => {
         try {
@@ -134,16 +134,18 @@ export const ViewGroupPage = () => {
                 activitate:</strong> {group?.durationRules?.map((durationRule) => {
                 const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
                 return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
-            }).join(", ")}
+                }).join(", ")}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
-                <Button
-                    variant="contained"
-                    sx={{mt: 2}}
-                    onClick={() => navigate('/view-trainer-profile/' + group?.activity?.trainer.id)}
-                >
-                    Vizualizare profil trainer
-                </Button>
+                {!userIsTrainer &&
+                    <Button
+                        variant="contained"
+                        sx={{ mt: 2 }}
+                        onClick={() => navigate('/view-trainer-profile/' + group?.activity?.trainer.id)}
+                    >
+                        Vizualizare profil trainer
+                    </Button>
+                }
                 <Button
                     variant="contained"
                     sx={{mt: 2}}
