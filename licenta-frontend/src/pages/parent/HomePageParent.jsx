@@ -15,7 +15,6 @@ import {
 import {search} from "../../api/ads/search";
 import {getAdImage} from "../../api/ads/getAdImage";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
-import {FirebaseMessagingContext} from "../../context/FirebaseMessagingProvider";
 
 export const HomePageParent = () => {
     const [ads, setAds] = useState([]);

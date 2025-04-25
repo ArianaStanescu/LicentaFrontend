@@ -129,6 +129,7 @@ export const ViewEnrollmentRequestsPopup = ({open, onClose}) => {
                                                         </Button>
                                                     </Box>
                                                 }
+                                                {request.status === 'CANCELED' && <Typography color="secondary">Anulată</Typography>}
                                                 {request.status === 'REJECTED' && <Typography color="error">Respinsă</Typography>}
                                                 {request.status === 'APPROVED' && <Typography color="primary">Acceptată</Typography>}
                                             </TableCell>

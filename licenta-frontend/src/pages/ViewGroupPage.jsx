@@ -104,6 +104,7 @@ export const ViewGroupPage = () => {
     const createSessions = async () => {
         try {
             const data = await createSessionsApi(groupId);
+            await fetchSessions();
 
         } catch (err) {
             setError("Eroare la crearea sesiunilor.");
