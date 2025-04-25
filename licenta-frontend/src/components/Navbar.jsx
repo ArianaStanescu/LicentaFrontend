@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import {Menu as MenuIcon, Logout, Notifications, DoneAll, Check} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
-import {isTrainer} from "../context/AuthContextProvider";
+import {isParent, isTrainer} from "../context/AuthContextProvider";
 import {getLatestNotifications} from "../api/notifications/getLatestNotifications";
 import {getParentId, getTrainerId} from "../helpers/localStorageHelper";
 import {markNotificationsAsSeen} from "../api/notifications/markAsRead";
@@ -20,6 +20,21 @@ export const Navbar = ({onLogout}) => {
     const [notifications, setNotifications] = useState([]);
     const [nrOfUnreadNotifications, setNrOfUnreadNotifications] = useState(0);
     const {refreshNotifications} = useContext(FirebaseMessagingContext);
+
+    useEffect(() => {
+        const handleServiceWorkerMessage = (event) => {
+            if (event.data?.type === "FCM_BACKGROUND_MESSAGE" && (isTrainer() || isParent())) {
+                getNotifications();
+            }
+        };
+
+        navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
+
+        return () => {
+            navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+        };
+    }, []);
+
 
     useEffect(() => {
         setUserRole(isTrainer() ? "trainer" : "parent");

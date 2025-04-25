@@ -14,12 +14,20 @@ const app = firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-    console.log("Received background message: ", payload);
 
     const notificationOptions = {
         body: payload?.data?.body,
         vibrate: [200, 100, 200],
     };
 
-    self.registration.showNotification(payload?.data?.title, notificationOptions).then(r => console.log(r));
+    self.registration.showNotification(payload?.data?.title, notificationOptions).then(r => {});
+
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
+        for (const client of clients) {
+            client.postMessage({
+                type: "FCM_BACKGROUND_MESSAGE",
+                payload: payload
+            });
+        }
+    });
 });
