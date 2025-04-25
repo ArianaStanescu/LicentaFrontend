@@ -50,7 +50,7 @@ export const ViewAdPage = () => {
     }, [ad]);
 
     useEffect(() => {
-        if (trainer) {
+        if (trainer && getParentId()) {
             verifyIfTrainerIsFavorite();
         }
     }, [trainer]);

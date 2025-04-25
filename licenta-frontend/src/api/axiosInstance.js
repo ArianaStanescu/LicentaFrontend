@@ -10,6 +10,9 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
     async (config) => {
+        if (config.url.startsWith("https://api.openai.com/v1/responses")) {
+            return config;
+        }
         let accessToken = localStorage.getItem("accessToken");
         if (accessToken) {
             const currentTime = Math.floor(Date.now() / 1000);

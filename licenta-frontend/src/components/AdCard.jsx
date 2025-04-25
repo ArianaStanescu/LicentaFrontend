@@ -1,9 +1,25 @@
-import {Box, Button, Card, CardContent, CardMedia, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardMedia, Tooltip, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {ActivityCategory, Gender} from "../Enum";
+import {isTrainer} from "../context/AuthContextProvider";
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import React from "react";
 
-export const AdCard = ({id, title, description, category, price, minAge, maxAge, gender, imageUrl}) => {
+export const AdCard = ({
+                           id,
+                           title,
+                           description,
+                           category,
+                           price,
+                           minAge,
+                           maxAge,
+                           gender,
+                           pendingEnrollmentRequestsCount,
+                           imageUrl
+                       }) => {
     const navigate = useNavigate();
+
+    const userIsTrainer = isTrainer();
 
     return (
         <Card
@@ -93,7 +109,7 @@ export const AdCard = ({id, title, description, category, price, minAge, maxAge,
                         }}
                         title='Descriere'
                     >
-                        {description} + Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged
+                        {description}
                     </Typography>
                     <Typography
                         variant="body2"
@@ -120,17 +136,34 @@ export const AdCard = ({id, title, description, category, price, minAge, maxAge,
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 1 }}>
-                    <Typography
-                        variant="h6"
-                        color="primary"
-                        sx={{
-                            fontSize: {xs: "1rem", md: "1.25rem"},
-                            fontWeight: "bold"
-                        }}
-                    >
-                        {price} RON
-                    </Typography>
+                <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 1}}>
+                        <Typography
+                            variant="h6"
+                            color="primary"
+                            sx={{
+                                fontSize: {xs: "1rem", md: "1.25rem"},
+                                fontWeight: "bold"
+                            }}
+                        >
+                            {price} RON
+                        </Typography>
+                        {userIsTrainer && pendingEnrollmentRequestsCount > 0 &&
+                            <Tooltip title="Ai cereri în așteptare!">
+                                <Box sx={{ color: "red", alignSelf: "center", display: "flex", alignItems: "center", marginRight: 1 }}>
+                                    <PendingActionsIcon fontSize="small" sx={{ m: 0, p: 0, verticalAlign: "middle" }} />
+                                     <Typography
+                                        sx={{
+                                            fontSize: {
+                                                xs: "0.75rem",
+                                                md: "1rem"
+                                            },
+                                            fontStyle: "italic"
+                                        }}>
+                                        ({pendingEnrollmentRequestsCount})
+                                    </Typography>
+                                </Box>
+                            </Tooltip>
+                        }
                     <Button
                         variant="contained"
                         color="primary"
