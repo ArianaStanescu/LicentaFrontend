@@ -76,7 +76,7 @@ export const Navbar = ({onLogout}) => {
 
     const renderNotifications = () => {
         if (notifications?.length === 0) {
-            return <MenuItem>No new notifications</MenuItem>;
+            return <MenuItem>Nicio notificare nouă</MenuItem>;
         }
 
         return <Box>
@@ -88,7 +88,11 @@ export const Navbar = ({onLogout}) => {
                     </Button>
                 </Box>}
             {notifications?.map((notification, index) => (
-                <MenuItem key={index} sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1}}>
+                <MenuItem key={index} sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1,
+                    maxWidth: '300px',
+                    width: '100%',
+                    wordWrap: 'break-word',
+                    whiteSpace: 'normal'}}>
                     <Typography variant="subtitle1" sx={{fontWeight: 'bold'}}
                                 color={notification.seen ? "success.main" : "error.main"}>
                         {notification.title}
@@ -110,6 +114,7 @@ export const Navbar = ({onLogout}) => {
         if (userRole === "parent") {
             items.push(
                 <MenuItem key="home-parent" onClick={() => handleNavigate('/home-page-parent', closeFn)}>Acasă</MenuItem>,
+                <MenuItem key="my-enrollment-requests" onClick={() => handleNavigate('/my-enrollment-requests', closeFn)}>Cererile mele de înscriere</MenuItem>,
                 <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare copii</MenuItem>,
                 <MenuItem key="my-favorite-trainers" onClick={() => handleNavigate(`/my-favorite-trainers`, closeFn)}>Vizualizare traineri favoriți</MenuItem>,
                 <MenuItem key="parent-profile" onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul meu</MenuItem>);

@@ -55,3 +55,10 @@ export const TrainerReviewGradeFromTextToNumber = {
     FOUR: 4,
     FIVE: 5
 }
+
+export const EnrollmentRequestStatus = {
+    PENDING: "În așteptare",
+    APPROVED: "Acceptată",
+    REJECTED: "Respinsă",
+    CANCELED: "Anulată",
+}

@@ -12,30 +12,32 @@ import {
     Button, Alert
 } from "@mui/material";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
-import {getAllFavoriteTrainers} from "../../api/parent/getAllFavoriteTrainers";
 import {getParentId} from "../../helpers/localStorageHelper";
 import Grid2 from "@mui/material/Grid2";
-import {removeFavoriteTrainer} from "../../api/parent/removeFavoriteTrainer";
 import {useNavigate} from "react-router-dom";
+import {getEnrollmentRequestsByParent} from "../../api/enrollment-requests/getEnrollmentRequestsByParent";
+import {EnrollmentRequestStatus} from "../../Enum";
+import {cancelEnrollmentRequest} from "../../api/enrollment-requests/cancelEnrollmentRequest";
 
 const PAGE_SIZE = 10;
 
-export const MyFavoriteTrainers = () => {
-    const [trainers, setTrainers] = useState([]);
+export const MyEnrollmentRequestsPage = () => {
+    const [enrolmmentRequests, setEnrolmmentRequests] = useState([]);
     const [pageNumber, setPageNumber] = useState(0);
     const [hasNextPage, setHasNextPage] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const parentId = getParentId();
     const navigate = useNavigate();
 
-    const fetchTrainers = async () => {
+    const fetchEnrollmentRequests = async () => {
         try {
             setIsLoading(true);
-            const response = await getAllFavoriteTrainers(parentId, pageNumber, PAGE_SIZE);
-            setTrainers(response);
+            const response = await getEnrollmentRequestsByParent(parentId, pageNumber, PAGE_SIZE);
+            setEnrolmmentRequests(response);
             setHasNextPage(response.length === PAGE_SIZE);
+            console.log("Enrollment Requests:", response);
         } catch (error) {
-            console.error("Eroare la încărcarea trainerilor favoriți:", error);
+            console.error("Eroare la încărcarea cererilor de înscriere:", error);
         }
         finally {
             setIsLoading(false);
@@ -43,8 +45,21 @@ export const MyFavoriteTrainers = () => {
     };
 
     useEffect(() => {
-        fetchTrainers();
+        fetchEnrollmentRequests();
     }, [pageNumber]);
+
+    const handleCancel = async (requestId) => {
+        try {
+            await cancelEnrollmentRequest(requestId);
+            setEnrolmmentRequests(prev =>
+                prev.map(req =>
+                    req.id === requestId ? {...req, status: 'CANCELED'} : req
+                )
+            );
+        } catch (err) {
+            console.error("Eroare la anularea cererii de înscriere:", err);
+        }
+    };
 
     const handleNextPage = () => {
         if (hasNextPage) setPageNumber((prev) => prev + 1);
@@ -54,24 +69,14 @@ export const MyFavoriteTrainers = () => {
         if (pageNumber > 0) setPageNumber((prev) => prev - 1);
     };
 
-    const handleRemoveFavoriteTrainer = async (trainerId) => {
-        const parentId = getParentId();
-
-        try {
-            await removeFavoriteTrainer(parentId, trainerId);
-            await fetchTrainers();
-        } catch (error) {
-            console.error(`Eroare la eliminarea trainerului ${trainerId} din favoriți:`, error);
-        }
-    };
 
     return (
         <Box sx={{padding: 3}}>
             <Typography variant="h4" gutterBottom>
-                Trainerii mei favoriți
+                Cererile mele de înscriere la anunțurile active
             </Typography>
 
-            {!isLoading && trainers.length === 0 ? (
+            {!isLoading && enrolmmentRequests.length === 0 ? (
                 <Alert severity="info">Niciun trainer găsit!</Alert>
             ) : (
                 <>
@@ -79,39 +84,29 @@ export const MyFavoriteTrainers = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Nume</TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Telefon</TableCell>
-                                    <TableCell>Gen</TableCell>
-                                    <TableCell>Data nașterii</TableCell>
-                                    <TableCell></TableCell>
-                                    <TableCell></TableCell>
+                                    <TableCell>Nume copil</TableCell>
+                                    <TableCell>Anunț</TableCell>
+                                    <TableCell>Status cerere</TableCell>
+                                    <TableCell>Acțiuni</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {trainers.map((trainer) => (
-                                    <TableRow key={trainer.id}>
-                                        <TableCell>{trainer.firstName} {trainer.lastName}</TableCell>
-                                        <TableCell>{trainer.email}</TableCell>
-                                        <TableCell>{trainer.phoneNumber}</TableCell>
-                                        <TableCell>{trainer.gender === 'MALE' ? 'Masculin' : 'Feminin'}</TableCell>
-                                        <TableCell>{new Date(trainer.birthDate).toLocaleDateString("ro-RO")}</TableCell>
-                                        <TableCell>
-                                            <Button
-                                                variant="notification"
-                                                onClick={() => navigate(`/view-trainer-profile/${trainer.id}`)}
+                                {enrolmmentRequests.map((er) => (
+                                    <TableRow key={er.id}>
+                                        <TableCell>{er?.child?.firstName} {er?.child?.lastName}</TableCell>
+                                        <TableCell>{er.ad?.title}</TableCell>
+                                        <TableCell>{EnrollmentRequestStatus[er?.status]}</TableCell>
+                                        {er?.status === 'PENDING' ?
+                                            <TableCell><Button
+                                                variant="contained"
+                                                color="secondary"
+                                                sx={{mr: 1}}
+                                                onClick={() => handleCancel(er.id, er?.child?.id)}
                                             >
-                                                Vizualizare profil
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                variant="notification"
-                                                onClick={() => handleRemoveFavoriteTrainer(trainer.id)}
-                                            >
-                                                Dezabonează-te
-                                            </Button>
-                                        </TableCell>
+                                                Anulează
+                                            </Button></TableCell>
+                                            :
+                                            <TableCell>-</TableCell>}
                                     </TableRow>
                                 ))}
                             </TableBody>

@@ -112,8 +112,6 @@ export const MyActivitiesPage = () => {
 
             if (!newActivity.description.trim()) {
                 newErrors.description = "Descrierea este obligatorie.";
-            } else if (newActivity.description.length > 245) {
-                newErrors.description = "Descrierea nu poate avea mai mult de 245 de caractere.";
             }
 
             if (!newActivity.category) {
@@ -156,8 +154,6 @@ export const MyActivitiesPage = () => {
 
         if (!selectedActivity.description.trim()) {
             newErrors.description = "Descrierea este obligatorie.";
-        } else if (selectedActivity.description.length > 245) {
-            newErrors.description = "Descrierea nu poate avea mai mult de 245 de caractere.";
         }
 
         if (!selectedActivity.category) {
