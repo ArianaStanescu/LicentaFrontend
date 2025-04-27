@@ -134,6 +134,7 @@ export const MyAdsPage = () => {
             minAge: "",
             maxAge: "",
             totalSpots: "",
+            location: "",
             startDate: "",
             endDate: "",
             durationRules: [],
@@ -169,7 +170,7 @@ export const MyAdsPage = () => {
     const addDurationRule = () => {
         setNewAd((prev) => ({
             ...prev,
-            durationRules: [...prev.durationRules, { day: "", startHour: 8, numberOfHours: 1 }],
+            durationRules: [...prev.durationRules, { day: "MONDAY", startHour: 8, numberOfHours: 1 }],
         }));
     };
 
@@ -197,6 +198,7 @@ export const MyAdsPage = () => {
         if (!newAd.startDate) newErrors.startDate = "Data de început este obligatorie";
         if (!newAd.endDate) newErrors.endDate = "Data de sfârșit este obligatorie";
         if (!newAd.image) newErrors.image = "Imaginea este obligatorie";
+        if (!newAd.location) newErrors.location = "Locația este obligatorie";
         if (!newAd.durationRules || newAd.durationRules.length === 0) {
             newErrors.durationRules = "Regulile de durată sunt obligatorii";
         }
@@ -348,7 +350,7 @@ export const MyAdsPage = () => {
                     )}
 
                     {!error && !isLoading && ads.length === 0 && (
-                        <Box sx={{ minHeight: { xs: "auto", md: "600px" } }}>
+                        <Box sx={{ minHeight: { xs: "auto", md: "600px" }, mt: 2 }}>
                             <Alert severity="info">Niciun anunț găsit!</Alert>
                         </Box>
                     )}
@@ -416,6 +418,15 @@ export const MyAdsPage = () => {
                         fullWidth
                     />
                     <TextField
+                        label="Locație"
+                        name="location"
+                        value={newAd.location}
+                        onChange={handleAdChange}
+                        error={!!errors.location}
+                        helperText={errors.location}
+                        fullWidth
+                    />
+                    <TextField
                         label="Dată început"
                         name="startDate"
                         type="date"
@@ -424,6 +435,11 @@ export const MyAdsPage = () => {
                         InputLabelProps={{ shrink: true }}
                         error={!!errors.startDate}
                         helperText={errors.startDate}
+                        InputProps={{
+                            inputProps: {
+                                min: new Date().toISOString().split("T")[0],
+                            },
+                        }}
                         fullWidth
                     />
                     <TextField
@@ -435,6 +451,11 @@ export const MyAdsPage = () => {
                         InputLabelProps={{ shrink: true }}
                         error={!!errors.endDate}
                         helperText={errors.endDate}
+                        InputProps={{
+                            inputProps: {
+                                min: new Date().toISOString().split("T")[0],
+                            },
+                        }}
                         fullWidth
                     />
                     <Button variant="contained" onClick={addDurationRule} fullWidth>

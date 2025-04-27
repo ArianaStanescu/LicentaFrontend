@@ -26,6 +26,9 @@ export const GroupCard = ({group, onEdit}) => {
                         return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
                     }).join(", ")}
                 </Typography>
+                <Typography variant="body2" sx={{mb: 1}}>
+                    Locație: {group.location ?? "nespecificat"}
+                </Typography>
                 <Typography variant="body2">Copii înscriși: {group.childrenCount}</Typography>
                 <Typography variant="body2">
                     Vârstă: {group.minAge} - {group.maxAge} ani

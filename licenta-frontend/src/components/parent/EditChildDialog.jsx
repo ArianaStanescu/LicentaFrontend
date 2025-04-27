@@ -38,6 +38,11 @@ export const EditChildDialog = ({ open, onClose, child, setChild, onSave }) => {
                     name="birthDate"
                     type="date"
                     InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                        inputProps: {
+                            max: new Date().toISOString().split("T")[0],
+                        },
+                    }}
                     value={child?.birthDate || ""}
                     onChange={(e) => setChild({ ...child, birthDate: e.target.value })}
                 />

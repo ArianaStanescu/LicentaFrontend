@@ -12,19 +12,23 @@ import {
     DialogContent,
     DialogTitle,
     DialogActions,
-    Dialog
+    Dialog,
+    IconButton
 } from "@mui/material";
 import {getGroup} from "../api/group/getGroup";
 import {createSessions as createSessionsApi} from "../api/session/createSessions";
 
 import {Gender, GroupStatus, Weekday} from "../Enum";
 import Grid2 from "@mui/material/Grid2";
+import DeleteIcon from '@mui/icons-material/Delete';
 import {calculateAge} from "../helpers/calculateAge";
 import {getSessionsByGroup} from "../api/session/getSessionsByGroup";
 import {SessionCard} from "../components/SessionCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 import { isTrainer } from "../context/AuthContextProvider";
+import { isParent } from "../context/AuthContextProvider";
 import { getParentId, getTrainerId } from "../helpers/localStorageHelper";
+import { removeChildFromGroup } from "../api/group/removeChildFromGroup";
 
 export const ViewGroupPage = () => {
     const {groupId} = useParams();
@@ -46,7 +50,6 @@ export const ViewGroupPage = () => {
     const fetchGroup = async () => {
         try {
             const data = await getGroup(groupId);
-            console.log(data);
             setGroup(data || {});
         } catch (err) {
             setError("Eroare la încărcarea grupului.");
@@ -111,6 +114,14 @@ export const ViewGroupPage = () => {
         }
     }
 
+    const removeChild = async(childId) => {
+        try {
+            await removeChildFromGroup(childId, groupId);
+            await fetchGroup();
+        } catch (err) {
+            setError("Eroare la eliminarea copilului de la o grupa.");
+        }
+    }
 
     if (!group) {
         return;
@@ -130,13 +141,14 @@ export const ViewGroupPage = () => {
             <Typography><strong>Gen:</strong> {Gender[group.gender]}</Typography>
             <Typography><strong>Stare:</strong> {GroupStatus[group.status]}</Typography>
             <Typography><strong>Vârste acceptate:</strong> {group.minAge} - {group.maxAge} ani</Typography>
-            <Typography><strong>Copii înscriși:</strong> {group.childrenCount}</Typography>
+            <Typography><strong>Copii înscriși:</strong> {group?.children?.length ?? 0}</Typography>
             <Typography><strong>Zile de
                 activitate:</strong> {group?.durationRules?.map((durationRule) => {
                 const endHour = (durationRule.startHour + durationRule.numberOfHours) % 24;
                 return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
                 }).join(", ")}
             </Typography>
+            <Typography><strong>Locație:</strong> {group.location}</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                 {!userIsTrainer &&
                     <Button
@@ -225,14 +237,23 @@ export const ViewGroupPage = () => {
             <DialogContent dividers sx={{py: 0}}>
                 {group?.children?.length === 0 ? (
                     <Typography color="text.secondary">Niciun copil înscris.</Typography>) : (<Grid2 container>
-                    <List>
-                        {group?.children?.map(child => (<ListItem key={child.id}>
-                            <ListItemText
-                                primary={`${child.firstName} ${child.lastName}`}
-                                secondary={`Vârstă: ${calculateAge(child.birthDate)} ani`}
-                            />
-                        </ListItem>))}
-                    </List>
+                    <List sx={{width: "100%"}}>
+                            {group?.children?.map(child => (<ListItem key={child.id} sx={{display: "flex", justifyContent: "space-between", width: "100%"}}>
+                                <ListItemText
+                                    primary={`${child.firstName} ${child.lastName}`}
+                                    secondary={`Vârstă: ${calculateAge(child.birthDate)} ani`}
+                                    sx={{flexGrow: 1}}
+                                />
+                                {(isTrainer() || (isParent() && getParentId() == child?.parent?.id)) && (<IconButton
+                                    color="error"
+                                    onClick={() => {
+                                        removeChild(child.id)
+                                    }}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>)}
+                            </ListItem>))}
+                        </List>
                 </Grid2>)}
             </DialogContent>
             <DialogActions>

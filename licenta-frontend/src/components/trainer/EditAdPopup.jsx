@@ -17,6 +17,7 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
         minAge: "",
         maxAge: "",
         totalSpots: "",
+        location: "",
         startDate: "",
         endDate: "",
         durationRules: [],
@@ -32,6 +33,7 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
                 minAge: adToEdit.minAge || "",
                 maxAge: adToEdit.maxAge || "",
                 totalSpots: adToEdit.totalSpots || "",
+                location: adToEdit.location || "",
                 startDate: adToEdit.startDate || "",
                 endDate: adToEdit.endDate || "",
                 durationRules: adToEdit.durationRules || [],
@@ -40,19 +42,6 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
             setErrors({});
         }
     }, [adToEdit]);
-
-    // const handleChange = (e) => {
-    //     const {name, value, type} = e.target;
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         [name]: type === "number" ? Number(value) : value
-    //     }));
-    //
-    //     setErrors((prev) => ({
-    //         ...prev,
-    //         [name]: ""
-    //     }));
-    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -87,6 +76,7 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
         if (!formData.minAge) newErrors.minAge = "Vârsta minimă este obligatorie";
         if (!formData.maxAge) newErrors.maxAge = "Vârsta maximă este obligatorie";
         if (!formData.totalSpots) newErrors.totalSpots = "Numărul de locuri este obligatoriu";
+        if (!formData.location) newErrors.location = "Locația este obligatorie";
         if (!formData.startDate) newErrors.startDate = "Data de început este obligatorie";
         if (!formData.endDate) newErrors.endDate = "Data de sfârșit este obligatorie";
         if (!formData.description) newErrors.description = "Descrierea este obligatorie";
@@ -168,6 +158,15 @@ export const EditAdPopup = ({open, onClose, onSave, adToEdit}) => {
                     onChange={handleChange}
                     error={!!errors.totalSpots}
                     helperText={errors.totalSpots}
+                    fullWidth
+                />
+                <TextField
+                    label="Locație"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    error={!!errors.location}
+                    helperText={errors.location}
                     fullWidth
                 />
                 <TextField

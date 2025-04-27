@@ -2,7 +2,8 @@ import {
     Alert,
     Box,
     Button,
-    Paper, Rating, Tooltip,
+    CardMedia,
+    Paper, Rating, TextareaAutosize, Tooltip,
     Typography
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
@@ -18,6 +19,8 @@ import {getAdImage} from "../api/ads/getAdImage";
 import Grid2 from "@mui/material/Grid2";
 import {AdCard} from "../components/AdCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import {getTrainerImage} from "../api/trainer/getTrainerImage";
+import {isParent} from "../context/AuthContextProvider";
 
 export const ViewTrainerProfilePage = () => {
     const {trainerId} = useParams();
@@ -26,6 +29,7 @@ export const ViewTrainerProfilePage = () => {
     const [showAddFavoriteTrainer, setShowAddFavoriteTrainer] = useState(false);
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
+    const [trainerImage, setTrainerImage] = useState(null);
     const [hasNextPage, setHasNextPage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,7 +51,9 @@ export const ViewTrainerProfilePage = () => {
     const fetchTrainer = async () => {
         try {
             const data = await getTrainer(trainerId);
-            setTrainer(data)
+            setTrainer(data);
+            const savedImage = await getTrainerImage(trainerId);
+            setTrainerImage(savedImage);
         } catch (error) {
             console.error("Eroare la încărcarea trainerilor favoriți:", error);
         }
@@ -139,82 +145,105 @@ export const ViewTrainerProfilePage = () => {
                     Profil trainer
                 </Typography>
 
-                <Paper elevation={3} sx={{padding: 3, mt: 3, display: "flex", flexDirection: "column"}}>
-                    <Typography
-                        variant="body1"
-                        sx={{fontSize: {xs: "1rem", md: "1.2rem"}, mb: 2}}
-                    >
-                        Informații de contact:
-                    </Typography>
+                <Paper elevation={3} sx={{ padding: 3, mt: 3, display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
 
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{fontSize: {xs: "0.9rem", md: "1rem"}, mb: 1}}
-                    >
-                        Nume trainer: {trainer ? `${trainer.firstName} ${trainer.lastName}` : ""}
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{fontSize: {xs: "0.9rem", md: "1rem"}, mb: 1}}
-                    >
-                        Vârstă: {trainer ? `${calculateAge(trainer.birthDate)} ani` : ""}
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{fontSize: {xs: "0.9rem", md: "1rem"}, mb: 1}}
-                    >
-                        Gen: {trainer ? Gender[trainer.gender] : ""}
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{fontSize: {xs: "0.9rem", md: "1rem"}, mb: 1}}
-                    >
-                        Email: {trainer ? trainer.email : ""}
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{fontSize: {xs: "0.9rem", md: "1rem"}, mb: 2}}
-                    >
-                        Telefon: {trainer ? trainer.phoneNumber : ""}
-                    </Typography>
-                    <Box sx={{gap: 1, display: "flex", flexDirection: "row", alignItems: "center"}}>
-                    <Rating
-                        name="rating"
-                        value={trainer?.reviewGrade ?? 5}
-                        max={5}
-                        precision={0.1}
-                        sx={{alignSelf: "flex-start"}}
-                        readOnly={true}
-                    />
+                    <Box sx={{ display: "flex", flexDirection: "column", width: { xs: "100%", md: "50%" } }}>
+                        {trainerImage && <CardMedia
+                            component="img"
+                            image={trainerImage}
+                            sx={{
+                                height: "100%",
+                                width: "25%",
+                                objectFit: "contain",
+                            }}
+                        />}
+                        <Typography
+                            variant="body1"
+                            sx={{ fontSize: { xs: "1rem", md: "1.2rem" }, mb: 2, mt: 2 }}
+                        >
+                            Informații de contact:
+                        </Typography>
                         <Typography
                             variant="body2"
                             color="text.secondary"
-                            sx={{fontSize: {xs: "0.9rem", md: "1rem", mt: 1}}}
+                            sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, mb: 1 }}
                         >
-                            ({trainer?.reviewGrade})
+                            Nume trainer: {trainer ? `${trainer.firstName} ${trainer.lastName}` : ""}
                         </Typography>
-                    </Box>
-                    {showAddFavoriteTrainer && (
-                        <Button variant="text"
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, mb: 1 }}
+                        >
+                            Vârstă: {trainer ? `${calculateAge(trainer.birthDate)} ani` : ""}
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, mb: 1 }}
+                        >
+                            Gen: {trainer ? Gender[trainer.gender] : ""}
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, mb: 1 }}
+                        >
+                            Email: {trainer ? trainer.email : ""}
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.9rem", md: "1rem" }, mb: 2 }}
+                        >
+                            Telefon: {trainer ? trainer.phoneNumber : ""}
+                        </Typography>
+                        <Box sx={{ gap: 1, display: "flex", flexDirection: "row", alignItems: "center" }}>
+                            {trainer?.reviewGrade && <Rating
+                                name="rating"
+                                value={trainer?.reviewGrade ?? 5}
+                                max={5}
+                                precision={0.1}
+                                sx={{ alignSelf: "flex-start" }}
+                                readOnly={true}
+                            />}
+                            {trainer?.reviewGrade && <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ fontSize: { xs: "0.9rem", md: "1rem", mt: 1 } }}
+                            >
+                                ({trainer?.reviewGrade})
+                            </Typography>}
+                        </Box>
+                        {showAddFavoriteTrainer && (
+                            <Button variant="text"
                                 onClick={handleAddFavoriteTrainer}
-                                sx={{alignSelf: "flex-start"}}>
-                            Abonează-te!
-                        </Button>
-                    )}
-                    <Button variant="text"
+                                sx={{ alignSelf: "flex-start" }}>
+                                Abonează-te!
+                            </Button>
+                        )}
+                        <Button variant="text"
                             onClick={() => navigate('/view-trainer-reviews/' + trainerId)}
-                            sx={{alignSelf: "flex-start"}}>
-                        Recenzii
-                    </Button>
+                            sx={{ alignSelf: "flex-start" }}>
+                            Recenzii
+                        </Button>
+                    </Box>
+                    <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+                        <TextareaAutosize
+                            placeholder="Descriere trainer"
+                            multiline
+                            name="trainerDescription"
+                            minRows={7}
+                            fullWidth
+                            value={trainer?.description ?? ""}
+                            style={{
+                                resize: 'vertical', maxHeight: '500px', minHeight: '50px', width: '100%', marginTop: '10px'
+                            }} />
+                    </Box>
                 </Paper>
 
                 <Box
@@ -286,8 +315,8 @@ export const ViewTrainerProfilePage = () => {
                     )}
 
                     {!error && !isLoading && ads.length === 0 && (
-                        <Box sx={{minHeight: {xs: "auto", md: "600px"}}}>
-                            <Alert severity="info">Niciun anunț găsit!</Alert>
+                        <Box sx={{minHeight: {xs: "auto", md: "600px"}, mt: 3}}>
+                            <Alert severity="info">Trainer-ul nu are niciun anunț activ!</Alert>
                         </Box>
                     )}
                 </Box>

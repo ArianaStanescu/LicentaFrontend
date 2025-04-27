@@ -158,7 +158,12 @@ export const MyChildren = () => {
                     <TextField fullWidth margin="dense" label="Prenume" name="firstName" onChange={handleChange}/>
                     <TextField fullWidth margin="dense" label="Nume" name="lastName" onChange={handleChange}/>
                     <TextField fullWidth margin="dense" label="Data nașterii" name="birthDate" type="date"
-                               InputLabelProps={{shrink: true}} onChange={handleChange}/>
+                        InputProps={{
+                            inputProps: {
+                                max: new Date().toISOString().split("T")[0],
+                            },
+                        }}
+                        InputLabelProps={{ shrink: true }} onChange={handleChange} />
                     <TextField
                         select
                         fullWidth
@@ -169,7 +174,7 @@ export const MyChildren = () => {
                         onChange={handleChange}
                     >
                         <MenuItem value="MALE">{Gender.MALE}</MenuItem>
-                        <MenuItem value="FEMALE">{Gender.FEMALE}</MenuItem>>
+                        <MenuItem value="FEMALE">{Gender.FEMALE}</MenuItem>
                     </TextField>
                 </DialogContent>
                 <DialogActions>

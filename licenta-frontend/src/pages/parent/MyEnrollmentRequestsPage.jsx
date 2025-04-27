@@ -35,7 +35,6 @@ export const MyEnrollmentRequestsPage = () => {
             const response = await getEnrollmentRequestsByParent(parentId, pageNumber, PAGE_SIZE);
             setEnrolmmentRequests(response);
             setHasNextPage(response.length === PAGE_SIZE);
-            console.log("Enrollment Requests:", response);
         } catch (error) {
             console.error("Eroare la încărcarea cererilor de înscriere:", error);
         }

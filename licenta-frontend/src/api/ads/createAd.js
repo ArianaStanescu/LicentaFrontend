@@ -13,6 +13,7 @@ export const createAd = async (activityId, adData) => {
             startDate: adData.startDate,
             endDate: adData.endDate,
             durationRules: adData.durationRules,
+            location: adData.location,
         })
     ], { type: "application/json" }));
 
