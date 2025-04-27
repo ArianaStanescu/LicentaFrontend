@@ -24,6 +24,7 @@ import {ViewTrainerProfilePage} from "./pages/ViewTrainerProfilePage";
 import {ViewSessionCommentsPage} from "./pages/ViewSessionCommentsPage";
 import {ViewTrainerReviewsPage} from "./pages/ViewTrainerReviewsPage";
 import {ChatButton} from "./pages/ChatButton";
+import {MyEnrollmentRequestsPage} from "./pages/parent/MyEnrollmentRequestsPage";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -79,6 +80,7 @@ const AuthWrapper = () => {
                     {/*parent routes*/}
                     <Route exact path="/home-page-parent" element={<HomePageParent/>}/>
                     <Route exact path="/child-groups/:childId" element={<ChildGroupsPage/>}/>
+                    <Route exact path="/my-enrollment-requests" element={<MyEnrollmentRequestsPage/>}/>
                     <Route exact path='/my-children' element={<MyChildren/>}/>
                     <Route exact path="my-favorite-trainers" element={<MyFavoriteTrainers/>}/>
                     {/*trainer routes*/}
