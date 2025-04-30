@@ -14,6 +14,7 @@ export const AdCard = ({
                            minAge,
                            maxAge,
                            gender,
+                           location,
                            pendingEnrollmentRequestsCount,
                            imageUrl
                        }) => {
@@ -29,7 +30,7 @@ export const AdCard = ({
                 flexDirection: "row",
                 width: {xs: 300, sm: 600, md: 800},
                 maxWidth: {xs: "100%", sm: 600, md: 1000},
-                height: 200,
+                height: 230,
                 alignItems: "center",
             }}
         >
@@ -133,6 +134,18 @@ export const AdCard = ({
                         }}
                     >
                         Gen: {Gender[gender]}
+                    </Typography>
+
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                            fontSize: {xs: "0.85rem", md: "1rem"},
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                        }}
+                    >
+                        Locație: {location ?? "nespectificat"}
                     </Typography>
                 </Box>
 

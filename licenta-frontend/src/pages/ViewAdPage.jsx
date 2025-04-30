@@ -28,6 +28,7 @@ export const ViewAdPage = () => {
     const [showAddFavoriteTrainer, setShowAddFavoriteTrainer] = useState(false);
     const userIsTrainer = isTrainer();
     const {getParentId} = useContext(AuthContext);
+    const [newlyCreatedGroupId, setNewlyCreatedGroupId] = useState(null);
 
     useEffect(() => {
         const fetchAdImage = async () => {
@@ -79,6 +80,15 @@ export const ViewAdPage = () => {
         } catch (error) {
             console.error("Eroare la verificarea antrenorului favorit:", error);
         }
+    }
+
+    const createNewGroup = async () => {
+        const response = await createGroup(ad.activity.id, ad.id);
+        if (response && response.success) {
+            setNewlyCreatedGroupId(response.data.id);
+            await fetchAd();
+        }
+        setConfirmDialogOpen(false);
     }
 
     if (!ad && !isLoading) {
@@ -197,6 +207,13 @@ export const ViewAdPage = () => {
                         return `${Weekday[durationRule.day]} (${String(durationRule.startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00)`;
                     }).join(", ")}
                 </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{fontSize: {xs: "1rem", md: "1.2rem"}, color: "gray"}}
+                >
+                    Locație:{" "}
+                    {ad?.location ?? "nespecificat"}
+                </Typography>
             </Box>
 
             <Typography
@@ -275,13 +292,13 @@ export const ViewAdPage = () => {
                     >
                         Anunțul a fost închis
                     </Typography>
-                    <Button
+                    {newlyCreatedGroupId && <Button
                         variant="contained"
                         color="primary"
-                        // onClick={}
+                        onClick={() => navigate('/view-group/' + newlyCreatedGroupId)}
                     >
                         Vizualizare grupă
-                    </Button>
+                    </Button>}
                 </Box>}
             </Box>
 
@@ -373,8 +390,7 @@ export const ViewAdPage = () => {
                 message="Ești sigur că vrei să creezi această grupă?"
                 onCancel={() => setConfirmDialogOpen(false)}
                 onConfirm={() => {
-                    createGroup(ad.activity.id, ad.id);
-                    setConfirmDialogOpen(false);
+                    createNewGroup();
                 }}
             />
         </Box>

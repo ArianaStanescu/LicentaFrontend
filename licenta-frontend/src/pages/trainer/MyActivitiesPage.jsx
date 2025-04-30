@@ -206,7 +206,7 @@ export const MyActivitiesPage = () => {
             ) : (
                 <Grid2 container spacing={2}>
                     {activities.map((activity) => (
-                        <Grid2 xs={12} sm={6} md={4} key={activity.id}>
+                        <Grid2 xs={12} sm={6} md={4} key={activity.id} sx={{width:"100%"}}>
                             <ActivityCard {...activity} onEdit={handleOpenEditDialog} onViewGroups={handleViewGroups}/>
                         </Grid2>
                     ))}

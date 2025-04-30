@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
     TextField,
     Button,
@@ -8,7 +8,8 @@ import {
     Checkbox,
     FormControlLabel,
     MenuItem,
-    Alert, Snackbar, Grid, Grid2
+    Alert, Snackbar, Grid, Grid2,
+    TextareaAutosize
 } from "@mui/material";
 import {register} from "../services/keycloak.js";
 import {registerUser} from "../api/register";
@@ -23,6 +24,8 @@ export const RegisterPage = () => {
         phoneNumber: "",
         gender: "",
         birthDate: "",
+        trainerDescription: "",
+        trainerImage: null,
         isTrainer: false,
     });
 
@@ -33,25 +36,34 @@ export const RegisterPage = () => {
 
 
     const handleChange = (e) => {
-        const {name, value, type, checked} = e.target;
+        const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
             [name]: type === "checkbox" ? checked : value,
         });
     };
 
+    const handleImageUpload = (e) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            "trainerImage": e.target.files[0],
+        }));
+    };
+
     const validateForm = () => {
         let newErrors = {};
-        if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+        if (!formData.firstName.trim()) newErrors.firstName = "Numele este obligatoriu.";
+        if (!formData.lastName.trim()) newErrors.lastName = "Prenumele este obligatoriu.";
         if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email))
-            newErrors.email = "Valid email is required";
+            newErrors.email = "Este necesar un email valid.";
         if (!formData.password.trim() || formData.password.length < 6)
-            newErrors.password = "Password must be at least 6 characters";
-        if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Phone number is required";
-        if (!formData.gender) newErrors.gender = "Please select your gender";
-        if (formData.isTrainer && !formData.birthDate) newErrors.birthDate = "Birth date is required for trainers";
-
+            newErrors.password = "Parola trebuie să aibă cel puțin 6 caractere.";
+        if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Numărul de telefon este obligatoriu.";
+        if (!formData.gender) newErrors.gender = "Vă rugăm să selectați genul.";
+        if (formData.isTrainer && !formData.birthDate) newErrors.birthDate = "Data nașterii este necesară pentru trainer.";
+        if (formData.isTrainer && !formData.trainerDescription) newErrors.trainerDescription = "Descrierea trainer-ului este obligatorie.";
+        if (formData.isTrainer && !formData.trainerImage) newErrors.trainerImage = "Imaginea trainer-ului este obligatorie.";
+        
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -67,6 +79,8 @@ export const RegisterPage = () => {
             enabled: true,
             username: formData.email,
             emailVerified: true,
+            trainerDescription: formData.trainerDescription,
+            trainerImage: formData.trainerImage,
             credentials: [
                 {
                     type: "password",
@@ -82,14 +96,14 @@ export const RegisterPage = () => {
             allUserData.gender = allUserData.gender.toUpperCase();
 
             if (registerResponse?.success && registerResponse?.keycloakUserId) {
-                const backendRegisterResponse = await registerUser(allUserData);
-                if (backendRegisterResponse?.success) {
-                    setOpenSnackbar(true);
+            const backendRegisterResponse = await registerUser(allUserData);
+            if (backendRegisterResponse?.success) {
+                setOpenSnackbar(true);
 
-                    setTimeout(() => {
-                        navigate("/login");
-                    }, 2000);
-                }
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            }
             }
         } catch (error) {
             setErrorMessage("Verifică dacă ai cont valid.");
@@ -99,7 +113,7 @@ export const RegisterPage = () => {
 
     return (
         <Container maxWidth="xl">
-            <Box sx={{display: "flex", alignItems: "stretch", height: "100%", flexDirection: {xs: "column", md: "row"}}}>
+            <Box sx={{ display: "flex", alignItems: "stretch", height: "100%", flexDirection: { xs: "column", md: "row" } }}>
                 <Box
                     component="img"
                     src={`${process.env.PUBLIC_URL}/register.png`}
@@ -200,7 +214,7 @@ export const RegisterPage = () => {
                                     onChange={handleChange}
                                 />
                             }
-                            label="Sunteți tutore?"
+                            label="Sunteți trainer?"
                         />
                         {formData.isTrainer && (
                             <TextField
@@ -213,8 +227,52 @@ export const RegisterPage = () => {
                                 error={!!errors.birthDate}
                                 helperText={errors.birthDate}
                                 margin="normal"
-                                InputLabelProps={{shrink: true}}
+                                InputLabelProps={{ shrink: true }}
+                                InputProps={{
+                                    inputProps: {
+                                        max: new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0],
+                                    },
+                                }}
                             />
+                        )}
+                        {formData.isTrainer && (
+                            <TextareaAutosize
+                                placeholder="Descriere trainer"
+                                multiline
+                                name="trainerDescription"
+                                minRows={3}
+                                fullWidth
+                                value={formData.trainerDescription}
+                                onChange={handleChange}
+                                style={{
+                                    resize: 'vertical', maxHeight: '500px', minHeight: '50px', width: '100%', marginTop: '10px'
+                                }} />)}
+                        {formData.isTrainer && errors.trainerDescription && (
+                            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                                {errors.trainerDescription}
+                            </Typography>
+                        )}
+                        {formData.isTrainer && (
+                            <Button variant="contained" component="label">
+                                Încarcă imagine (JPEG)
+                                <input
+                                    type="file"
+                                    accept="image/jpeg"
+                                    hidden
+                                    onChange={handleImageUpload}
+                                />
+                            </Button>
+                        )}
+
+                        {formData.isTrainer && errors.trainerImage && (
+                            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                                {errors.trainerImage}
+                            </Typography>
+                        )}
+                        {formData.isTrainer && formData.trainerImage && (
+                            <Box sx={{ fontSize: "0.9rem", color: "gray" }}>
+                                Fișier selectat: {formData.trainerImage.name}
+                            </Box>
                         )}
                         <Button
                             type="submit"
@@ -229,8 +287,8 @@ export const RegisterPage = () => {
                 </Box>
             </Box>
             <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)}
-                      anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
-                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{width: "100%"}}>
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: "100%" }}>
                     Utilizator creat cu succes!
                 </Alert>
             </Snackbar>

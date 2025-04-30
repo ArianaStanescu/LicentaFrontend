@@ -5,17 +5,55 @@ const BASE_URL = "http://localhost:8080";
 export const registerUser = async (user) => {
     const userRole = user.isTrainer ? "trainers" : "parents";
     const registerUrl = `${BASE_URL}/api/${userRole}/register`;
+    let response;
+    userRole === "trainers" ? response = await registerTrainer(user, registerUrl) : response = await registerParent(user, registerUrl);
+    return response;
+};
 
-    try{
-        const response = await instance.post(registerUrl, user);
+const registerParent = async (parentData, url) => {
+    try {
+        const response = await instance.post(url, parentData);
 
         if (response.data.error) {
             return { success: false, error: response.data.error };
         } else {
-            return { success: true};
+            return { success: true };
         }
 
-    }catch(error){
-        console.log("error calling register endpoint: ", error);
+    } catch (error) {
+        console.log("error calling register parent endpoint: ", error);
+    }
+}
+
+const registerTrainer = async (trainerData, url) => {
+    const formData = new FormData();
+
+    formData.append("trainer", new Blob([
+        JSON.stringify({
+            firstName: trainerData.firstName,
+            lastName: trainerData.lastName,
+            email: trainerData.email,
+            phoneNumber: trainerData.phoneNumber,
+            description: trainerData.trainerDescription,
+            gender: trainerData.gender,
+            birthDate: trainerData.birthDate,
+        })
+    ], { type: "application/json" }));
+
+    if (trainerData.trainerImage) {
+        formData.append("image", trainerData.trainerImage);
+    }
+
+    try {
+        const response = await instance.post(url, formData)
+
+        if (response.data.error) {
+            return { success: false, error: response.data.error };
+        } else {
+            return { success: true };
+        }
+    } catch (error) {
+        console.log("error calling register trainer endpoint: ", error);
+        return null;
     }
 };
