@@ -79,8 +79,6 @@ export const RegisterPage = () => {
             enabled: true,
             username: formData.email,
             emailVerified: true,
-            trainerDescription: formData.trainerDescription,
-            trainerImage: formData.trainerImage,
             credentials: [
                 {
                     type: "password",
