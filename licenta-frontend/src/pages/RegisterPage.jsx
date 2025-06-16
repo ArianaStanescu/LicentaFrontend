@@ -114,7 +114,7 @@ export const RegisterPage = () => {
             <Box sx={{ display: "flex", alignItems: "stretch", height: "100%", flexDirection: { xs: "column", md: "row" } }}>
                 <Box
                     component="img"
-                    src={`${process.env.PUBLIC_URL}/register.png`}
+                    src={`${process.env.PUBLIC_URL}/register2.png`}
                     alt="Ilustrare înregistrare"
                     sx={{
                         width: "50%",
@@ -212,7 +212,7 @@ export const RegisterPage = () => {
                                     onChange={handleChange}
                                 />
                             }
-                            label="Sunteți trainer?"
+                            label="Sunteți profesor?"
                         />
                         {formData.isTrainer && (
                             <TextField
@@ -235,7 +235,7 @@ export const RegisterPage = () => {
                         )}
                         {formData.isTrainer && (
                             <TextareaAutosize
-                                placeholder="Descriere trainer"
+                                placeholder="Descriere profesor"
                                 multiline
                                 name="trainerDescription"
                                 minRows={3}
@@ -243,7 +243,7 @@ export const RegisterPage = () => {
                                 value={formData.trainerDescription}
                                 onChange={handleChange}
                                 style={{
-                                    resize: 'vertical', maxHeight: '500px', minHeight: '50px', width: '100%', marginTop: '10px'
+                                    resize: 'vertical', maxHeight: '500px', minHeight: '50px', width: '100%', marginTop: '12px'
                                 }} />)}
                         {formData.isTrainer && errors.trainerDescription && (
                             <Typography color="error" variant="body2" sx={{ mt: 1 }}>

@@ -17,6 +17,7 @@ import {createChild} from "../../api/children/createChild";
 import {useNavigate} from "react-router-dom";
 import {EditChildDialog} from "../../components/parent/EditChildDialog";
 import {updateChild} from "../../api/children/updateChild";
+import {calculateAge} from "../../helpers/calculateAge";
 
 
 export const MyChildren = () => {
@@ -125,7 +126,7 @@ export const MyChildren = () => {
                                     <CardContent sx={{padding: 0, paddingRight: 2}}>
                                         <Typography variant="h6">{child.firstName + ' ' + child.lastName}</Typography>
                                         <Typography variant="body2" color="textSecondary">
-                                            Vârstă: {child.age} ani
+                                            Vârstă: {calculateAge(child.birthDate)} ani
                                         </Typography>
                                         <Typography variant="body2" color="textSecondary">
                                             Data nașterii: {child.birthDate}

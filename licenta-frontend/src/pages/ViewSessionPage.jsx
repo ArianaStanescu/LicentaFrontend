@@ -179,7 +179,7 @@ export const ViewSessionPage = () => {
                 Comentarii
             </Button>
             {session?.newComments &&
-                <Tooltip title="Ai comment-uri necitite!">
+                <Tooltip title="Ai comentarii necitite!">
                     <Box sx={{ color: "red", ml: 2, mt: 0.5 }}>
                         <EmailIcon fontSize="small" />
                     </Box>

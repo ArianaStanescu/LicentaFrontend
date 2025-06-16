@@ -84,7 +84,7 @@ export const Navbar = ({onLogout}) => {
                 <Box sx={{display: "flex", justifyContent: "center", mb: 1}}>
                     <Button startIcon={<DoneAll/>} variant="notification"
                             onClick={() => markAsSeen(notifications.filter(notification => !notification.seen).map(notification => notification.id))}>
-                        Mark all as seen
+                        Marchează-le pe toate ca văzute
                     </Button>
                 </Box>}
             {notifications?.map((notification, index) => (
@@ -102,7 +102,7 @@ export const Navbar = ({onLogout}) => {
                     </Typography>
                     {!notification?.seen && (<Button startIcon={<Check/>} variant="notification"
                                                      onClick={() => markAsSeen([notification.id])}>
-                        Mark as seen
+                        Marcheaz-o ca văzută
                     </Button>)}
                 </MenuItem>))}
         </Box>
@@ -130,7 +130,7 @@ export const Navbar = ({onLogout}) => {
 
         if (isMobileMenu) {
             items.push(<MenuItem key="logout" onClick={onLogout}>
-                <Logout/> Logout
+                <Logout/> Deconectare
             </MenuItem>);
         }
 
@@ -189,7 +189,7 @@ export const Navbar = ({onLogout}) => {
                     KidSphere
                 </Typography>
                 <Button variant={'navigation-bar'} startIcon={<Logout/>} onClick={onLogout}>
-                    Logout
+                    Deconectare
                 </Button>
             </>)}
         </Toolbar>

@@ -37,13 +37,11 @@ export const FirebaseMessagingProvider = ({children}) => {
         }
         const app = initializeApp(firebaseConfig);
         const messaging = getMessaging(app);
-
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
             console.error("Notification permission denied.");
             return;
         }
-
         const currentToken = await getToken(messaging);
         if (currentToken) {
             setToken(currentToken);
