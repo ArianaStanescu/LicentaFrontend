@@ -25,6 +25,7 @@ import {ViewSessionCommentsPage} from "./pages/ViewSessionCommentsPage";
 import {ViewTrainerReviewsPage} from "./pages/ViewTrainerReviewsPage";
 import {ChatButton} from "./pages/ChatButton";
 import {MyEnrollmentRequestsPage} from "./pages/parent/MyEnrollmentRequestsPage";
+import { ViewParentProfilePage } from "./pages/parent/ViewParentProfilePage";
 
 
 const PrivateRoute = ({customProps}) => {
@@ -55,9 +56,9 @@ const AuthWrapper = () => {
     const {clearMessaging} = useContext(FirebaseMessagingContext);
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        clearMessaging(isTrainer() ? getTrainerId() : getParentId(), isTrainer());
-        logout();
+    const handleLogout = async () => {
+        await clearMessaging(isTrainer() ? getTrainerId() : getParentId(), isTrainer());
+        await logout();
         navigate("/login");
     };
 
@@ -83,6 +84,7 @@ const AuthWrapper = () => {
                     <Route exact path="/my-enrollment-requests" element={<MyEnrollmentRequestsPage/>}/>
                     <Route exact path='/my-children' element={<MyChildren/>}/>
                     <Route exact path="my-favorite-trainers" element={<MyFavoriteTrainers/>}/>
+                    <Route exact path="/view-parent-profile/:parentId" element={<ViewParentProfilePage/>} />
                     {/*trainer routes*/}
                     <Route exact path="/my-groups/:activityId" element={<MyGroupsPage/>}/>
                     <Route exact path="/my-groups/" element={<MyGroupsPage/>}/>

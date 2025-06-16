@@ -13,20 +13,22 @@ import {Gender} from "../Enum";
 import {getTrainer} from "../api/trainer/getTrainer";
 import {addFavoriteTrainer} from "../api/parent/addFavoriteTrainer";
 import {hasFavoriteTrainer} from "../api/parent/hasFavoriteTrainer";
-import {getParentId} from "../helpers/localStorageHelper";
+import {getParentId, getTrainerId} from "../helpers/localStorageHelper";
 import {searchByTrainerId} from "../api/ads/searchByTrainerId";
 import {getAdImage} from "../api/ads/getAdImage";
 import Grid2 from "@mui/material/Grid2";
 import {AdCard} from "../components/AdCard";
 import {ArrowBack, ArrowForward} from "@mui/icons-material";
 import {getTrainerImage} from "../api/trainer/getTrainerImage";
-import {isParent} from "../context/AuthContextProvider";
+import {isParent, isTrainer} from "../context/AuthContextProvider";
+import { EditTrainerProfileDialog } from "../components/EditTrainerProfileDialog";
 
 export const ViewTrainerProfilePage = () => {
     const {trainerId} = useParams();
     const navigate = useNavigate();
     const [trainer, setTrainer] = useState(null);
     const [showAddFavoriteTrainer, setShowAddFavoriteTrainer] = useState(false);
+    const [editProfileDialogOpen, setEditProfileDialogOpen] = useState(false);
     const [ads, setAds] = useState([]);
     const [images, setImages] = useState({});
     const [trainerImage, setTrainerImage] = useState(null);
@@ -231,6 +233,14 @@ export const ViewTrainerProfilePage = () => {
                             sx={{ alignSelf: "flex-start" }}>
                             Recenzii
                         </Button>
+                        {isTrainer() && getTrainerId() == trainer?.id && <Button
+                            size="small"
+                            variant="text"
+                            onClick={() => setEditProfileDialogOpen(true)}
+                            sx={{ alignSelf: "flex-start" }}
+                        >
+                            Editează
+                        </Button>}
                     </Box>
                     <Box sx={{ width: { xs: "100%", md: "50%" } }}>
                         <TextareaAutosize
@@ -244,6 +254,13 @@ export const ViewTrainerProfilePage = () => {
                                 resize: 'vertical', maxHeight: '500px', minHeight: '50px', width: '100%', marginTop: '10px'
                             }} />
                     </Box>
+                    {editProfileDialogOpen &&
+                        <EditTrainerProfileDialog
+                            open={editProfileDialogOpen}
+                            onClose={() => setEditProfileDialogOpen(false)}
+                            trainerToEdit={trainer}
+                            onSave={fetchTrainer}
+                        />}
                 </Paper>
 
                 <Box

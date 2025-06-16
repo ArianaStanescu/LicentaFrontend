@@ -51,11 +51,6 @@ export const CreateEnrollmentRequestPopup = ({ open, onClose, refreshAd }) => {
             try {
                 const response = await createEnrollmentRequest(adId, selectedChild.id);
 
-                if (response === null) {
-                    setError("A apărut o eroare la comunicarea cu serverul.");
-                    return;
-                }
-
                 if (!response.success) {
                     setError(response.error || "Copilul nu a fost adăugat. Încearcă din nou.");
                     return;
@@ -131,11 +126,11 @@ export const CreateEnrollmentRequestPopup = ({ open, onClose, refreshAd }) => {
                 <Button onClick={onCloseButton} variant="contained" color="secondary">
                     Închide
                 </Button>
-                {!error || error !== "Te rog selectează un copil înainte de a înscrie." ? (
+                {!error && (
                     <Button onClick={handleEnroll} variant="contained" color="primary">
                         Înscrie
                     </Button>
-                ) : null}
+                 )}
             </DialogActions>
         </Dialog>
             <Snackbar open={successMessage} autoHideDuration={5000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
