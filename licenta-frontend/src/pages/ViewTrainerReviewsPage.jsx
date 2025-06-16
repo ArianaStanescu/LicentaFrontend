@@ -73,7 +73,7 @@ export const ViewTrainerReviewsPage = () => {
 
     return (<Container maxWidth="lg" sx={{ mt: 4 }}>
         {trainer && <Typography variant="h4" gutterBottom>
-            Recenzii pentru trainerul {trainer?.firstName} {trainer?.lastName}
+            Recenzii pentru profesorul {trainer?.firstName} {trainer?.lastName}
         </Typography>}
         {isParent() && <Button onClick={() => setAddReviewDialogOpen(true)} variant="contained" sx={{ mb: 2 }}>
             Adaugă recenzie

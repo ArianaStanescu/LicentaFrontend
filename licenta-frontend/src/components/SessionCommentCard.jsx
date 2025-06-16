@@ -12,7 +12,8 @@ export const SessionCommentCard = ({ comment, refresh }) => {
     const [editSessionCommentDialogOpen, setEditSessionCommentDialogOpen] = useState(false);
 
     const isAuthor = () => {
-        return comment?.authorParent?.id == getParentId() || comment?.authorTrainer?.id == getTrainerId();
+        return (getParentId() && comment?.authorParent?.id == getParentId())
+            || (getTrainerId() && comment?.authorTrainer?.id == getTrainerId());
     }
 
     const handleDelete = async () => {

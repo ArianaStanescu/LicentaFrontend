@@ -5,11 +5,11 @@ import {getStoredRefreshToken, storeToken, setRefreshToken, setAccessToken} from
 export const KEYCLOAK_URL = 'http://localhost:8082/';
 export const KEYCLOAK_REALM = 'LicentaRealm';
 export const KEYCLOAK_CLIENT_ID = 'licenta-backend-client';
-const KEYCLOAK_CLIENT_SECRET = '077cf1d2-8767-42c8-8027-91bb0b493de3';
+const KEYCLOAK_CLIENT_SECRET = '39ad7735-f430-4b44-ac60-95b70874ce48';
 const KEYCLOAK_ADMIN_CLIENT_ID = 'admin-cli';
 const KEYCLOAK_ADMIN_REALM = 'master';
-const KEYCLOAK_ROLE_TRAINER_ID = '066cd086-3b6d-40c3-adfe-2869b5288fbd';
-const KEYCLOAK_ROLE_PARENT_ID = '03b0a304-abea-4d97-aaa1-bf213498efbc';
+const KEYCLOAK_ROLE_TRAINER_ID = '9bcaf5d1-0400-4172-961f-1bb6c5e11d0c';
+const KEYCLOAK_ROLE_PARENT_ID = '054f81d8-7587-4425-9b46-78fb5ddace9c';
 export const KEYCLOAK_ADMIN_USERNAME = 'admin';
 export const KEYCLOAK_ADMIN_PASSWORD = 'admin';
 

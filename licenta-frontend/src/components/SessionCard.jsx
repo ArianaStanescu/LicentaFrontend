@@ -44,7 +44,7 @@ export const SessionCard = ({ session, isNextSession, groupId }) => {
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
                     {session?.newComments &&
-                        <Tooltip title="Ai comment-uri necitite!">
+                        <Tooltip title="Ai comentarii necitite!">
                             <Box sx={{ color: "red", alignSelf: "center" }}>
                                 <EmailIcon fontSize="small" sx={{ m: 0, p: 0, verticalAlign: "middle" }} />
                             </Box>

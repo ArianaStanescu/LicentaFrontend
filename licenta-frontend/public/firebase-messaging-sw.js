@@ -14,7 +14,6 @@ const app = firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-
     const notificationOptions = {
         body: payload?.data?.body,
         vibrate: [200, 100, 200],
