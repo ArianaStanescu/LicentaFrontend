@@ -159,7 +159,7 @@ export const MyGroupsPage = () => {
 
             {error && <Alert severity="error">{error}</Alert>}
             {groups.length === 0 ? (
-                <Alert severity="info">Nu ai încă grupuri create.</Alert>
+                <Alert severity="info">Nu ai încă grupe create.</Alert>
             ) : (
                 <Grid2 container spacing={2}>
                     {groups?.map((group) => (

@@ -52,7 +52,7 @@ export const LoginPage = () => {
                     initializeMessaging(parentOrTrainerId, false);
                     navigate("/home-page-parent");
                 }
-            }catch(e) {
+            } catch(e) {
                 setError(e);
             }
 

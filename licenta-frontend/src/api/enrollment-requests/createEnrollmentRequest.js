@@ -12,6 +12,6 @@ export const createEnrollmentRequest = async (adId, childId) => {
         }
     } catch (error) {
         console.error(`Error creating enrollment request for child ${childId}:`, error);
-        return null;
+        return {success: false, error: error?.response?.data?.errorMessage};
     }
 };

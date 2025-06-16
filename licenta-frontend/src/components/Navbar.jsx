@@ -31,7 +31,7 @@ export const Navbar = ({onLogout}) => {
         navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
 
         return () => {
-            navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+           navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
         };
     }, []);
 
@@ -117,7 +117,7 @@ export const Navbar = ({onLogout}) => {
                 <MenuItem key="my-enrollment-requests" onClick={() => handleNavigate('/my-enrollment-requests', closeFn)}>Cererile mele de înscriere</MenuItem>,
                 <MenuItem key="my-children" onClick={() => handleNavigate('/my-children', closeFn)}>Vizualizare copii</MenuItem>,
                 <MenuItem key="my-favorite-trainers" onClick={() => handleNavigate(`/my-favorite-trainers`, closeFn)}>Vizualizare traineri favoriți</MenuItem>,
-                <MenuItem key="parent-profile" onClick={() => handleNavigate('/parent-profile', closeFn)}>Profilul meu</MenuItem>);
+                <MenuItem key="parent-profile" onClick={() => handleNavigate(`/view-parent-profile/${getParentId()}`, closeFn)}>Profilul meu</MenuItem>);
         }
 
         if (userRole === "trainer") {
