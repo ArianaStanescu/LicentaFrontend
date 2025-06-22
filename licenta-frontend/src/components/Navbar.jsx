@@ -186,7 +186,7 @@ export const Navbar = ({onLogout}) => {
                     </Menu>
                 </Box>
                 <Typography variant="h6" sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
-                    KidSphere
+                    {isParent() ? "KidSphere (Părinte)" : "KidSphere (Profesor)"}
                 </Typography>
                 <Button variant={'navigation-bar'} startIcon={<Logout/>} onClick={onLogout}>
                     Deconectare
