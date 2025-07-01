@@ -110,8 +110,14 @@ export const LoginPage = () => {
                     </Button>
                 </form>
 
-                <Typography variant="body2" sx={{mt: 2}}>
-                    Nu ai cont? <a href="http://localhost:3000/register">Înregistrează-te</a>
+                <Typography variant="body2" sx={{ mt: 2 }}>
+                    Nu ai cont?{' '}
+                    <span
+                        onClick={() => navigate('/register')}
+                        style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                        Înregistrează-te
+                    </span>
                 </Typography>
             </Box>
         </Container>
