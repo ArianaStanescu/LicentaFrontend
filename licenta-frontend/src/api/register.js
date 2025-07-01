@@ -1,6 +1,6 @@
 import {instance} from "./axiosInstance";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://kidsphere.ddns.net/backend";
 
 export const registerUser = async (user) => {
     const userRole = user.isTrainer ? "trainers" : "parents";

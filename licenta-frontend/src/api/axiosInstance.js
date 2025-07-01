@@ -2,10 +2,10 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import {refreshToken} from '../services/keycloak';
 
-export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = 'https://kidsphere.ddns.net/backend';
 
 export const instance = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'https://kidsphere.ddns.net/backend',
 });
 
 instance.interceptors.request.use(

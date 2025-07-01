@@ -2,7 +2,7 @@ import {jwtDecode} from "jwt-decode";
 
 import {getStoredRefreshToken, storeToken, setRefreshToken, setAccessToken} from "../helpers/localStorageHelper";
 
-export const KEYCLOAK_URL = 'http://localhost:8082/';
+export const KEYCLOAK_URL = 'https://kidsphere.ddns.net/auth/';
 export const KEYCLOAK_REALM = 'LicentaRealm';
 export const KEYCLOAK_CLIENT_ID = 'licenta-backend-client';
 const KEYCLOAK_CLIENT_SECRET = '39ad7735-f430-4b44-ac60-95b70874ce48';
@@ -178,9 +178,9 @@ export const register = async (userData, isTrainer) => {
             }
         }
 
-        return {success: true, data: jsonData, keycloakUserId};
+        return { success: true, data: jsonData, keycloakUserId };
     } catch (error) {
         console.error("Error in register function: ", error);
-        return {error: error.message};
+        return { error: error.message };
     }
 };
